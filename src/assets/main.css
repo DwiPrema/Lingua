@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+    /* Brand Colors */
+    --color-primary: #0D9488;
+    --color-accent: #6366F1;
+
+    /* Background Color  */
+    --color-dark-background: #020617;
+
+    /* Text Colors  */
+    --color-light-text: #F8FAFC;
+    --color-muted-text: #94A3B8;
+
+    /* Status Color  */
+    --color-success: #10B981; 
+    --color-alert: #C1121F;
+}
+
+@layer utilities {
+    .blur-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        backdrop-filter: blur(15px);
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        animation: blurOut 2s ease forwards;
+    }
+}
+
+@keyframes blurOut {
+    0% {
+        opacity: 1;
+        backdrop-filter: blur(7px);
+    }
+
+    30% {
+        opacity: 1;
+        backdrop-filter: blur(20px);
+    }
+
+    100% {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+        visibility: hidden;
+    }
+}
