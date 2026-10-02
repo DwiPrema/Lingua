@@ -1,11 +1,37 @@
 <script setup>
 import Header from '@/components/Header.vue';
-import HeroSection from '@/components/HeroSection.vue';
+
+const aboutData = [
+    {
+        title: "Learner",
+        description: "Discover courses and join the course anytime you want",
+    },
+    {
+        title: "Creator",
+        description: "Create course and share your knowledge.",
+    }
+]
+
+const aboutData2 = [
+    {
+        title: "For Learners",
+        descriptions: ["Discover courses", "Explore subjects", "Learn your way"],
+    },
+    {
+        title: "For Creator",
+        descriptions: ["Create your courses", "Reach Learners", "Share your knowledge"],
+    }
+]
 
 </script>
 
 <template>
+
+    <!-- HEADER  -->
     <Header />
+
+
+    <!-- HERO SECTION  -->
     <section class="relative w-full pt-10 pb-25">
         <div class="absolute h-64 top-0 inset-x-0 flex items-start">
             <div class="w-2/3 h-24 bg-linear-to-br from-primary blur-2xl invisible opacity-40">
@@ -57,4 +83,76 @@ import HeroSection from '@/components/HeroSection.vue';
             </div>
         </div>
     </section>
+
+
+    <!-- ABOUT  -->
+    <section class="pb-25 pt-25 relative w-full" id="education">
+        <div class="w-full relative px-5 sm:px-8 md:px-12 lg:px-8 max-w-5xl lg:max-w-7xl mx-auto flex flex-col gap-20">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 relative items-center justify-between">
+                <div class="lg:h-full md:flex" data-aos="zoom-in">
+                    <div
+                        class="flex flex-col w-full lg:w-full lg:h-full items-center md:items-start relative justify-between gap-8">
+                        <div class="flex flex-col gap-4">
+                            <h1 class="text-white font-black text-5xl text-center md:text-left">About Lingua.</h1>
+                            <p class="text-md text-muted-text md:text-left text-center">Lingua is a learning marketplace
+                                built to connect people
+                                who want to learn with people who have something valuable to teach.</p>
+                        </div>
+
+
+                        <div>
+                            <h1 class="font-black text-muted-text text-2xl md:text-left text-center">Learn from others.
+                            </h1>
+                            <h1 class="font-black text-muted-text text-2xl md:text-left text-center">Share what you
+                                know.</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div v-for="data in aboutData" :key="data.title" data-aos="fade-up">
+                        <div class="bg-[#1f1641] rounded-xl p-6 flex flex-col gap-6">
+                            <h1 class="font-bold text-white">{{ data.title }}</h1>
+
+                            <p class="text-gray-300 font-[0.5rem]">{{ data.description }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pb-25 pt-25 relative w-full">
+        <div class="w-full relative px-5 sm:px-8 md:px-12 lg:px-8 max-w-5xl lg:max-w-7xl mx-auto flex flex-col gap-20">
+
+            <div class="flex flex-col gap-16 relative">
+                <div class="lg:h-full md:flex" data-aos="zoom-in">
+                    <div
+                        class="flex flex-col w-full lg:w-full lg:h-full items-center md:items-start relative justify-between gap-8">
+                        <div class="flex flex-col gap-4 w-full">
+                            <h1 class="text-white font-black text-5xl text-center"><span class="text-primary">One</span> Place. <span class="text-primary">Two</span> Posibilities.</h1>
+                        </div>
+
+
+                        
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 items-center gap-4 w-full lg:w-[70%] lg:m-auto sm:grid-cols-2">
+                    <div v-for="data in aboutData2" :key="data.title" data-aos="fade-up">
+                        <div class="bg-[#1f1641] rounded-xl p-6 flex flex-col gap-6">
+                            <h1 class="font-bold text-white text-center ">{{ data.title }}</h1>
+
+                            <div>
+                                <p class="text-gray-300 font-[0.5rem] text-center" v-for="description in data.descriptions">{{ description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
 </template>
