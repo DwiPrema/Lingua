@@ -1,4 +1,5 @@
 <script setup>
+import CoursesData from '@/components/CoursesData.vue';
 import Header from '@/components/Header.vue';
 
 const aboutData = [
@@ -86,7 +87,7 @@ const aboutData2 = [
 
 
     <!-- ABOUT  -->
-    <section class="pb-25 pt-25 relative w-full" id="education">
+    <section class="pb-25 pt-25 relative w-full" id="about">
         <div class="w-full relative px-5 sm:px-8 md:px-12 lg:px-8 max-w-5xl lg:max-w-7xl mx-auto flex flex-col gap-20">
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16 relative items-center justify-between">
@@ -95,7 +96,7 @@ const aboutData2 = [
                         class="flex flex-col w-full lg:w-full lg:h-full items-center md:items-start relative justify-between gap-8">
                         <div class="flex flex-col gap-4">
                             <h1 class="text-white font-black text-5xl text-center md:text-left">About Lingua.</h1>
-                            <p class="text-md text-muted-text md:text-left text-center">Lingua is a learning marketplace
+                            <p class="text-muted-text md:text-left text-center">Lingua is a learning marketplace
                                 built to connect people
                                 who want to learn with people who have something valuable to teach.</p>
                         </div>
@@ -112,8 +113,8 @@ const aboutData2 = [
 
                 <div class="flex flex-col gap-4">
                     <div v-for="data in aboutData" :key="data.title" data-aos="fade-up">
-                        <div class="bg-[#1f1641] rounded-xl p-6 flex flex-col gap-6">
-                            <h1 class="font-bold text-white">{{ data.title }}</h1>
+                        <div class="bg-accent/80 rounded-xl p-6 flex flex-col gap-6">
+                            <h1 class="font-bold text-white text-2xl">{{ data.title }}</h1>
 
                             <p class="text-gray-300 font-[0.5rem]">{{ data.description }}</p>
                         </div>
@@ -133,16 +134,13 @@ const aboutData2 = [
                         <div class="flex flex-col gap-4 w-full">
                             <h1 class="text-white font-black text-5xl text-center"><span class="text-primary">One</span> Place. <span class="text-primary">Two</span> Posibilities.</h1>
                         </div>
-
-
-                        
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 items-center gap-4 w-full lg:w-[70%] lg:m-auto sm:grid-cols-2">
                     <div v-for="data in aboutData2" :key="data.title" data-aos="fade-up">
-                        <div class="bg-[#1f1641] rounded-xl p-6 flex flex-col gap-6">
-                            <h1 class="font-bold text-white text-center ">{{ data.title }}</h1>
+                        <div class="bg-accent/80 rounded-xl p-6 flex flex-col gap-6">
+                            <h1 class="font-bold text-white text-center text-2xl">{{ data.title }}</h1>
 
                             <div>
                                 <p class="text-gray-300 font-[0.5rem] text-center" v-for="description in data.descriptions">{{ description }}</p>
@@ -155,4 +153,14 @@ const aboutData2 = [
     </section>
 
 
+    <!-- Courses Section  -->
+    <section class="pb-25 pt-25 relative w-full" id="explore">
+        <div class="w-full relative px-5 sm:px-8 md:px-12 lg:px-8 max-w-5xl lg:max-w-7xl mx-auto flex flex-col gap-20">
+            <div>
+                <p class="text-primary font-medium text-center lg:text-left">Explore</p>
+                <h1 class="text-white font-black text-5xl text-center lg:text-left">Course.</h1>
+            </div>
+            <CoursesData />
+        </div>
+    </section>
 </template>
