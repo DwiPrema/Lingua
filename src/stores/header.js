@@ -5,7 +5,7 @@ export const useHeaderStore = defineStore('header', () => {
     const menuItems = [
         { name: 'About', href: '#about' },
         { name: 'Explore', href: '#explore' },
-        { name: 'How it works', href: '#howItWorks' }
+        { name: 'How It Works', href: '#how-it-works' }
     ]
 
     const isMenuOpen = ref(false)
