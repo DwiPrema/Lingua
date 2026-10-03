@@ -57,12 +57,12 @@ const aboutData2 = [
                         knowledge, gain practical skills, and share your unique insights with others along the way.
                     </p>
                     <div class="flex pt-8 gap-3 flex-col sm:flex-row">
-                        <button
+                        <a href="/explore-courses"
                             class="bg-primary rounded-full sm:w-max m-auto lg:m-0 relative w-full sm:min-w-50 p-4 hover:bg-success hover:scale-103 transition-all ease-in-out duration-300">
                             <div class="flex flex-row gap-4 justify-center items-center relative">
                                 <p class="text-light-text">Explore Course</p>
                             </div>
-                        </button>
+                        </a>
                         <button
                             class="border border-primary rounded-full sm:w-max m-auto lg:m-0 relative w-full sm:min-w-50 p-4 hover:scale-103 transition-all ease-in-out duration-300">
                             <div class="flex flex-row gap-4 justify-center items-center relative">
@@ -157,13 +157,16 @@ const aboutData2 = [
 
 
     <!-- Courses Section  -->
-    <section class="pb-25 pt-25 relative w-full" id="explore">
+    <section class="pb-25 pt-25 relative w-full border-b-muted-text/50 border" id="explore">
         <div class="w-full relative px-5 sm:px-8 md:px-12 lg:px-8 max-w-5xl lg:max-w-7xl mx-auto flex flex-col gap-20">
             <div>
                 <p class="text-primary font-medium text-center lg:text-left">Explore</p>
                 <h1 class="text-white font-black text-5xl text-center lg:text-left">Course.</h1>
             </div>
             <CoursesData />
+            <div class="w-full flex justify-end">
+                <a href="/explore-courses" class="text-light-text font-medium text-center lg:text-right cursor-pointer hover:text-accent transition-all duration-300 ease-in-out">Explore More Courses →</a>
+            </div>
         </div>
     </section>
 
@@ -172,7 +175,7 @@ const aboutData2 = [
     <section id="how-it-works" class="pb-25 pt-25 relative w-full">
         <div class="w-full relative px-5 sm:px-8 md:px-12 lg:px-8 max-w-5xl lg:max-w-7xl mx-auto flex flex-col gap-20">
             <!-- Section Heading -->
-             <div>
+            <div>
                 <p class="text-primary font-medium text-center">Your learning journey starts here.</p>
                 <h1 class="text-white font-black text-5xl text-center">How It Works</h1>
                 <p class="mt-4 text-base leading-7 text-muted-text text-center">
@@ -242,7 +245,7 @@ const aboutData2 = [
                         </div>
                     </div>
 
-                    <a href="/courses" class="mt-8 inline-flex items-center gap-2 font-semibold
+                    <a href="/explore-courses" class="mt-8 inline-flex items-center gap-2 font-semibold
                    text-dark-background transition-all ease-in-out duration-300 hover:text-primary">
                         Explore Courses
                         <span aria-hidden="true">→</span>
@@ -255,14 +258,6 @@ const aboutData2 = [
                  hover:border-blue-200 hover:shadow-lg sm:p-10">
                     <div class="mb-6 flex h-14 w-14 items-center justify-center
                    rounded-2xl bg-accent/15 text-accent">
-                        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m16 18 2-2 2 2" />
-                            <path d="M18 16v6" />
-                            <path d="M12 15V3" />
-                            <path d="m7 8 5-5 5 5" />
-                            <path d="M5 21h14" />
-                        </svg> -->
                         <PackagePlus />
                     </div>
 
@@ -322,6 +317,27 @@ const aboutData2 = [
                         <span aria-hidden="true">→</span>
                     </a>
                 </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <section class="mt-15 relative w-full flex flex-col border-t border-gray-600 p-12" id="contact">
+        <div class="flex flex-col sm:flex-row sm:items-end gap-4 sm:justify-between justify-center items-start">
+            <div class="flex flex-col gap-4">
+                <h1 class="text-white text-3xl font-black">Lingua<span class="text-primary">.</span></h1>
+
+                <div>
+                    <h1 class="font-black text-muted-text text-left">Learn from others.
+                    </h1>
+                    <h1 class="font-black text-muted-text text-left">Share what you
+                        know.</h1>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-muted-text font-black text-[0.7rem]">All right reserved.</p>
             </div>
         </div>
     </section>
