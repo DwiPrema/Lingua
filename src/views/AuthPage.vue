@@ -1,0 +1,236 @@
+<script setup>
+import { useAuthStore } from '@/stores/auth.stores';
+
+
+const authStore = useAuthStore()
+
+</script>
+
+<template>
+    <main class="min-h-screen bg-black p-6 flex items-center justify-center">
+        <div
+            class="mx-auto flex min-h-[80vh] max-w-6xl min-w-[80%] overflow-hidden rounded-3xl bg-light-text shadow-xl">
+
+            <section
+                class="relative hidden w-1/2 overflow-hidden bg-primary p-12 lg:flex lg:flex-col lg:justify-between">
+
+                <div>
+                    <h1 class='text-light-text text-3xl font-black cursor-pointer'>
+                        Lingua.
+                    </h1>
+                </div>
+
+                <div class="relative z-10 max-w-md">
+                    <p class="mb-4 text-sm font-medium uppercase tracking-widest text-light-text">
+                        Learn & Create
+                    </p>
+
+                    <h2 class="text-5xl font-black leading-tight text-dark-background">
+                        Learn today,
+                        <br />
+                        create tomorrow.
+                    </h2>
+
+                    <p class="mt-6 max-w-sm text-dark-background/80">
+                        Learn new languages, join courses,
+                        share your knowledge, and grow together
+                        with the Lingua community.
+                    </p>
+                </div>
+
+            </section>
+
+            <section class="flex w-full flex-col justify-center px-6 py-10 sm:px-12 lg:w-1/2 lg:px-16">
+
+                <div class="mx-auto w-full max-w-md">
+
+                    <div class="mb-10 lg:hidden">
+                        <h1 class='text-accent text-3xl font-black cursor-pointer'>
+                            Lingua.
+                        </h1>
+                    </div>
+
+
+                    <!-- ========================= -->
+                    <!-- LOGIN -->
+                    <!-- ========================= -->
+
+                    <template v-if="authStore.isLogin">
+
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-dark-background">
+                                Welcome back
+                            </h2>
+
+                            <p class="mt-2 text-gray-500">
+                                Log in to continue learning with Lingua.
+                            </p>
+                        </div>
+
+
+                        <form class="space-y-5" @submit.prevent>
+
+                            <div>
+                                <label for="login-email" class="mb-2 block text-sm font-medium text-gray-700">
+                                    Email address
+                                </label>
+
+                                <input id="login-email" v-model="authStore.email" type="email"
+                                    placeholder="you@example.com"
+                                    class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
+                            </div>
+
+                            <button type="submit"
+                                class="w-full rounded-xl bg-dark-background px-4 py-3.5 font-medium text-white transition hover:bg-gray-800 active:scale-[0.99]">
+                                Continue with email
+                            </button>
+
+                        </form>
+
+                        <p class="mt-8 text-center text-sm text-gray-500">
+                            Don't have an account?
+
+                            <button type="button" class="ml-1 font-semibold text-dark-background hover:underline"
+                                @click="authStore.router.push('/signup')">
+                                Sign up
+                            </button>
+                        </p>
+
+                    </template>
+
+
+                    <!-- ========================= -->
+                    <!-- SIGN UP -->
+                    <!-- ========================= -->
+
+                    <template v-else>
+
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-black text-dark-background">
+                                Create your account
+                            </h2>
+
+                            <p class="mt-2 text-gray-500">
+                                Choose how you want to use Lingua.
+                            </p>
+                        </div>
+
+
+                        <form class="space-y-6" @submit.prevent>
+
+                            <div>
+                                <label class="mb-3 block text-sm font-medium text-gray-700">
+                                    I want to...
+                                </label>
+
+                                <div class="grid grid-cols-2 gap-3">
+
+                                    <button type="button" class="rounded-2xl border p-4 text-left transition" :class="authStore.role === 'learner'
+                                        ? 'border-dark-background bg-gray-50 ring-1 ring-accent'
+                                        : 'border-gray-200 hover:border-gray-400'
+                                        " @click="authStore.role = 'learner'">
+
+                                        <div class="mb-3 flex items-center justify-between">
+
+                                            <div
+                                                class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/30">
+                                                🎓
+                                            </div>
+
+                                            <div class="h-4 w-4 rounded-full border" :class="authStore.role === 'learner'
+                                                ? 'border-accent bg-accent'
+                                                : 'border-gray-300'
+                                                "></div>
+
+                                        </div>
+
+                                        <p class="font-semibold text-dark-background">
+                                            Learn
+                                        </p>
+
+                                        <p class="mt-1 text-xs leading-relaxed text-gray-500">
+                                            Join courses and improve your skills.
+                                        </p>
+
+                                    </button>
+
+                                    <button type="button" class="rounded-2xl border p-4 text-left transition" :class="authStore.role === 'creator'
+                                        ? 'border-dark-background bg-gray-50 ring-1 ring-accent'
+                                        : 'border-gray-200 hover:border-gray-400'
+                                        " @click="authStore.role = 'creator'">
+
+                                        <div class="mb-3 flex items-center justify-between">
+
+                                            <div
+                                                class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/30">
+                                                ✨
+                                            </div>
+
+                                            <div class="h-4 w-4 rounded-full border" :class="authStore.role === 'creator'
+                                                ? 'border-accent bg-accent'
+                                                : 'border-gray-300'
+                                                "></div>
+
+                                        </div>
+
+                                        <p class="font-semibold text-dark-background">
+                                            Create
+                                        </p>
+
+                                        <p class="mt-1 text-xs leading-relaxed text-gray-500">
+                                            Create courses and share your knowledge.
+                                        </p>
+
+                                    </button>
+
+                                </div>
+                            </div>
+
+                            <div>
+
+                                <label for="signup-email" class="mb-2 block text-sm font-medium text-gray-700">
+                                    Email address
+                                </label>
+
+                                <input id="signup-email" v-model="authStore.email" type="email"
+                                    placeholder="you@example.com"
+                                    class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
+
+                            </div>
+
+                            <button type="submit"
+                                class="w-full rounded-xl bg-dark-background px-4 py-3.5 font-medium text-white transition hover:bg-gray-800 active:scale-[0.99]">
+                                Continue with email
+                            </button>
+
+                        </form>
+
+                        <p class="mt-8 text-center text-sm text-gray-500">
+                            Already have an account?
+
+                            <button type="button" class="ml-1 font-semibold text-dark-background hover:underline"
+                                @click="authStore.router.push('/login')">
+                                Log in
+                            </button>
+                        </p>
+
+                    </template>
+
+                    <p class="mt-8 text-center text-xs leading-relaxed text-gray-400">
+                        By continuing, you agree to Lingua's
+                        <a href="#" class="underline hover:text-gray-600">
+                            Terms of Service
+                        </a>
+                        and
+                        <a href="#" class="underline hover:text-gray-600">
+                            Privacy Policy
+                        </a>.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
+    </main>
+</template>
