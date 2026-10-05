@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/stores/auth.stores";
 import AuthPage from "@/views/AuthPage.vue";
 import LandingPage from "@/views/LandingPage.vue";
 import { createRouter, createWebHistory } from "vue-router";
@@ -11,16 +12,35 @@ const router = createRouter({
             component: LandingPage
         },
         {
-            path: "/login",
-            name: "login",
+            path: "/auth/login",
+            name: "auth-login",
             component: AuthPage
         },
         {
-            path: "/signup",
-            name: "signup",
+            path: "/auth/signup",
+            name: "auth-signup",
             component: AuthPage
         },
+        {
+            path: "/auth/verify",
+            name: "auth-verify",
+            component: AuthPage,
+            meta: {
+                requiresOtpFlow: true
+            }
+
+        },
     ]
+})
+
+router.beforeEach((to) => {
+    if (to.meta.requiresOtpFlow) {
+        const authStore = useAuthStore()
+
+        if (!authStore.authIntent) {
+            return { name: 'auth-login' }
+        }
+    }
 })
 
 export default router

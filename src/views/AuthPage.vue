@@ -1,4 +1,5 @@
 <script setup>
+import LoadingDotsScale from '@/components/LoadingDotsScale.vue';
 import { useAuthStore } from '@/stores/auth.stores';
 
 
@@ -14,16 +15,17 @@ const authStore = useAuthStore()
             <section
                 class="relative hidden w-1/2 overflow-hidden bg-primary p-12 lg:flex lg:flex-col lg:justify-between">
 
-                <div>
-                    <h1 class='text-light-text text-3xl font-black cursor-pointer'>
+                <div class="flex flex-col items-start gap-4">
+                    <h1 class='text-light-text text-3xl font-black cursor-pointer text-left'>
                         Lingua.
                     </h1>
+
+                    <p class="mb-4 text-sm font-medium uppercase tracking-widest text-light-text text-left">
+                        Learn & Create
+                    </p>
                 </div>
 
                 <div class="relative z-10 max-w-md">
-                    <p class="mb-4 text-sm font-medium uppercase tracking-widest text-light-text">
-                        Learn & Create
-                    </p>
 
                     <h2 class="text-5xl font-black leading-tight text-dark-background">
                         Learn today,
@@ -52,10 +54,84 @@ const authStore = useAuthStore()
 
 
                     <!-- ========================= -->
+                    <!-- VERIFY -->
+                    <!-- ========================= -->
+
+                    <template v-if="authStore.authMode === 'auth-verify'">
+
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-dark-background">
+                                Verify your email
+                            </h2>
+
+                            <p class="mt-2 leading-relaxed text-gray-500">
+                                We've sent a 6-digit verification code to
+                                <span class="font-medium text-dark-background">
+                                    {{ authStore.email }}
+                                </span>
+                            </p>
+                        </div>
+
+
+                        <form class="space-y-6" @submit.prevent>
+
+                            <!-- OTP INPUT -->
+
+                            <div>
+                                <label for="otp" class="mb-2 block text-sm font-medium text-gray-700">
+                                    Verification code
+                                </label>
+
+                                <input id="otp" v-model="authStore.otp" type="text" inputmode="numeric"
+                                    autocomplete="one-time-code" maxlength="6" placeholder="000000"
+                                    class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-center text-2xl font-semibold tracking-[0.5em] outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
+                            </div>
+
+
+                            <!-- VERIFY BUTTON -->
+
+                            <button type="submit"
+                                class="w-full rounded-xl bg-dark-background px-4 py-3.5 font-medium text-white transition hover:bg-gray-800 active:scale-[0.99]">
+                                Verify email
+                            </button>
+
+                        </form>
+
+
+                        <!-- RESEND -->
+
+                        <div class="mt-6 text-center">
+
+                            <p class="text-sm text-gray-500">
+                                Didn't receive the code?
+                            </p>
+
+                            <button type="button" class="mt-1 font-semibold text-dark-background hover:underline"
+                                @click="authStore.resendOtp()">
+                                Resend code
+                            </button>
+
+                        </div>
+
+
+                        <!-- CHANGE EMAIL -->
+
+                        <div class="mt-8 text-center">
+
+                            <button type="button" class="text-sm text-gray-500 hover:text-dark-background"
+                                @click="authStore.router.push('signup')">
+                                ← Change email
+                            </button>
+
+                        </div>
+
+                    </template>
+
+                    <!-- ========================= -->
                     <!-- LOGIN -->
                     <!-- ========================= -->
 
-                    <template v-if="authStore.isLogin">
+                    <template v-if="authStore.authMode === 'auth-login'">
 
                         <div class="mb-8">
                             <h2 class="text-3xl font-bold text-dark-background">
@@ -91,7 +167,7 @@ const authStore = useAuthStore()
                             Don't have an account?
 
                             <button type="button" class="ml-1 font-semibold text-dark-background hover:underline"
-                                @click="authStore.router.push('/signup')">
+                                @click="authStore.router.push('signup')">
                                 Sign up
                             </button>
                         </p>
@@ -103,7 +179,7 @@ const authStore = useAuthStore()
                     <!-- SIGN UP -->
                     <!-- ========================= -->
 
-                    <template v-else>
+                    <template v-if="authStore.authMode === 'auth-signup'">
 
                         <div class="mb-8">
                             <h2 class="text-3xl font-black text-dark-background">
@@ -115,8 +191,13 @@ const authStore = useAuthStore()
                             </p>
                         </div>
 
+                        <div v-if="authStore.error" class="mb-6 rounded-xl border border-alert/50 bg-alert/20 p-4">
+                            <p class="text-sm text-alert">
+                                {{ authStore.error }}
+                            </p>
+                        </div>
 
-                        <form class="space-y-6" @submit.prevent>
+                        <form class="space-y-6" @submit.prevent="authStore.handleSignUp">
 
                             <div>
                                 <label class="mb-3 block text-sm font-medium text-gray-700">
@@ -132,9 +213,14 @@ const authStore = useAuthStore()
 
                                         <div class="mb-3 flex items-center justify-between">
 
-                                            <div
-                                                class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/30">
-                                                🎓
+                                            <div class="flex flex-row gap-2 items-center">
+                                                <div
+                                                    class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/30">
+                                                    🎓
+                                                </div>
+                                                <p class="font-semibold text-dark-background">
+                                                    Learn
+                                                </p>
                                             </div>
 
                                             <div class="h-4 w-4 rounded-full border" :class="authStore.role === 'learner'
@@ -143,10 +229,6 @@ const authStore = useAuthStore()
                                                 "></div>
 
                                         </div>
-
-                                        <p class="font-semibold text-dark-background">
-                                            Learn
-                                        </p>
 
                                         <p class="mt-1 text-xs leading-relaxed text-gray-500">
                                             Join courses and improve your skills.
@@ -161,9 +243,15 @@ const authStore = useAuthStore()
 
                                         <div class="mb-3 flex items-center justify-between">
 
-                                            <div
-                                                class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/30">
-                                                ✨
+                                            <div class="flex flex-row gap-2 items-center">
+                                                <div
+                                                    class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/30">
+                                                    ✨
+                                                </div>
+
+                                                <p class="font-semibold text-dark-background">
+                                                    Create
+                                                </p>
                                             </div>
 
                                             <div class="h-4 w-4 rounded-full border" :class="authStore.role === 'creator'
@@ -172,10 +260,6 @@ const authStore = useAuthStore()
                                                 "></div>
 
                                         </div>
-
-                                        <p class="font-semibold text-dark-background">
-                                            Create
-                                        </p>
 
                                         <p class="mt-1 text-xs leading-relaxed text-gray-500">
                                             Create courses and share your knowledge.
@@ -196,10 +280,62 @@ const authStore = useAuthStore()
                                     placeholder="you@example.com"
                                     class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
 
+                                <p v-if="authStore.errors.email" class="mt-1 text-sm text-alert">
+                                    {{ authStore.errors.email }}
+                                </p>
+
                             </div>
 
-                            <button type="submit"
-                                class="w-full rounded-xl bg-dark-background px-4 py-3.5 font-medium text-white transition hover:bg-gray-800 active:scale-[0.99]">
+                            <div>
+
+                                <label for="fullname" class="mb-2 block text-sm font-medium text-gray-700">
+                                    Full Name
+                                </label>
+
+                                <input id="fullname" v-model="authStore.fullname" type="text"
+                                    placeholder="Enter your fullname here!"
+                                    class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
+
+                                <p v-if="authStore.errors.fullname" class="mt-1 text-sm text-alert">
+                                    {{ authStore.errors.fullname }}
+                                </p>
+
+                            </div>
+
+                            <div>
+
+                                <label for="nickname" class="mb-2 block text-sm font-medium text-gray-700">
+                                    Nick Name
+                                </label>
+
+                                <input id="nickname" v-model="authStore.nickname" type="text"
+                                    placeholder="Enter your nickname here!"
+                                    class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
+
+                            </div>
+
+                            <div>
+
+                                <label for="phone-number" class="mb-2 block text-sm font-medium text-gray-700">
+                                    Phone Number
+                                </label>
+
+                                <input id="phone-number" v-model="authStore.phoneNumber" type="text" inputmode="numeric"
+                                    placeholder="Enter your phone number please!"
+                                    class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
+
+                                <p v-if="authStore.errors.phoneNumber" class="mt-1 text-sm text-alert">
+                                    {{ authStore.errors.phoneNumber }}
+                                </p>
+                            </div>
+
+                            <div v-if="authStore.loading"
+                                class="flex items-center justify-center w-full rounded-xl bg-dark-background px-4  font-medium text-white transition hover:bg-gray-800 active:scale-[0.99]">
+                                <LoadingDotsScale color="var(--color-light-text)" size="42" />
+                            </div>
+
+                            <button type="submit" v-else
+                                class="w-full rounded-xl bg-dark-background px-4 py-2 font-medium text-white transition hover:bg-gray-800 active:scale-[0.99]">
                                 Continue with email
                             </button>
 
@@ -209,7 +345,7 @@ const authStore = useAuthStore()
                             Already have an account?
 
                             <button type="button" class="ml-1 font-semibold text-dark-background hover:underline"
-                                @click="authStore.router.push('/login')">
+                                @click="authStore.router.push('login')">
                                 Log in
                             </button>
                         </p>

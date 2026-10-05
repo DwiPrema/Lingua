@@ -22,10 +22,10 @@ const store = useHeaderStore()
                 </ul>
 
                 <div class="flex flex-row items-center gap-2">
-                    <a href="/login"
+                    <a href="auth/login"
                         class="text-light-text text-nowrap text-center bg-primary p-2 min-w-25 rounded-lg cursor-pointer hover:bg-success duration-300 transition-all ease-in-out">Login</a>
 
-                    <a href="/signup"
+                    <a href="auth/signup"
                         class="text-light-text text-nowrap text-center bg-primary p-2 min-w-25 rounded-lg cursor-pointer hover:bg-success duration-300 transition-all ease-in-out">Sign
                         Up</a>
                 </div>
