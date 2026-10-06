@@ -1,10 +1,13 @@
 import { supabase } from "@/lib/supabase";
 
-export async function signUp(email) {
+export async function signUp(email, userFullname, UserNickname, UserPhone, UserRole) {
     const { data, error } = await supabase.auth.signInWithOtp({
         email,
         options: {
-            shouldCreateUser: true
+            shouldCreateUser: true,
+            data: {
+                fullname: userFullname, nickname: UserNickname, phone: UserPhone, role: UserRole
+            }
         }
     })
 

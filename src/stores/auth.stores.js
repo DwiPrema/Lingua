@@ -8,7 +8,7 @@ export const useAuthStore = defineStore('auth', () => {
     const fullname = ref('')
     const nickname = ref('')
     const phoneNumber = ref('')
-    const role = ref('learner')
+    const role = ref('student')
 
     const otp = ref('')
     const authIntent = ref(null)
@@ -49,15 +49,24 @@ export const useAuthStore = defineStore('auth', () => {
         return Object.keys(errors.value).length === 0
     }
 
-    async function signUp(userEmail, userRole) {
+    async function signUp(userEmail, userRole, userFullname, userNickname, userPhone) {
         loading.value = true
         error.value = null
 
         try {
             email.value = userEmail
             role.value = userRole
+            fullname.value = userFullname
+            nickname.value = userNickname
+            phoneNumber.value = userPhone
 
-            await authService.signUp(userEmail)
+            await authService.signUp(
+                userEmail,
+                userRole,
+                userFullname,
+                userNickname,
+                userPhone
+            )
         } catch (err) {
             error.value = err.message
             throw err
@@ -67,22 +76,21 @@ export const useAuthStore = defineStore('auth', () => {
     }
 
     async function handleSignUp() {
-        if (!validateSignUpForm()) {
-            return
-        }
+        if (!validateSignUpForm()) return
 
         loading.value = true
-
         try {
-            await authService.signUp(email.value)
-
+            await signUp(
+                email.value,
+                role.value,
+                fullname.value,
+                nickname.value,
+                phoneNumber.value
+            )
             authIntent.value = 'signup'
-
             router.push('verify')
-        } catch (error) {
-            console.log(error)
-            console.log(errors)
-            errors.value.general = error.message
+        } catch (err) {
+            errors.value.general = err.message
         } finally {
             loading.value = false
         }

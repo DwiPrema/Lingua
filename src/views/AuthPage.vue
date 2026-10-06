@@ -206,10 +206,10 @@ const authStore = useAuthStore()
 
                                 <div class="grid grid-cols-2 gap-3">
 
-                                    <button type="button" class="rounded-2xl border p-4 text-left transition" :class="authStore.role === 'learner'
+                                    <button type="button" class="rounded-2xl border p-4 text-left transition" :class="authStore.role === 'student'
                                         ? 'border-dark-background bg-gray-50 ring-1 ring-accent'
                                         : 'border-gray-200 hover:border-gray-400'
-                                        " @click="authStore.role = 'learner'">
+                                        " @click="authStore.role = 'student'">
 
                                         <div class="mb-3 flex items-center justify-between">
 
@@ -223,7 +223,7 @@ const authStore = useAuthStore()
                                                 </p>
                                             </div>
 
-                                            <div class="h-4 w-4 rounded-full border" :class="authStore.role === 'learner'
+                                            <div class="h-4 w-4 rounded-full border" :class="authStore.role === 'student'
                                                 ? 'border-accent bg-accent'
                                                 : 'border-gray-300'
                                                 "></div>
@@ -236,10 +236,10 @@ const authStore = useAuthStore()
 
                                     </button>
 
-                                    <button type="button" class="rounded-2xl border p-4 text-left transition" :class="authStore.role === 'creator'
+                                    <button type="button" class="rounded-2xl border p-4 text-left transition" :class="authStore.role === 'instructor'
                                         ? 'border-dark-background bg-gray-50 ring-1 ring-accent'
                                         : 'border-gray-200 hover:border-gray-400'
-                                        " @click="authStore.role = 'creator'">
+                                        " @click="authStore.role = 'instructor'">
 
                                         <div class="mb-3 flex items-center justify-between">
 
@@ -254,7 +254,7 @@ const authStore = useAuthStore()
                                                 </p>
                                             </div>
 
-                                            <div class="h-4 w-4 rounded-full border" :class="authStore.role === 'creator'
+                                            <div class="h-4 w-4 rounded-full border" :class="authStore.role === 'instructor'
                                                 ? 'border-accent bg-accent'
                                                 : 'border-gray-300'
                                                 "></div>
