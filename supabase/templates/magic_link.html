@@ -1,3 +1,42 @@
-<h2>Kode masuk</h2>
-<p>Masukkan kode ini:</p>
-<p><strong>{{ .Token }}</strong></p>
+<div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px; color: #1f2937;">
+
+  <h2 style="margin-bottom: 8px;">
+    Verify your email
+  </h2>
+
+  <p style="font-size: 15px; line-height: 1.6;">
+    Hi,
+  </p>
+
+  <p style="font-size: 15px; line-height: 1.6;">
+    Use the verification code below to continue with your Lingua account:
+  </p>
+
+  <div style="
+    margin: 28px 0;
+    padding: 18px;
+    background-color: #f3f4f6;
+    border-radius: 10px;
+    text-align: center;
+  ">
+    <span style="
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 8px;
+      color: #111827;
+    ">
+      {{ .Token }}
+    </span>
+  </div>
+
+  <p style="font-size: 14px; line-height: 1.6; color: #6b7280;">
+    This code will expire soon. If you didn't request this code,
+    you can safely ignore this email.
+  </p>
+
+  <p style="font-size: 14px; margin-top: 32px;">
+    Thanks,<br>
+    <strong>Lingua Team</strong>
+  </p>
+
+</div>
