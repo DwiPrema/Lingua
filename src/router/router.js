@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/stores/auth.stores";
 import AuthPage from "@/views/AuthPage.vue";
 import LandingPage from "@/views/LandingPage.vue";
+import AdminDashboardPage from "@/views/AdminDashboardPage.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
@@ -29,6 +30,13 @@ const router = createRouter({
                 requiresOtpFlow: true
             }
 
+        },
+        {
+            path: '/dashboard',
+            component: AdminDashboardPage,
+            meta: {
+                requiresAuth: true,
+            },
         },
     ]
 })

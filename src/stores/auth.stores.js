@@ -21,6 +21,11 @@ export const useAuthStore = defineStore('auth', () => {
     const route = useRoute()
     const router = useRouter()
 
+    const session = ref(null)
+    const user = ref(null)
+
+    const isInitialized = ref(false)
+
     const authMode = computed(() => route.name)
 
     function validateSignUpForm() {
@@ -96,5 +101,73 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    return { email, fullname, nickname, phoneNumber, role, loading, error, errors, route, router, authMode, otp, authIntent, signUp, handleSignUp, validateSignUpForm }
+    async function verifyOtpCode(email, token) {
+        loading.value = true
+        error.value = null
+
+        try {
+            const data = await authService.verifyOtp(email, token)
+
+            session.value = data.session
+            user.value = data.user
+
+            return data
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+
+    async function handleVerify() {
+        await verifyOtpCode(
+            email.value,
+            otp.value
+        )
+
+        router.push('/dashboard')
+    }
+
+    async function initializeAuth() {
+        try {
+            loading.value = true
+
+            session.value = await authService.getSession()
+
+            if (session.value) {
+                user.value = session.value.user
+            }
+        } catch (err) {
+            error.value = err
+        } finally {
+            loading.value = false
+            isInitialized.value = true
+        }
+    }
+
+    return {
+        email, 
+        fullname, 
+        nickname, 
+        phoneNumber,
+        role, 
+        loading, 
+        error, 
+        errors, 
+        route, 
+        router, 
+        authMode, 
+        otp, 
+        authIntent, 
+        isInitialized,
+        session,
+        user,
+        signUp, 
+        handleSignUp, 
+        validateSignUpForm, 
+        verifyOtpCode, 
+        handleVerify, 
+        initializeAuth
+    }
 })

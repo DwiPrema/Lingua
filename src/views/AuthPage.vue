@@ -73,7 +73,7 @@ const authStore = useAuthStore()
                         </div>
 
 
-                        <form class="space-y-6" @submit.prevent>
+                        <form class="space-y-6" @submit.prevent="authStore.handleVerify">
 
                             <!-- OTP INPUT -->
 
