@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { getAllCourseData, getCourseForLandingPreview } from "@/service/course_data_service";
+import * as courseDataService from "@/service/course_data_service";
 
 export const useCourseStores = defineStore('courses', () => {
     const courses = ref([])
@@ -12,7 +12,7 @@ export const useCourseStores = defineStore('courses', () => {
         error.value = null
 
         try {
-            courses.value = await getAllCourseData()
+            courses.value = await courseDataService.getAllCourseData()
         } catch (err) {
             error.value = err.message ?? "Failed to load data."
         } finally {
@@ -25,7 +25,7 @@ export const useCourseStores = defineStore('courses', () => {
         error.value = null
 
         try {
-            courses.value = await getCourseForLandingPreview()
+            courses.value = await courseDataService.getCourseForLandingPreview()
         } catch (err) {
             error.value = err.message ?? "Failed to load data."
         } finally {

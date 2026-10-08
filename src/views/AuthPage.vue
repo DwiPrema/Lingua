@@ -1,6 +1,7 @@
 <script setup>
 import LoadingDotsScale from '@/components/LoadingDotsScale.vue';
-import { useAuthStore } from '@/stores/auth.stores';
+import { useAuthStore } from '@/stores/auth_stores';
+import { ref } from 'vue';
 
 
 const authStore = useAuthStore()
@@ -132,7 +133,6 @@ const authStore = useAuthStore()
                     <!-- ========================= -->
 
                     <template v-if="authStore.authMode === 'auth-login'">
-
                         <div class="mb-8">
                             <h2 class="text-3xl font-bold text-dark-background">
                                 Welcome back
@@ -143,36 +143,90 @@ const authStore = useAuthStore()
                             </p>
                         </div>
 
+                        <!-- Login method selector -->
+                        <div class="mb-6 grid grid-cols-2 gap-2 rounded-xl bg-gray-100 p-1">
+                            <button type="button" @click="authStore.loginMethod = 'password'" :class="authStore.loginMethod === 'password'
+                                ? 'bg-white text-dark-background shadow-sm'
+                                : 'text-gray-500 hover:text-dark-background'"
+                                class="rounded-lg px-3 py-2.5 text-sm font-semibold transition">
+                                Password
+                            </button>
 
-                        <form class="space-y-5" @submit.prevent>
+                            <button type="button" @click="authStore.loginMethod = 'otp'" :class="authStore.loginMethod === 'otp'
+                                ? 'bg-white text-dark-background shadow-sm'
+                                : 'text-gray-500 hover:text-dark-background'"
+                                class="rounded-lg px-3 py-2.5 text-sm font-semibold transition">
+                                Email OTP
+                            </button>
+                        </div>
 
+                        <!-- Error message -->
+                        <div v-if="authStore.error" ref="signupErrorRef"
+                            class="mb-5 rounded-xl border border-alert/50 bg-alert/10 p-3">
+                            <p class="text-sm text-alert">
+                                {{ authStore.error }}
+                            </p>
+                        </div>
+
+                        <form v-if="authStore.loginMethod === 'password'" class="space-y-5"
+                            @submit.prevent="authStore.handlePasswordSignIn">
                             <div>
                                 <label for="login-email" class="mb-2 block text-sm font-medium text-gray-700">
                                     Email address
                                 </label>
 
-                                <input id="login-email" v-model="authStore.email" type="email"
-                                    placeholder="you@example.com"
+                                <input id="login-email" v-model.trim="authStore.email" type="email" autocomplete="email"
+                                    required placeholder="you@example.com"
                                     class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
                             </div>
 
-                            <button type="submit"
-                                class="w-full rounded-xl bg-dark-background px-4 py-3.5 font-medium text-white transition hover:bg-gray-800 active:scale-[0.99]">
-                                Continue with email
-                            </button>
+                            <div>
+                                <label for="login-password" class="mb-2 block text-sm font-medium text-gray-700">
+                                    Password
+                                </label>
 
+                                <input id="login-password" v-model="authStore.password" type="password"
+                                    autocomplete="current-password" required placeholder="Enter your password"
+                                    class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
+                            </div>
+
+                            <button type="submit" :disabled="authStore.loading"
+                                class="flex w-full items-center justify-center rounded-xl bg-dark-background px-4 py-3.5 font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60">
+                                {{ authStore.loading ? 'Signing in...' : 'Sign in with password' }}
+                            </button>
+                        </form>
+
+                        <form v-else class="space-y-5" @submit.prevent="authStore.handleOtpSignIn">
+                            <div>
+                                <label for="otp-login-email" class="mb-2 block text-sm font-medium text-gray-700">
+                                    Email address
+                                </label>
+
+                                <input id="otp-login-email" v-model.trim="authStore.email" type="email"
+                                    autocomplete="email" required placeholder="you@example.com"
+                                    class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
+                            </div>
+
+                            <p class="text-sm leading-relaxed text-gray-500">
+                                We'll send a one-time verification code to your email.
+                            </p>
+
+                            <button type="submit" :disabled="authStore.loading"
+                                class="flex w-full items-center justify-center rounded-xl bg-dark-background px-4 py-3.5 font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60">
+                                {{ authStore.loading ? 'Sending code...' : 'Send login code' }}
+                            </button>
                         </form>
 
                         <p class="mt-8 text-center text-sm text-gray-500">
                             Don't have an account?
 
                             <button type="button" class="ml-1 font-semibold text-dark-background hover:underline"
-                                @click="authStore.router.push('signup')">
+                                @click="authStore.router.push({ name: 'auth-signup' })">
                                 Sign up
                             </button>
                         </p>
-
                     </template>
+
 
 
                     <!-- ========================= -->
@@ -282,6 +336,22 @@ const authStore = useAuthStore()
 
                                 <p v-if="authStore.errors.email" class="mt-1 text-sm text-alert">
                                     {{ authStore.errors.email }}
+                                </p>
+
+                            </div>
+
+                            <div>
+
+                                <label for="password" class="mb-2 block text-sm font-medium text-gray-700">
+                                    Password
+                                </label>
+
+                                <input id="password" v-model="authStore.password" type="password"
+                                    placeholder="Enter your password!"
+                                    class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
+
+                                <p v-if="authStore.errors.password" class="mt-1 text-sm text-alert">
+                                    {{ authStore.errors.password }}
                                 </p>
 
                             </div>

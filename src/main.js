@@ -1,19 +1,28 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import './assets/main.css'
-import router from './router/router.js'
-import { createPinia } from 'pinia'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
 
-import { useAuthStore } from '@/stores/auth.stores.js'
+import App from "./App.vue";
+import router from "./router/router.js";
 
-const app = createApp(App)
-const pinia = createPinia()
+import "./assets/main.css"
 
-app.use(pinia)
-app.use(router)
+import { useAuthStore } from "@/stores/auth_stores.js";
 
-const authStore = useAuthStore()
+const app = createApp(App);
+const pinia = createPinia();
 
-await authStore.initializeAuth()
+app.use(pinia);
+app.use(router);
 
-app.mount('#app')
+const authStore = useAuthStore(pinia);
+
+// Ambil session awal terlebih dahulu
+await authStore.initializeAuth();
+
+// Setelah itu dengarkan perubahan auth
+const subscription =
+    authStore.listenToAuthChanges();
+
+await router.isReady();
+
+app.mount("#app");
