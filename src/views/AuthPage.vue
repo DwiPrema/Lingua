@@ -1,10 +1,23 @@
 <script setup>
 import LoadingDotsScale from '@/components/LoadingDotsScale.vue';
 import { useAuthStore } from '@/stores/auth_stores';
-import { ref } from 'vue';
-
+import { nextTick, ref } from 'vue';
 
 const authStore = useAuthStore()
+const signupErrorRef = ref(null)
+
+async function handleSignUp() {
+    await authStore.handleSignUp();
+
+    if (authStore.error) {
+        await nextTick();
+
+        signupErrorRef.value?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+        });
+    }
+}
 
 </script>
 
@@ -161,7 +174,7 @@ const authStore = useAuthStore()
                         </div>
 
                         <!-- Error message -->
-                        <div v-if="authStore.error" ref="signupErrorRef"
+                        <div v-if="authStore.error"
                             class="mb-5 rounded-xl border border-alert/50 bg-alert/10 p-3">
                             <p class="text-sm text-alert">
                                 {{ authStore.error }}
@@ -245,13 +258,13 @@ const authStore = useAuthStore()
                             </p>
                         </div>
 
-                        <div v-if="authStore.error" class="mb-6 rounded-xl border border-alert/50 bg-alert/20 p-4">
+                        <div v-if="authStore.error" ref="signupErrorRef" class="mb-6 rounded-xl border border-alert/50 bg-alert/20 p-4">
                             <p class="text-sm text-alert">
                                 {{ authStore.error }}
                             </p>
                         </div>
 
-                        <form class="space-y-6" @submit.prevent="authStore.handleSignUp">
+                        <form class="space-y-6" @submit.prevent="handleSignUp">
 
                             <div>
                                 <label class="mb-3 block text-sm font-medium text-gray-700">
