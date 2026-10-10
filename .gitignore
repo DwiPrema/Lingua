@@ -45,3 +45,6 @@ __screenshots__/
 /supabase/schema.sql
 /supabase/schema-cloud.sql
 /supabase/auth-schema.sql
+
+# Local Supabase SQL snippets
+supabase/snippets/
