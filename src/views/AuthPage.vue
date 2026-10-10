@@ -1,6 +1,7 @@
 <script setup>
 import LoadingDotsScale from '@/components/LoadingDotsScale.vue';
 import { useAuthStore } from '@/stores/auth_stores';
+import { ArrowLeft } from '@lucide/vue';
 import { nextTick, ref } from 'vue';
 
 const authStore = useAuthStore()
@@ -59,6 +60,14 @@ async function handleSignUp() {
             <section class="flex w-full flex-col justify-center px-6 py-10 sm:px-12 lg:w-1/2 lg:px-16">
 
                 <div class="mx-auto w-full max-w-md">
+
+
+                    <button type="button" @click="authStore.router.push('/')"
+                        class="mb-6 inline-flex items-center gap-2 rounded-lg text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-dark-background">
+                        <ArrowLeft size="24"/>
+                        Back
+                    </button>
+
 
                     <div class="mb-10 lg:hidden">
                         <h1 class='text-accent text-3xl font-black cursor-pointer'>
@@ -174,8 +183,7 @@ async function handleSignUp() {
                         </div>
 
                         <!-- Error message -->
-                        <div v-if="authStore.error"
-                            class="mb-5 rounded-xl border border-alert/50 bg-alert/10 p-3">
+                        <div v-if="authStore.error" class="mb-5 rounded-xl border border-alert/50 bg-alert/10 p-3">
                             <p class="text-sm text-alert">
                                 {{ authStore.error }}
                             </p>
@@ -258,7 +266,8 @@ async function handleSignUp() {
                             </p>
                         </div>
 
-                        <div v-if="authStore.error" ref="signupErrorRef" class="mb-6 rounded-xl border border-alert/50 bg-alert/20 p-4">
+                        <div v-if="authStore.error" ref="signupErrorRef"
+                            class="mb-6 rounded-xl border border-alert/50 bg-alert/20 p-4">
                             <p class="text-sm text-alert">
                                 {{ authStore.error }}
                             </p>
