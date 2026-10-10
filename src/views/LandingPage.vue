@@ -2,6 +2,7 @@
 import CoursesData from '@/components/CoursesData.vue';
 import Header from '@/components/Header.vue';
 import { BookOpenCheck, PackagePlus } from '@lucide/vue';
+import { useRouter } from 'vue-router';
 
 const aboutData = [
     {
@@ -24,6 +25,8 @@ const aboutData2 = [
         descriptions: ["Create your courses", "Reach Learners", "Share your knowledge"],
     }
 ]
+
+const router = useRouter()
 
 </script>
 
@@ -63,7 +66,7 @@ const aboutData2 = [
                                 <p class="text-light-text">Explore Course</p>
                             </div>
                         </a>
-                        <button
+                        <button @click="router.push('/dashboard')"
                             class="border border-primary rounded-full sm:w-max m-auto lg:m-0 relative w-full sm:min-w-50 p-4 hover:scale-103 transition-all ease-in-out duration-300">
                             <div class="flex flex-row gap-4 justify-center items-center relative">
                                 <p class="text-primary">Become Creator</p>
