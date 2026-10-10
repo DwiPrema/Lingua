@@ -335,7 +335,7 @@ export const useAuthStore = defineStore("auth", () => {
             password.value = "";
 
             await router.push({
-                name: "dashboard",
+                name: "organization-setup",
             });
 
         } catch (err) {
@@ -520,7 +520,7 @@ export const useAuthStore = defineStore("auth", () => {
 
             password.value = ''
 
-            await router.push({ name: 'dashboard' })
+            await router.push({ name: 'organization-setup' })
         } catch (err) {
             error.value = err.message || 'Unable to sign in.'
         } finally {

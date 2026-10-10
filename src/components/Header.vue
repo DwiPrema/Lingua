@@ -1,8 +1,23 @@
 <script setup>
+import { useAuthStore } from '@/stores/auth_stores';
 import { useHeaderStore } from '@/stores/header';
+import { useUserDataStores } from '@/stores/user_data_stores';
 import { Menu, X } from '@lucide/vue';
+import { storeToRefs } from 'pinia';
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 const store = useHeaderStore()
+const userDataStore = useUserDataStores();
+const authStore = useAuthStore();
+
+const router = useRouter()
+
+const { userData } = storeToRefs(userDataStore)
+
+onMounted(async () => {
+    await userDataStore.getUserData();
+});
 </script>
 
 <template>
@@ -21,7 +36,13 @@ const store = useHeaderStore()
                                 menu.name }}</button></li>
                 </ul>
 
-                <div class="flex flex-row items-center gap-2">
+                <div class="flex flex-row items-center gap-2"
+                    v-if="userData && userData.role == 'instructor' && authStore.currentUser != null">
+                    <a href="/dashboard"
+                        class="text-light-text text-nowrap text-center bg-primary p-2 min-w-25 rounded-lg cursor-pointer hover:bg-success duration-300 transition-all ease-in-out">Dashboard</a>
+                </div>
+
+                <div class="flex flex-row items-center gap-2" v-else>
                     <a href="auth/login"
                         class="text-light-text text-nowrap text-center bg-primary p-2 min-w-25 rounded-lg cursor-pointer hover:bg-success duration-300 transition-all ease-in-out">Login</a>
 
@@ -53,12 +74,12 @@ const store = useHeaderStore()
                     </li>
 
                     <li>
-                        <button
+                        <button @click="router.push('/auth/login')"
                             class="text-light-text text-nowrap bg-primary p-2 w-full rounded-lg cursor-pointer hover:bg-success duration-300 transition-all ease-in-out">Login</button>
                     </li>
 
                     <li>
-                        <button
+                        <button @click="router.push('/auth/signup')"
                             class="text-light-text text-nowrap bg-primary p-2 w-full rounded-lg cursor-pointer hover:bg-success duration-300 transition-all ease-in-out">Sign
                             Up</button>
                     </li>
