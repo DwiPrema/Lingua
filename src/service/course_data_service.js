@@ -21,6 +21,27 @@ export async function getCourseForLandingPreview() {
     return data
 }
 
+// GET MY COURSES
+export async function fetchMyCourses() {
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError) throw authError;
+  if (!user) throw new Error("User belum login");
+
+  const { data, error } = await supabase
+    .from("courses")
+    .select("*")
+    .eq("owner_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  return data ?? [];
+}
+
 // ADD COURSE
 export async function addCourse({
     name,
