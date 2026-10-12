@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/stores/auth_stores";
 import { useOrganizationStore } from "@/stores/organization_stores";
+import { useUserDataStores } from "@/stores/user_data_stores";
 
 import AuthPage from "@/views/AuthPage.vue";
 import LandingPage from "@/views/LandingPage.vue";
@@ -10,8 +11,9 @@ import {
     createRouter,
     createWebHistory,
 } from "vue-router";
-import { useUserDataStores } from "@/stores/user_data_stores";
-import { onMounted } from "vue";
+import AdminDashboardOverview from "@/components/AdminDashboardOverview.vue";
+import OrganizationSetting from "@/components/OrganizationSetting.vue";
+
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,13 +56,24 @@ const router = createRouter({
         // Protected routes
         {
             path: "/dashboard",
-            name: "dashboard",
             component: AdminDashboardPage,
             meta: {
                 requiresAuth: true,
                 requiresInstructor: true,
                 requiresOrganization: true,
             },
+            children: [
+                {
+                    path: "",
+                    name: "dashboard",
+                    component: AdminDashboardOverview,
+                },
+                {
+                    path: "organization-settings",
+                    name: "organization-settings",
+                    component: OrganizationSetting,
+                },
+            ],
         },
         {
             path: "/organization/setup",
