@@ -105,6 +105,7 @@ const router = createRouter({
             },
         },
     ],
+
 });
 
 router.beforeEach(async (to) => {

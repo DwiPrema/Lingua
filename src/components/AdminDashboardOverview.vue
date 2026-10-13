@@ -1,9 +1,15 @@
 <script setup>
-import { computed, onMounted } from "vue";
+import {
+    computed,
+    nextTick,
+    onMounted,
+    ref,
+    watch,
+} from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
 
-import { useCourseStores } from "@/stores/course_stores";
-import { useOrganizationStore } from "@/stores/organization_stores";
+import { useCourseStores } from "@/stores/course_stores.js";
+import { useOrganizationStore } from "@/stores/organization_stores.js";
 import AdminDashboardCourseSection from "./AdminDashboardCourseSection.vue";
 
 const router = useRouter();
@@ -13,9 +19,27 @@ const courseStore = useCourseStores();
 const organizationStore = useOrganizationStore();
 
 const loading = computed(() => courseStore.loading);
+const organization = computed(() => organizationStore.organization);
 
-const organization = computed(
-    () => organizationStore.organization
+const routeContent = ref(null);
+
+watch(
+    () => route.name,
+    async (routeName) => {
+        const shouldScroll = [
+            "course-create",
+        ].includes(routeName);
+
+        if (!shouldScroll) return;
+
+        await nextTick();
+
+        routeContent.value?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
+    },
+    { flush: "post" },
 );
 
 onMounted(async () => {
@@ -32,21 +56,11 @@ onMounted(async () => {
 function goToOrganizationSettings() {
     router.push({ name: "organization-settings" });
 }
-
-async function refreshDashboard() {
-  try {
-    await Promise.all([
-      courseStore.fetchMyCourses(),
-      organizationStore.fetchMyOrganization(),
-    ]);
-  } catch (err) {
-    console.error("Failed to update dashboard:", err);
-  }
-}
 </script>
 
 <template>
     <div class="mx-auto max-w-7xl space-y-8 py-8">
+        <!-- Dashboard header dan organization card -->
         <!-- HEADER -->
         <header class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
@@ -64,9 +78,9 @@ async function refreshDashboard() {
             </div>
 
             <button type="button" class="rounded-xl border border-slate-500 bg-white px-4 py-2.5
-                 text-sm font-semibold text-dark-background/80
-                 hover:bg-slate-100 disabled:opacity-50 duration-300 transition-all ease-in-out" :disabled="loading"
-                @click="refreshDashboard">
+               text-sm font-semibold text-dark-background/80
+               transition duration-300 hover:bg-slate-100
+               disabled:opacity-50" :disabled="loading" @click="refreshDashboard">
                 {{ loading ? "Loading..." : "Refresh data" }}
             </button>
         </header>
@@ -84,20 +98,22 @@ async function refreshDashboard() {
                     </h2>
 
                     <p class="mt-2 max-w-xl text-sm leading-6 text-slate-500">
-                        Manage organization or course information and oversee courses in your organization.
+                        Manage organization or course information and oversee courses
+                        in your organization.
                     </p>
                 </div>
 
                 <button type="button" class="shrink-0 rounded-xl bg-indigo-600 px-5 py-3
-                   text-sm font-semibold text-white
-                   hover:bg-indigo-700" @click="goToOrganizationSettings">
+                 text-sm font-semibold text-white hover:bg-indigo-700" @click="goToOrganizationSettings">
                     Organization Setting
                 </button>
             </div>
         </section>
 
-        <AdminDashboardCourseSection v-if="route.name === 'dashboard'"/>
+        <AdminDashboardCourseSection v-if="route.name === 'dashboard'" />
 
-        <RouterView />
+        <div ref="routeContent" class="scroll-mt-2">
+            <RouterView />
+        </div>
     </div>
 </template>

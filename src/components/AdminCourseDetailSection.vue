@@ -10,7 +10,6 @@ import {
     GraduationCap,
     Plus,
     Pencil,
-    Trash2,
     Building2,
     ClipboardList,
     ChevronRight,

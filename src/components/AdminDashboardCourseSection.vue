@@ -9,7 +9,6 @@ const router = useRouter();
 
 const courseStore = useCourseStores();
 
-
 const courses = computed(() => courseStore.courses);
 const error = computed(() => courseStore.error);
 const loading = computed(() => courseStore.loading);
@@ -43,6 +42,17 @@ async function handleDeleteCourse(course) {
         await courseStore.deleteCourse(course.id);
     } catch (err) {
         console.error("Failed to delete this course:", err);
+    }
+}
+
+async function refreshDashboard() {
+    try {
+        await Promise.all([
+            courseStore.fetchMyCourses(),
+            organizationStore.fetchMyOrganization(),
+        ]);
+    } catch (err) {
+        console.error("Failed to update dashboard:", err);
     }
 }
 </script>
@@ -135,7 +145,7 @@ async function handleDeleteCourse(course) {
                     </p>
 
                     <p class="mt-4 text-xs text-slate-500 flex flex-row items-center gap-1">
-                        <MapPin :size="16"/> <span>{{ course.address || "Address doesn't available" }}</span>
+                        <MapPin :size="16" /> <span>{{ course.address || "Address doesn't available" }}</span>
                     </p>
                 </div>
 
