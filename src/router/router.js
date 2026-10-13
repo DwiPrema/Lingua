@@ -13,7 +13,7 @@ import {
 } from "vue-router";
 import AdminDashboardOverview from "@/components/AdminDashboardOverview.vue";
 import OrganizationSetting from "@/components/OrganizationSetting.vue";
-import CreateCourseForm from "@/components/CreateCourseForm.vue";
+import CourseForm from "@/views/CourseForm.vue";
 
 
 const router = createRouter({
@@ -70,9 +70,15 @@ const router = createRouter({
                     component: AdminDashboardOverview,
                     children: [
                         {
-                            path: "course/create",
+                            path: "/courses/create",
                             name: "course-create",
-                            component: CreateCourseForm,
+                            component: CourseForm,
+                        },
+                        {
+                            path: "/courses/:courseId/edit",
+                            name: "course-edit",
+                            component: CourseForm,
+                            props: true,
                         },
                     ]
                 },
@@ -108,7 +114,7 @@ router.beforeEach(async (to) => {
     if (to.meta.requiresOtpFlow && !authStore.authIntent) {
         return { name: "auth-login" };
     }
-    
+
     if (to.meta.requiresAuth && !isAuthenticated) {
         return {
             name: "auth-login",
@@ -139,7 +145,7 @@ router.beforeEach(async (to) => {
                 return true;
             }
 
-            
+
             if (
                 role === "student" &&
                 to.meta.requiresInstructor
@@ -147,7 +153,7 @@ router.beforeEach(async (to) => {
                 return { name: "landingPage" };
             }
 
-            
+
             if (
                 to.meta.requiresInstructor &&
                 role !== "instructor"
@@ -155,7 +161,7 @@ router.beforeEach(async (to) => {
                 return { name: "landingPage" };
             }
 
-            
+
             if (
                 role === "instructor" &&
                 (
@@ -172,7 +178,7 @@ router.beforeEach(async (to) => {
                 const hasOrganization =
                     organizationStore.hasOrganization;
 
-                
+
                 if (
                     to.meta.requiresOrganization &&
                     !hasOrganization
@@ -180,7 +186,7 @@ router.beforeEach(async (to) => {
                     return { name: "organization-setup" };
                 }
 
-                
+
                 if (
                     to.name === "organization-setup" &&
                     hasOrganization

@@ -18,16 +18,16 @@ function goToCreateCourse() {
     router.push({ name: "course-create" });
 }
 
-function goToCourseDetail(courseId) {
+function goToEditCourse(courseId) {
     router.push({
-        name: "course-detail",
+        name: "course-edit",
         params: { courseId },
     });
 }
 
-function goToEditCourse(courseId) {
+function goToCourseDetail(courseId) {
     router.push({
-        name: "course-edit",
+        name: "course-detail",
         params: { courseId },
     });
 }
