@@ -13,6 +13,7 @@ import {
 } from "vue-router";
 import AdminDashboardOverview from "@/components/AdminDashboardOverview.vue";
 import OrganizationSetting from "@/components/OrganizationSetting.vue";
+import CreateCourseForm from "@/components/CreateCourseForm.vue";
 
 
 const router = createRouter({
@@ -67,6 +68,13 @@ const router = createRouter({
                     path: "",
                     name: "dashboard",
                     component: AdminDashboardOverview,
+                    children: [
+                        {
+                            path: "course/create",
+                            name: "course-create",
+                            component: CreateCourseForm,
+                        },
+                    ]
                 },
                 {
                     path: "organization-settings",
@@ -91,19 +99,16 @@ router.beforeEach(async (to) => {
     const authStore = useAuthStore();
     const userDataStore = useUserDataStores();
 
-    // 1. Inisialisasi autentikasi
     if (!authStore.isInitialized) {
         await authStore.initializeAuth();
     }
 
     const isAuthenticated = Boolean(authStore.session);
 
-    // 2. Periksa alur OTP
     if (to.meta.requiresOtpFlow && !authStore.authIntent) {
         return { name: "auth-login" };
     }
-
-    // 3. Lindungi route yang membutuhkan login
+    
     if (to.meta.requiresAuth && !isAuthenticated) {
         return {
             name: "auth-login",
@@ -111,12 +116,10 @@ router.beforeEach(async (to) => {
         };
     }
 
-    // 4. Pengguna yang sudah login tidak perlu masuk login/signup
     if (to.meta.requiresGuest && isAuthenticated) {
         return { name: "landingPage" };
     }
 
-    // 5. Ambil profil user sebelum memeriksa role
     if (isAuthenticated) {
         try {
             if (!userDataStore.userData) {
@@ -136,7 +139,7 @@ router.beforeEach(async (to) => {
                 return true;
             }
 
-            // Student tidak boleh mengakses route instructor
+            
             if (
                 role === "student" &&
                 to.meta.requiresInstructor
@@ -144,7 +147,7 @@ router.beforeEach(async (to) => {
                 return { name: "landingPage" };
             }
 
-            // Route khusus instructor
+            
             if (
                 to.meta.requiresInstructor &&
                 role !== "instructor"
@@ -152,7 +155,7 @@ router.beforeEach(async (to) => {
                 return { name: "landingPage" };
             }
 
-            // Periksa organization
+            
             if (
                 role === "instructor" &&
                 (
@@ -169,7 +172,7 @@ router.beforeEach(async (to) => {
                 const hasOrganization =
                     organizationStore.hasOrganization;
 
-                // Belum punya organization
+                
                 if (
                     to.meta.requiresOrganization &&
                     !hasOrganization
@@ -177,7 +180,7 @@ router.beforeEach(async (to) => {
                     return { name: "organization-setup" };
                 }
 
-                // Sudah punya organization
+                
                 if (
                     to.name === "organization-setup" &&
                     hasOrganization
@@ -188,8 +191,6 @@ router.beforeEach(async (to) => {
         } catch (error) {
             console.error("Route guard error:", error);
 
-            // Jangan lanjutkan ke halaman protected jika
-            // pemeriksaan profil atau organization gagal.
             if (to.meta.requiresAuth) {
                 return { name: "landingPage" };
             }
