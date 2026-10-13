@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 
 import { useCourseStores } from "@/stores/course_stores";
-import { MapPin } from "@lucide/vue";
+import { Edit, MapPin, Trash } from "@lucide/vue";
 
 const router = useRouter();
 
@@ -72,7 +72,7 @@ async function handleDeleteCourse(course) {
         <div v-if="loading && courses.length === 0"
             class="rounded-2xl border border-slate-200 bg-white p-12 text-center">
             <div class="mx-auto h-8 w-8 animate-spin rounded-full
-                   border-4 border-slate-200 border-t-indigo-600"></div>
+                   border-4 border-slate-200 border-t-accent"></div>
 
             <p class="mt-4 text-sm text-slate-500">
                 Loading Course Data...
@@ -82,7 +82,7 @@ async function handleDeleteCourse(course) {
         <!-- ERROR -->
         <div v-else-if="error && courses.length === 0"
             class="rounded-2xl border border-red-200 bg-white p-8 text-center">
-            <h3 class="font-semibold text-red-700">
+            <h3 class="font-semibold text-alert">
                 Failed to load courses
             </h3>
 
@@ -92,7 +92,7 @@ async function handleDeleteCourse(course) {
 
             <button type="button" class="mt-5 rounded-xl bg-red-600 px-4 py-2.5
                    text-sm font-semibold text-white
-                   hover:bg-red-700" @click="refreshDashboard">
+                   hover:bg-alert" @click="refreshDashboard">
                 Try Again
             </button>
         </div>
@@ -134,29 +134,31 @@ async function handleDeleteCourse(course) {
                         {{ course.description || "No description yet." }}
                     </p>
 
-                    <p class="mt-4 text-xs text-slate-500 flex flex-row items-center gap-2">
-                        <MapPin /> <span>{{ course.address || "Address doesn't available" }}</span>
+                    <p class="mt-4 text-xs text-slate-500 flex flex-row items-center gap-1">
+                        <MapPin :size="16"/> <span>{{ course.address || "Address doesn't available" }}</span>
                     </p>
                 </div>
 
-                <div class="mt-6 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+                <div class="mt-6 flex flex-wrap gap-2 border-t border-slate-100 pt-4 justify-between items-center">
                     <button type="button" class="rounded-lg bg-indigo-50 px-3 py-2
                        text-sm font-semibold text-indigo-700
                        hover:bg-indigo-100" @click="goToCourseDetail(course.id)">
                         Detail
                     </button>
 
-                    <button type="button" class="rounded-lg bg-slate-100 px-3 py-2
-                       text-sm font-semibold text-slate-700
-                       hover:bg-slate-200" @click="goToEditCourse(course.id)">
-                        Edit
-                    </button>
+                    <div class="flex flex-row gap-2 items-center">
+                        <button type="button" class="rounded-lg bg-dark-background/10 px-3 py-2
+                       text-sm font-semibold text-dark-background
+                       hover:bg-dark-background/20" @click="goToEditCourse(course.id)">
+                            <Edit :size="16" />
+                        </button>
 
-                    <button type="button" class="rounded-lg bg-red-50 px-3 py-2
-                       text-sm font-semibold text-red-700
-                       hover:bg-red-100" @click="handleDeleteCourse(course)">
-                        Hapus
-                    </button>
+                        <button type="button" class="rounded-lg bg-alert/10 px-3 py-2
+                       text-sm font-semibold text-alert
+                       hover:bg-alert/20 ease-in-out transition-all duration-300" @click="handleDeleteCourse(course)">
+                            <Trash :size="16" />
+                        </button>
+                    </div>
                 </div>
             </article>
         </div>
