@@ -14,6 +14,7 @@ import {
 import AdminDashboardOverview from "@/components/AdminDashboardOverview.vue";
 import OrganizationSetting from "@/components/OrganizationSetting.vue";
 import CourseForm from "@/views/CourseForm.vue";
+import AdminCourseDetailSection from "@/components/AdminCourseDetailSection.vue";
 
 
 const router = createRouter({
@@ -70,12 +71,12 @@ const router = createRouter({
                     component: AdminDashboardOverview,
                     children: [
                         {
-                            path: "/courses/create",
+                            path: "courses/create",
                             name: "course-create",
                             component: CourseForm,
                         },
                         {
-                            path: "/courses/:courseId/edit",
+                            path: "courses/:courseId/edit",
                             name: "course-edit",
                             component: CourseForm,
                             props: true,
@@ -86,6 +87,11 @@ const router = createRouter({
                     path: "organization-settings",
                     name: "organization-settings",
                     component: OrganizationSetting,
+                },
+                {
+                    path: "courses/:courseId",
+                    name: "course-detail",
+                    component: AdminCourseDetailSection,
                 },
             ],
         },

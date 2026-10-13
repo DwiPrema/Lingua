@@ -1,7 +1,6 @@
 <script setup>
 import {
   computed,
-  onMounted,
   reactive,
   ref,
   watch,
@@ -83,8 +82,6 @@ function populateForm(course) {
   form.address = course.address ?? "";
 }
 
-// Load the course when entering edit mode.
-// Also handles navigation between different course IDs.
 watch(
   courseId,
   async (id) => {
@@ -156,9 +153,8 @@ async function handleSubmit() {
       });
     }
 
-    await router.push({ name: "dashboard" });
+    router.back();
   } catch (err) {
-    // Store error is displayed below.
     console.error("Failed to save course:", err);
   }
 }
