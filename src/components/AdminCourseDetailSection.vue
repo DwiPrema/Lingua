@@ -14,13 +14,21 @@ import {
     ClipboardList,
     ChevronRight,
     RefreshCw,
+    Trash,
+    Edit,
 } from "@lucide/vue";
 
 import { useCourseStores } from "@/stores/course_stores";
+import { useCourseProgramStore } from "@/stores/course_program_stores";
 
 const route = useRoute();
 const router = useRouter();
 const courseStore = useCourseStores();
+const programStore = useCourseProgramStore();
+
+const programs = computed(() => programStore.coursePrograms);
+const error = computed(() => programStore.error);
+const loading = computed(() => programStore.loading);
 
 const course = ref(null);
 const isLoading = ref(false);
@@ -93,9 +101,86 @@ function showComingSoon(feature) {
     notice.value = `${feature} management is not connected yet.`;
 }
 
-onMounted(loadCourse);
+async function refreshProgram() {
+    if (!courseId.value) return;
 
-watch(courseId, loadCourse);
+    console.log("Route params:", route.params);
+    console.log("Course ID:", courseId.value);
+
+    try {
+        await programStore.getAllCourseProgram(courseId.value);
+    } catch (err) {
+        console.error("Failed to refresh programs:", err);
+    }
+}
+
+function openProgram(programId) {
+    router.push({
+        name: "course-program-detail",
+        params: {
+            courseId: courseId.value,
+            programId,
+        },
+    });
+}
+
+function editProgram(programId) {
+    router.push({
+        name: "course-program-edit",
+        params: {
+            courseId: courseId.value,
+            programId,
+        },
+    });
+}
+
+async function removeProgram(program) {
+    const confirmed = window.confirm(
+        `Are you sure you want to delete "${program.name}"?`,
+    );
+
+    if (!confirmed) return;
+
+    try {
+        await programStore.deleteCourseProgram(program.id);
+        notice.value = "Program deleted successfully.";
+    } catch (err) {
+        console.error("Failed to delete program:", err);
+        notice.value = err?.message ?? "Failed to delete program.";
+    }
+}
+
+onMounted(async () => {
+    await Promise.all([
+        loadCourse(),
+        refreshProgram(),
+    ]);
+});
+
+watch(courseId, async () => {
+    await Promise.all([
+        loadCourse(),
+        refreshProgram(),
+    ]);
+});
+
+function formatCurrency(value) {
+    if (value == null || value === "") {
+        return "Not set";
+    }
+
+    const amount = Number(value);
+
+    if (!Number.isFinite(amount)) {
+        return "Invalid amount";
+    }
+
+    return new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0,
+    }).format(amount);
+}
 </script>
 
 <template>
@@ -244,46 +329,229 @@ watch(courseId, loadCourse);
                     </div>
                 </section>
 
-                <!-- Programs -->
-                <section class="rounded-2xl border border-slate-200/80 bg-white p-5
-                 shadow-sm shadow-slate-900/2 sm:p-6">
-                    <div class="flex flex-wrap items-center justify-between gap-4">
-                        <div>
-                            <h2 class="text-xl font-bold text-slate-900">Programs</h2>
-                            <p class="mt-1 text-sm text-slate-500">
-                                Organize different learning programs for this course.
-                            </p>
+                <!-- Programs Section -->
+                <section class="overflow-hidden rounded-3xl border border-slate-200/80
+           bg-white shadow-sm">
+                    <!-- Section Header -->
+                    <div class="flex flex-col gap-4 border-b border-slate-100
+               px-5 py-6 sm:flex-row sm:items-center
+               sm:justify-between sm:px-7">
+                        <div class="flex items-start gap-4">
+                            <div class="flex h-12 w-12 shrink-0 items-center justify-center
+                       rounded-2xl bg-indigo-50 text-indigo-600">
+                                <Layers class="h-6 w-6" />
+                            </div>
+
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <h2 class="text-xl font-bold tracking-tight text-slate-900">
+                                        Course Programs
+                                    </h2>
+
+                                    <span class="rounded-full bg-slate-100 px-2.5 py-1
+                               text-xs font-semibold text-slate-600">
+                                        {{ programs.length }} programs
+                                    </span>
+                                </div>
+
+                                <p class="mt-1 text-sm leading-6 text-slate-500">
+                                    Organize and manage the learning programs offered
+                                    by this course.
+                                </p>
+                            </div>
                         </div>
 
-                        <button type="button" class="inline-flex items-center gap-2 rounded-xl bg-indigo-600
-                     px-4 py-2.5 text-sm font-semibold text-white
-                     transition hover:bg-indigo-700" @click="showComingSoon('Program')">
-                            <Plus class="h-4 w-4" />
-                            Add Program
+                        <div class="flex shrink-0 items-center gap-2">
+                            <button type="button" :disabled="loading" aria-label="Refresh programs" class="inline-flex h-11 items-center justify-center gap-2
+                       rounded-xl border border-slate-200 bg-white
+                       px-3 text-sm font-semibold text-slate-600
+                       transition hover:border-indigo-300
+                       hover:text-indigo-700 disabled:cursor-not-allowed
+                       disabled:opacity-50" @click="refreshProgram">
+                                <RefreshCw class="h-4 w-4" :class="{ 'animate-spin': loading }" />
+                                <span class="hidden sm:inline">Refresh</span>
+                            </button>
+
+                            <button type="button" class="inline-flex h-11 items-center justify-center gap-2
+                       rounded-xl bg-indigo-600 px-4 text-sm
+                       font-semibold text-white shadow-sm
+                       shadow-indigo-600/20 transition
+                       hover:bg-indigo-700 active:scale-[0.98]" @click="
+                        router.push({
+                            name: 'course-program-create',
+                            params: { courseId },
+                        })
+                        ">
+                                <Plus class="h-4 w-4" />
+                                Add Program
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Error Banner -->
+                    <div v-if="error" class="mx-5 mt-5 flex flex-col gap-3 rounded-2xl
+               border border-red-200 bg-red-50 p-4
+               sm:mx-7 sm:flex-row sm:items-center
+               sm:justify-between">
+                        <div class="flex items-start gap-3">
+                            <div class="flex h-9 w-9 shrink-0 items-center justify-center
+                       rounded-xl bg-white text-red-600">
+                                <RefreshCw class="h-4 w-4" />
+                            </div>
+
+                            <div>
+                                <p class="text-sm font-semibold text-red-800">
+                                    Unable to load or update programs
+                                </p>
+                                <p class="mt-1 text-sm text-red-700">
+                                    {{ error }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <button type="button" class="shrink-0 rounded-lg px-3 py-2 text-sm
+                   font-semibold text-red-700 transition
+                   hover:bg-red-100" @click="refreshProgram">
+                            Try again
                         </button>
                     </div>
 
-                    <div class="mt-6 rounded-2xl border border-dashed border-slate-300
-                      bg-slate-50/70 px-5 py-10 text-center">
-                        <div class="mx-auto flex h-12 w-12 items-center justify-center
-                     rounded-2xl bg-white text-slate-500 shadow-sm">
-                            <Layers class="h-6 w-6" />
+                    <!-- Loading Skeleton -->
+                    <div v-if="loading && programs.length === 0"
+                        class="grid gap-5 p-5 sm:grid-cols-2 sm:p-7 xl:grid-cols-3">
+                        <div v-for="item in 3" :key="item"
+                            class="animate-pulse rounded-2xl border border-slate-200 p-5">
+                            <div class="flex items-center gap-3">
+                                <div class="h-11 w-11 rounded-xl bg-slate-200"></div>
+                                <div class="flex-1 space-y-2">
+                                    <div class="h-4 w-2/3 rounded bg-slate-200"></div>
+                                    <div class="h-3 w-1/3 rounded bg-slate-100"></div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 space-y-3">
+                                <div class="h-3 w-full rounded bg-slate-100"></div>
+                                <div class="h-3 w-5/6 rounded bg-slate-100"></div>
+                                <div class="h-3 w-2/3 rounded bg-slate-100"></div>
+                            </div>
+
+                            <div class="mt-6 h-10 rounded-xl bg-slate-100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div v-else-if="programs.length === 0 && !error" class="px-5 py-16 text-center sm:px-7">
+                        <div class="mx-auto flex h-16 w-16 items-center justify-center
+                   rounded-3xl bg-indigo-50 text-indigo-600">
+                            <BookOpen class="h-8 w-8" />
                         </div>
 
-                        <h3 class="mt-4 font-bold text-slate-900">No programs displayed</h3>
+                        <h3 class="mt-5 text-lg font-bold text-slate-900">
+                            No programs yet
+                        </h3>
+
                         <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
-                            Programs such as Regular, Private, or Intensive will appear here
-                            once program data is connected.
+                            Create your first learning program to organize the
+                            courses you offer, such as Regular, Private, or Intensive.
                         </p>
 
-                        <button type="button" class="mt-5 inline-flex items-center gap-2 rounded-xl border
-                     border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold
-                     text-slate-700 hover:border-indigo-300 hover:text-indigo-700" @click="showComingSoon('Program')">
+                        <button type="button" class="mt-6 inline-flex items-center gap-2 rounded-xl
+                   bg-indigo-600 px-5 py-3 text-sm font-semibold
+                   text-white transition hover:bg-indigo-700" @click="
+                    router.push({
+                        name: 'course-program-create',
+                        params: { courseId },
+                    })
+                    ">
                             <Plus class="h-4 w-4" />
-                            Create your first program
+                            Create First Program
                         </button>
                     </div>
+
+                    <!-- Program Cards -->
+                    <div v-else class="grid gap-4 p-5 sm:grid-cols-2 sm:p-7 xl:grid-cols-3">
+                        <article v-for="program in programs" :key="program.id" class="flex min-w-0 flex-col rounded-2xl border
+               border-slate-200 bg-white p-5
+               transition hover:border-indigo-200
+               hover:shadow-md hover:shadow-slate-900/5">
+                            <!-- Program Header -->
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0">
+                                    <h3 class="wrap-break-word text-base font-semibold text-slate-900">
+                                        {{ program.name }}
+                                    </h3>
+
+                                    <p class="mt-2 line-clamp-3 wrap-break-word
+                           text-sm leading-6 text-slate-500">
+                                        {{
+                                            program.description ||
+                                            "No description available."
+                                        }}
+                                    </p>
+                                </div>
+
+                                <button type="button" :aria-label="`Edit ${program.name}`" title="Edit program" class="shrink-0 rounded-lg p-2 text-slate-400
+                       transition hover:bg-slate-100
+                       hover:text-indigo-600" @click="editProgram(program.id)">
+                                    <Edit class="h-4 w-4" />
+                                </button>
+                            </div>
+
+                            <!-- Program Fees -->
+                            <div class="mt-5 space-y-3 rounded-xl bg-slate-50 p-4">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="text-sm text-slate-500">
+                                        Monthly Fee
+                                    </span>
+
+                                    <span class="text-sm font-semibold text-slate-900">
+                                        {{ formatCurrency(program.monthly_fee) }}
+                                    </span>
+                                </div>
+
+                                <div class="h-px bg-slate-200"></div>
+
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="text-sm text-slate-500">
+                                        Registration Fee
+                                    </span>
+
+                                    <span class="text-sm font-semibold text-slate-900">
+                                        {{ formatCurrency(program.registration_fee) }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="mt-4 flex items-center gap-2">
+                                <button type="button" class="inline-flex flex-1 items-center
+                       justify-center gap-2 rounded-xl
+                       border border-slate-200 px-3 py-2.5
+                       text-sm font-medium text-slate-700
+                       transition hover:bg-slate-50" @click="openProgram(program.id)">
+                                    View Details
+                                    <ChevronRight class="h-4 w-4" />
+                                </button>
+
+                                <button type="button" :aria-label="`Delete ${program.name}`" title="Delete program"
+                                    class="inline-flex h-10 w-10 shrink-0
+                       items-center justify-center rounded-xl
+                       text-slate-400 transition
+                       hover:bg-red-50 hover:text-red-600" @click="removeProgram(program)">
+                                    <Trash class="h-4 w-4" />
+                                </button>
+                            </div>
+                        </article>
+                    </div>
+
+                    <!-- Loading Indicator for Refresh -->
+                    <div v-if="loading && programs.length > 0" class="border-t border-slate-100 px-5 py-3 text-center
+               text-xs font-medium text-slate-500">
+                        Refreshing programs...
+                    </div>
                 </section>
+
+                <RouterView />
 
                 <!-- Classes -->
                 <section class="rounded-2xl border border-slate-200/80 bg-white p-5

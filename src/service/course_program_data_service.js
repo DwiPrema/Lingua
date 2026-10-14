@@ -33,14 +33,14 @@ export const courseProgramService = {
     //UPDATE COURSE PROGRAM
     async updateCourseProgram({
         programId,
-        programName,
+        name,
         description,
         registrationFee,
         monthlyFee,
     }) {
         const { data, error } = await supabase.from(DatabaseTableName.programsCollection)
             .update({
-                name: programName,
+                name: name,
                 description: description,
                 registration_fee: registrationFee,
                 monthly_fee: monthlyFee,
@@ -57,7 +57,7 @@ export const courseProgramService = {
 
 
     //DELETE COURSE PROGRAM
-    async deleteCourseProgram({programId}) {
+    async deleteCourseProgram(programId) {
         const {error} = await supabase.from(DatabaseTableName.programsCollection).delete().eq('id', programId)
 
         if(error) {
@@ -67,7 +67,7 @@ export const courseProgramService = {
 
 
     //GET ALL COURSE PROGRAM
-    async getAllCourseProgram({courseId}){
+    async getAllCourseProgram(courseId){
         const {data, error} = await supabase.from(DatabaseTableName.programsCollection).select().eq('course_id', courseId);
 
         if(error) {

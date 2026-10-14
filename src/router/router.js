@@ -15,6 +15,7 @@ import AdminDashboardOverview from "@/components/AdminDashboardOverview.vue";
 import OrganizationSetting from "@/components/OrganizationSetting.vue";
 import CourseForm from "@/views/CourseForm.vue";
 import AdminCourseDetailSection from "@/components/AdminCourseDetailSection.vue";
+import CourseProgramForm from "@/views/CourseProgramForm.vue";
 
 
 const router = createRouter({
@@ -92,6 +93,16 @@ const router = createRouter({
                     path: "courses/:courseId",
                     name: "course-detail",
                     component: AdminCourseDetailSection,
+                },
+                {
+                    path: "/courses/:courseId/programs/create",
+                    name: "course-program-create",
+                    component: CourseProgramForm,
+                },
+                {
+                    path: "/courses/:courseId/programs/:programId/edit",
+                    name: "course-program-edit",
+                    component: CourseProgramForm,
                 },
             ],
         },
