@@ -114,16 +114,6 @@ async function refreshProgram() {
     }
 }
 
-function openProgram(programId) {
-    router.push({
-        name: "course-program-detail",
-        params: {
-            courseId: courseId.value,
-            programId,
-        },
-    });
-}
-
 function editProgram(programId) {
     router.push({
         name: "course-program-edit",
@@ -475,26 +465,18 @@ function formatCurrency(value) {
                transition hover:border-indigo-200
                hover:shadow-md hover:shadow-slate-900/5">
                             <!-- Program Header -->
-                            <div class="flex items-start justify-between gap-3">
-                                <div class="min-w-0">
-                                    <h3 class="wrap-break-word text-base font-semibold text-slate-900">
-                                        {{ program.name }}
-                                    </h3>
+                            <div class="min-w-0">
+                                <h3 class="wrap-break-word text-base font-semibold text-slate-900">
+                                    {{ program.name }}
+                                </h3>
 
-                                    <p class="mt-2 line-clamp-3 wrap-break-word
+                                <p class="mt-2 line-clamp-3 wrap-break-word
                            text-sm leading-6 text-slate-500">
-                                        {{
-                                            program.description ||
-                                            "No description available."
-                                        }}
-                                    </p>
-                                </div>
-
-                                <button type="button" :aria-label="`Edit ${program.name}`" title="Edit program" class="shrink-0 rounded-lg p-2 text-slate-400
-                       transition hover:bg-slate-100
-                       hover:text-indigo-600" @click="editProgram(program.id)">
-                                    <Edit class="h-4 w-4" />
-                                </button>
+                                    {{
+                                        program.description ||
+                                        "No description available."
+                                    }}
+                                </p>
                             </div>
 
                             <!-- Program Fees -->
@@ -523,16 +505,12 @@ function formatCurrency(value) {
                             </div>
 
                             <!-- Actions -->
-                            <div class="mt-4 flex items-center gap-2">
-                                <button type="button" class="inline-flex flex-1 items-center
-                       justify-center gap-2 rounded-xl
-                       border border-slate-200 px-3 py-2.5
-                       text-sm font-medium text-slate-700
-                       transition hover:bg-slate-50" @click="openProgram(program.id)">
-                                    View Details
-                                    <ChevronRight class="h-4 w-4" />
+                            <div class="mt-4 flex items-center gap-2 justify-end">
+                                <button type="button" :aria-label="`Edit ${program.name}`" title="Edit program" class="shrink-0 rounded-lg p-2 text-slate-400
+                       transition hover:bg-slate-100
+                       hover:text-indigo-600" @click="editProgram(program.id)">
+                                    <Edit class="h-4 w-4" />
                                 </button>
-
                                 <button type="button" :aria-label="`Delete ${program.name}`" title="Delete program"
                                     class="inline-flex h-10 w-10 shrink-0
                        items-center justify-center rounded-xl
