@@ -55,7 +55,7 @@ const overview = computed(() => [
     },
     {
         label: "Programs",
-        value: "—",
+        value: programs.value.length,
         description: "Available programs",
         icon: Layers,
     },
