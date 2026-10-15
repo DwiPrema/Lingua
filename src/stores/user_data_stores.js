@@ -37,11 +37,32 @@ export const useUserDataStores = defineStore('users', () => {
         }
     }
 
+    async function updateUserData(payload) {
+        loading.value = true,
+        error.value = null
+
+        const authStore = useAuthStore()
+
+        const currentUser = authStore.currentUser;
+
+        try {
+            const updatedData = await userDataService.updateDataUser(currentUser.id, payload)
+            userData.value = updatedData
+            return updatedData
+        } catch (err) {
+            error.value = err.message ?? "Failed to update profile data.";
+            throw err;
+        } finally {
+            loading.value = false;
+        }
+    }
+
     return {
         userData,
         loading,
         error,
 
-        getUserData
+        getUserData,
+        updateUserData,
     }
 })

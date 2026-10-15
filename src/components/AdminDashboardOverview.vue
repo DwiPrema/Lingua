@@ -56,6 +56,10 @@ onMounted(async () => {
 function goToOrganizationSettings() {
     router.push({ name: "organization-settings" });
 }
+
+function goToProfile() {
+    router.push({ name: "profile" });
+}
 </script>
 
 <template>
@@ -77,12 +81,29 @@ function goToOrganizationSettings() {
                 </p>
             </div>
 
-            <button type="button" class="rounded-xl border border-slate-500 bg-white px-4 py-2.5
+
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <button type="button" class="inline-flex items-center justify-center gap-2 rounded-xl
+               border border-slate-300 bg-white px-4 py-2.5
+               text-sm font-semibold text-dark-background/80
+               transition duration-300 hover:bg-slate-100" @click="goToProfile">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="4" />
+                        <path d="M5 21v-2a7 7 0 0 1 14 0v2" />
+                    </svg>
+
+                    My Profile
+                </button>
+
+                <button type="button" class="rounded-xl border border-slate-500 bg-white px-4 py-2.5
                text-sm font-semibold text-dark-background/80
                transition duration-300 hover:bg-slate-100
                disabled:opacity-50" :disabled="loading" @click="refreshDashboard">
-                {{ loading ? "Loading..." : "Refresh data" }}
-            </button>
+                    {{ loading ? "Loading..." : "Refresh data" }}
+                </button>
+            </div>
+
         </header>
 
         <!-- ORGANIZATION -->

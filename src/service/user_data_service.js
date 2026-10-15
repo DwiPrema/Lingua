@@ -18,3 +18,23 @@ export async function getDataUser(uid) {
 
     return data;
 }
+
+
+export async function updateDataUser(uid, payload) {
+    const { data, error } = await supabase
+        .from(DatabaseTableName.usersCollection)
+        .update({
+            fullname: payload.fullname,
+            nickname: payload.nickname,
+            phone: payload.phone,
+        })
+        .eq('id', uid)
+        .select()
+        .single()
+
+    if (error) {
+        throw error
+    }
+
+    return data
+}

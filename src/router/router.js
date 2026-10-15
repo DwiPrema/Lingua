@@ -16,6 +16,7 @@ import OrganizationSetting from "@/components/OrganizationSetting.vue";
 import CourseForm from "@/views/CourseForm.vue";
 import AdminCourseDetailSection from "@/components/AdminCourseDetailSection.vue";
 import CourseProgramForm from "@/views/CourseProgramForm.vue";
+import ProfilePage from "@/views/ProfilePage.vue";
 
 
 const router = createRouter({
@@ -82,6 +83,11 @@ const router = createRouter({
                             component: CourseForm,
                             props: true,
                         },
+                        {
+                            path: "profile",
+                            name: "profile",
+                            component: ProfilePage,
+                        }
                     ]
                 },
                 {
