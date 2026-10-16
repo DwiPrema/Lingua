@@ -231,7 +231,7 @@ async function confirmLogout() {
             <header class="mb-8 flex items-center justify-between gap-4">
                 <div>
                     <button type="button" class="mb-5 text-sm font-medium text-slate-500 hover:text-primary"
-                        @click="router.back()">
+                        @click="router.push('/')">
                         &larr; Back
                     </button>
                     <h1 class="mt-1 text-2xl font-bold text-gray-900 sm:text-3xl">

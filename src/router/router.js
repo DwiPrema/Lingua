@@ -1,3 +1,4 @@
+
 import { useAuthStore } from "@/stores/auth_stores";
 import { useOrganizationStore } from "@/stores/organization_stores";
 import { useUserDataStores } from "@/stores/user_data_stores";
@@ -6,18 +7,19 @@ import AuthPage from "@/views/AuthPage.vue";
 import LandingPage from "@/views/LandingPage.vue";
 import AdminDashboardPage from "@/views/AdminDashboardPage.vue";
 import OrganizationSetup from "@/views/OrganizationSetup.vue";
-
-import {
-    createRouter,
-    createWebHistory,
-} from "vue-router";
 import AdminDashboardOverview from "@/components/AdminDashboardOverview.vue";
 import OrganizationSetting from "@/components/OrganizationSetting.vue";
 import CourseForm from "@/views/CourseForm.vue";
 import AdminCourseDetailSection from "@/components/AdminCourseDetailSection.vue";
 import CourseProgramForm from "@/views/CourseProgramForm.vue";
 import ProfilePage from "@/views/ProfilePage.vue";
+import StudentDashboardPage from "@/views/StudentDashboardPage.vue";
 
+import {
+    createRouter,
+    createWebHistory,
+} from "vue-router";
+import StudentDashboardOverview from "@/components/StudentDashboardOverview.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,8 +30,6 @@ const router = createRouter({
             name: "landingPage",
             component: LandingPage,
         },
-
-        // Guest routes
         {
             path: "/auth/login",
             name: "auth-login",
@@ -46,8 +46,6 @@ const router = createRouter({
                 requiresGuest: true,
             },
         },
-
-        // OTP verification
         {
             path: "/auth/verify",
             name: "auth-verify",
@@ -56,8 +54,6 @@ const router = createRouter({
                 requiresOtpFlow: true,
             },
         },
-
-        // Protected routes
         {
             path: "/dashboard",
             component: AdminDashboardPage,
@@ -87,8 +83,8 @@ const router = createRouter({
                             path: "profile",
                             name: "profile",
                             component: ProfilePage,
-                        }
-                    ]
+                        },
+                    ],
                 },
                 {
                     path: "organization-settings",
@@ -121,8 +117,39 @@ const router = createRouter({
                 requiresInstructor: true,
             },
         },
+        {
+            path: "/student",
+            component: StudentDashboardPage,
+            meta: {
+                requiresAuth: true,
+                requiresStudent: true,
+            },
+            children: [
+                {
+                    path: "",
+                    name: "student.dashboard",
+                    component: StudentDashboardOverview,
+                },
+                {
+                    path: "profile",
+                    name: "profile",
+                    component: ProfilePage,
+                },
+                {
+                    path: "explore",
+                    name: "student.explore",
+                },
+                {
+                    path: "enrollments",
+                    name: "student.enrollments",
+                },
+                {
+                    path: "courses/:id",
+                    name: "student.course-detail",
+                },
+            ],
+        },
     ],
-
 });
 
 router.beforeEach(async (to) => {
@@ -146,10 +173,6 @@ router.beforeEach(async (to) => {
         };
     }
 
-    if (to.meta.requiresGuest && isAuthenticated) {
-        return { name: "landingPage" };
-    }
-
     if (isAuthenticated) {
         try {
             if (!userDataStore.userData) {
@@ -158,25 +181,39 @@ router.beforeEach(async (to) => {
 
             const role = userDataStore.userData?.role;
 
-            console.log("User profile:", userDataStore.userData);
-            console.log("Application role:", role);
-
             if (!role) {
-                if (to.meta.requiresInstructor) {
+                if (to.meta.requiresInstructor || to.meta.requiresStudent) {
                     return { name: "landingPage" };
                 }
 
                 return true;
             }
 
+            if (role === "student" && to.name === "landingPage") {
+                return { name: "student.dashboard" };
+            }
 
-            if (
-                role === "student" &&
-                to.meta.requiresInstructor
-            ) {
+            if (to.meta.requiresGuest) {
+                if (role === "student") {
+                    return { name: "student.dashboard" };
+                }
+
+                if (role === "instructor") {
+                    return { name: "dashboard" };
+                }
+            }
+
+            if (to.meta.requiresStudent && role !== "student") {
+                if (role === "instructor") {
+                    return { name: "dashboard" };
+                }
+
                 return { name: "landingPage" };
             }
 
+            if (role === "student" && to.meta.requiresInstructor) {
+                return { name: "student.dashboard" };
+            }
 
             if (
                 to.meta.requiresInstructor &&
@@ -184,7 +221,6 @@ router.beforeEach(async (to) => {
             ) {
                 return { name: "landingPage" };
             }
-
 
             if (
                 role === "instructor" &&
@@ -202,14 +238,12 @@ router.beforeEach(async (to) => {
                 const hasOrganization =
                     organizationStore.hasOrganization;
 
-
                 if (
                     to.meta.requiresOrganization &&
                     !hasOrganization
                 ) {
                     return { name: "organization-setup" };
                 }
-
 
                 if (
                     to.name === "organization-setup" &&
