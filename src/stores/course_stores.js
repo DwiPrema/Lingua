@@ -52,7 +52,7 @@ export const useCourseStores = defineStore("courses", () => {
         }
     }
 
-    async function fetchCourseById(courseId) {
+    async function fetchMyCourseById(courseId) {
         loading.value = true;
         error.value = null;
 
@@ -69,6 +69,22 @@ export const useCourseStores = defineStore("courses", () => {
                     "Course was not found or you do not have permission to edit it.",
                 );
             }
+
+            return course;
+        } catch (err) {
+            error.value = err.message ?? "Failed to load course.";
+            throw err;
+        } finally {
+            loading.value = false;
+        }
+    }
+
+    async function fetchCourseById(courseId) {
+        loading.value = true;
+        error.value = null;
+
+        try {
+            const course = await courseDataService.fetchCourseById(courseId);
 
             return course;
         } catch (err) {
@@ -148,6 +164,7 @@ export const useCourseStores = defineStore("courses", () => {
         fetchAllCourseData,
         fetchCourseDataForLandingPreview,
         fetchMyCourses,
+        fetchMyCourseById,
         fetchCourseById,
 
         addCourse,

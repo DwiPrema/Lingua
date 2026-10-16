@@ -91,7 +91,7 @@ watch(
 
     try {
       if (id) {
-        const course = await courseStore.fetchCourseById(id);
+        const course = await courseStore.fetchMyCourseById(id);
         populateForm(course);
       } else if (!organization.value) {
         await organizationStore.fetchMyOrganization();

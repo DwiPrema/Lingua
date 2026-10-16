@@ -42,6 +42,22 @@ export async function fetchMyCourses() {
   return data ?? [];
 }
 
+export async function fetchCourseById(courseId) {
+    const { data, error } = await supabase
+        .from("courses")
+        .select("*")
+        .eq("id", courseId)
+        .maybeSingle();
+
+    if (error) throw error;
+
+    if (!data) {
+        throw new Error("Course not found.");
+    }
+
+    return data;
+}
+
 // ADD COURSE
 export async function addCourse({
     name,

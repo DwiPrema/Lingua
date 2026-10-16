@@ -129,7 +129,7 @@ watch(
                 throw new Error("Course ID is missing.");
             }
 
-            course.value = await courseStore.fetchCourseById(
+            course.value = await courseStore.fetchMyCourseById(
                 currentCourseId,
             );
 

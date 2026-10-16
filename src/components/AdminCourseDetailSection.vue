@@ -78,7 +78,7 @@ async function loadCourse() {
     notice.value = "";
 
     try {
-        course.value = await courseStore.fetchCourseById(courseId.value);
+        course.value = await courseStore.fetchMyCourseById(courseId.value);
     } catch (error) {
         pageError.value = error?.message ?? "Failed to load course details.";
     } finally {
