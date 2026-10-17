@@ -21,6 +21,7 @@ import {
 } from "vue-router";
 import StudentDashboardOverview from "@/components/StudentDashboardOverview.vue";
 import StudentCourseDetailSection from "@/components/StudentCourseDetailSection.vue";
+import StudentExploreCourse from "@/components/StudentExploreCourse.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -139,6 +140,7 @@ const router = createRouter({
                 {
                     path: "explore",
                     name: "student.explore",
+                    component: StudentExploreCourse,
                 },
                 {
                     path: "enrollments",
@@ -147,7 +149,7 @@ const router = createRouter({
                 {
                     path: "courses/:id",
                     name: "student.course-detail",
-                    component: StudentCourseDetailSection
+                    component: StudentCourseDetailSection,
                 },
             ],
         },
