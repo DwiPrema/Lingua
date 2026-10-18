@@ -123,6 +123,27 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
+    async function fetchMyEnrollments(studentId) {
+        if (!studentId) {
+            enrollments.value = []
+            error.value = 'Please sign in to view your enrollments.'
+            return
+        }
+
+        loading.value = true
+        error.value = null
+
+        try {
+            enrollments.value =
+                await enrollmentService.getMyEnrollments(studentId)
+        } catch (err) {
+            error.value = err?.message ?? 'Failed to fetch your enrollments.'
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+
 
     return {
         enrollments,
@@ -137,5 +158,6 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         updateEnrollmentStatus,
         clearEnrollmentState,
         fetchEnrollmentById,
+        fetchMyEnrollments,
     }
 })

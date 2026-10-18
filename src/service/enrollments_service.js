@@ -78,3 +78,19 @@ export async function getEnrollmentById(enrollmentId) {
 
     return data
 }
+
+export async function getMyEnrollments(studentId) {
+    const { data, error } = await supabase
+        .from(DatabaseTableName.enrollmentsCollection)
+        .select(`
+            *,
+            course:courses(name),
+            program:programs(name)
+        `)
+        .eq('student_id', studentId)
+        .order('created_at', { ascending: false })
+
+    if (error) throw error
+
+    return data ?? []
+}
