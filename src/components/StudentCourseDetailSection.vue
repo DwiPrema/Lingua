@@ -75,19 +75,26 @@ const selectProgram = (programId) => {
 }
 
 const continueToEnrollment = () => {
-    if (!selectedProgram.value) return
+    if (!course.value || !selectedProgram.value) {
+        return
+    }
 
     router.push({
-        name: 'student.enrollments',
+        name: 'student.enrollment-form',
+        params: {
+            courseId: course.value.id,
+            programId: selectedProgram.value.id,
+        },
     })
 }
+
 
 onMounted(async () => {
     loadCourseDetail()
 })
 
 watch(
-    () => route.params.courseId,
+    () => route.params.id,
     (newId, oldId) => {
         if (newId !== oldId) {
             loadCourseDetail()
@@ -276,9 +283,10 @@ watch(
                         <div v-else class="mt-6 space-y-4">
                             <button v-for="program in programs" :key="program.id" type="button" class="w-full rounded-xl border p-5 text-left
                                        transition" :class="selectedProgramId === program.id
-                                            ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100'
-                                            : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
-                                        " :aria-pressed="selectedProgramId === program.id" @click="selectProgram(program.id)">
+                                        ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100'
+                                        : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
+                                        " :aria-pressed="selectedProgramId === program.id"
+                                @click="selectProgram(program.id)">
                                 <div class="flex items-start justify-between gap-4">
                                     <div class="min-w-0">
                                         <h3 class="font-semibold text-slate-900">
@@ -296,8 +304,8 @@ watch(
 
                                     <div class="flex h-5 w-5 shrink-0 items-center
                                                justify-center rounded-full border" :class="selectedProgramId === program.id
-                                                    ? 'border-indigo-600 bg-indigo-600 text-white'
-                                                    : 'border-slate-300 bg-white'
+                                                ? 'border-indigo-600 bg-indigo-600 text-white'
+                                                : 'border-slate-300 bg-white'
                                                 ">
                                         <svg v-if="selectedProgramId === program.id" class="h-3 w-3" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="3">
@@ -407,8 +415,8 @@ watch(
 
                         <button type="button" class="mt-6 w-full rounded-xl px-5 py-3 text-sm
                                    font-semibold transition" :class="selectedProgram
-                                        ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                                        : 'cursor-not-allowed bg-slate-100 text-slate-400'
+                                    ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                                    : 'cursor-not-allowed bg-slate-100 text-slate-400'
                                     " :disabled="!selectedProgram" @click="continueToEnrollment">
                             Continue to Enrollment
                         </button>
