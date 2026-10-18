@@ -65,3 +65,16 @@ export async function updateEnrollmentsStatus(enrollmentId, statusEnrollment) {
 
     return data
 }
+
+
+export async function getEnrollmentById(enrollmentId) {
+    const { data, error } = await supabase
+        .from(DatabaseTableName.enrollmentsCollection)
+        .select('*')
+        .eq('id', enrollmentId)
+        .maybeSingle()
+
+    if (error) throw error
+
+    return data
+}

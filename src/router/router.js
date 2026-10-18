@@ -23,6 +23,7 @@ import StudentDashboardOverview from "@/components/StudentDashboardOverview.vue"
 import StudentCourseDetailSection from "@/components/StudentCourseDetailSection.vue";
 import StudentExploreCourse from "@/components/StudentExploreCourse.vue";
 import EnrollmentFormPage from "@/views/EnrollmentFormPage.vue";
+import EnrollmentDetailPage from "@/views/EnrollmentDetailPage.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -151,6 +152,11 @@ const router = createRouter({
                 {
                     path: 'enrollments',
                     name: 'student.enrollments',
+                },
+                {
+                    path: 'enrollments/:enrollmentId',
+                    name: 'student.enrollment-detail',
+                    component: EnrollmentDetailPage,
                 },
                 {
                     path: "courses/:id",
