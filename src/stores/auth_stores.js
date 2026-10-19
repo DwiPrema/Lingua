@@ -2,6 +2,8 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import * as authService from "@/service/auth_service";
+import { useUserDataStores } from "./user_data_stores";
+import { useOrganizationStore } from "./organization_stores";
 
 export const useAuthStore = defineStore("auth", () => {
     // =========================================================
@@ -339,6 +341,7 @@ export const useAuthStore = defineStore("auth", () => {
             });
 
         } catch (err) {
+            error.value = err?.message || "Invalid verification code.";
             errors.value.otp =
                 err?.message || "Invalid verification code.";
         } finally {
@@ -358,29 +361,29 @@ export const useAuthStore = defineStore("auth", () => {
         try {
             await authService.signOut();
 
+            // Clear user-related stores
+            const userDataStore = useUserDataStores();
+            const organizationStore = useOrganizationStore();
+
+            userDataStore.clearUserData();
+            organizationStore.clearOrganization();
+
+            // Clear auth state
             session.value = null;
             user.value = null;
 
             otp.value = "";
             password.value = "";
 
-            sessionStorage.removeItem(
-                "signupEmail"
-            );
-
+            sessionStorage.removeItem("signupEmail");
             setAuthIntent(null);
 
-            await router.push({
+            await router.replace({
                 name: "auth-login",
             });
-
         } catch (err) {
-            error.value =
-                err?.message ||
-                "Failed to sign out.";
-
+            error.value = err?.message || "Failed to sign out.";
             throw err;
-
         } finally {
             loading.value = false;
         }
@@ -559,6 +562,46 @@ export const useAuthStore = defineStore("auth", () => {
     }
 
     // =========================================================
+    // RESEND OTP
+    // =========================================================
+
+    async function handleResendOtp() {
+        loading.value = true;
+        error.value = null;
+        errors.value = {};
+
+        try {
+            const normalizedEmail = email.value.trim();
+
+            if (!normalizedEmail) {
+                throw new Error("Verification email is missing.");
+            }
+
+            if (authIntent.value === "login-otp") {
+                await authService.signInWithEmailOtp(
+                    normalizedEmail
+                );
+            } else if (authIntent.value === "signup") {
+                await authService.resendOtp(
+                    normalizedEmail
+                );
+            } else {
+                throw new Error("Invalid authentication flow.");
+            }
+
+            return true;
+        } catch (err) {
+            error.value =
+                err?.message ||
+                "Failed to resend verification code.";
+
+            throw err;
+        } finally {
+            loading.value = false;
+        }
+    }
+
+    // =========================================================
     // RETURN
     // =========================================================
 
@@ -621,5 +664,7 @@ export const useAuthStore = defineStore("auth", () => {
 
         // Validate Current User
         validateCurrentUser,
+
+        handleResendOtp,
     };
 });

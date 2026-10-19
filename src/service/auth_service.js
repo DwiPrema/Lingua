@@ -117,5 +117,18 @@ export async function getUser() {
     return data.user
 }
 
+export async function resendOtp(userEmail, type = "signup") {
+    const { data, error } = await supabase.auth.resend({
+        email: userEmail.trim(),
+        type,
+    });
+
+    if (error) {
+        throw error;
+    }
+
+    return data;
+}
+
 export const currentUser =
     supabase.auth.currentUser;

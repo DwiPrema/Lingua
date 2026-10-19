@@ -58,7 +58,7 @@ function goToOrganizationSettings() {
 }
 
 function goToProfile() {
-    router.push({ name: "profile" });
+    router.push({ name: "instructor.profile" });
 }
 </script>
 

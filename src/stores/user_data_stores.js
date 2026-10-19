@@ -39,7 +39,7 @@ export const useUserDataStores = defineStore('users', () => {
 
     async function updateUserData(payload) {
         loading.value = true,
-        error.value = null
+            error.value = null
 
         const authStore = useAuthStore()
 
@@ -57,6 +57,12 @@ export const useUserDataStores = defineStore('users', () => {
         }
     }
 
+    function clearUserData() {
+        userData.value = null;
+        loading.value = false;
+        error.value = null;
+    }
+
     return {
         userData,
         loading,
@@ -64,5 +70,6 @@ export const useUserDataStores = defineStore('users', () => {
 
         getUserData,
         updateUserData,
+        clearUserData,
     }
 })

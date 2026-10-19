@@ -84,7 +84,7 @@ const router = createRouter({
                         },
                         {
                             path: "profile",
-                            name: "profile",
+                            name: "instructor.profile",
                             component: ProfilePage,
                         },
                     ],
@@ -135,7 +135,7 @@ const router = createRouter({
                 },
                 {
                     path: "profile",
-                    name: "profile",
+                    name: "student.profile",
                     component: ProfilePage,
                 },
                 {
@@ -207,6 +207,10 @@ router.beforeEach(async (to) => {
 
             if (role === "student" && to.name === "landingPage") {
                 return { name: "student.dashboard" };
+            }
+
+            if (role === "instructor" && to.name === "landingPage") {
+                return { name: "dashboard" };
             }
 
             if (to.meta.requiresGuest) {

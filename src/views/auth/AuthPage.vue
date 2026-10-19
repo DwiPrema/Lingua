@@ -2,10 +2,64 @@
 import LoadingDotsScale from '@/components/LoadingDotsScale.vue';
 import { useAuthStore } from '@/stores/auth_stores';
 import { ArrowLeft } from '@lucide/vue';
-import { nextTick, ref } from 'vue';
+import { nextTick, onUnmounted, ref } from 'vue';
 
-const authStore = useAuthStore()
-const signupErrorRef = ref(null)
+const authStore = useAuthStore();
+const signupErrorRef = ref(null);
+
+const resendCooldown = ref(0);
+const resendSuccess = ref('');
+const resendError = ref('');
+
+let resendTimer = null;
+
+function startResendCooldown() {
+    resendCooldown.value = 60;
+
+    clearInterval(resendTimer);
+
+    resendTimer = setInterval(() => {
+        if (resendCooldown.value > 0) {
+            resendCooldown.value--;
+        }
+
+        if (resendCooldown.value <= 0) {
+            clearInterval(resendTimer);
+            resendTimer = null;
+        }
+    }, 1000);
+}
+
+async function handleResendOtp() {
+    if (
+        authStore.loading ||
+        resendCooldown.value > 0
+    ) {
+        return;
+    }
+
+    resendSuccess.value = '';
+    resendError.value = '';
+
+    try {
+        await authStore.handleResendOtp();
+
+        resendSuccess.value =
+            'A new verification code has been sent to your email.';
+
+        startResendCooldown();
+    } catch (err) {
+        resendError.value =
+            err?.message ||
+            'Failed to resend verification code.';
+    }
+}
+
+onUnmounted(() => {
+    if (resendTimer) {
+        clearInterval(resendTimer);
+    }
+});
 
 async function handleSignUp() {
     await authStore.handleSignUp();
@@ -14,12 +68,11 @@ async function handleSignUp() {
         await nextTick();
 
         signupErrorRef.value?.scrollIntoView({
-            behavior: "smooth",
-            block: "center",
+            behavior: 'smooth',
+            block: 'center',
         });
     }
 }
-
 </script>
 
 <template>
@@ -64,7 +117,7 @@ async function handleSignUp() {
 
                     <button type="button" @click="authStore.router.push('/')"
                         class="mb-6 inline-flex items-center gap-2 rounded-lg text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-dark-background">
-                        <ArrowLeft size="24"/>
+                        <ArrowLeft size="24" />
                         Back
                     </button>
 
@@ -110,6 +163,10 @@ async function handleSignUp() {
                                     class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-center text-2xl font-semibold tracking-[0.5em] outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
                             </div>
 
+                            <p v-if="authStore.error" class="mt-2 text-sm text-red-600" role="alert" aria-live="polite">
+                                {{ authStore.error }}
+                            </p>
+
 
                             <!-- VERIFY BUTTON -->
 
@@ -120,20 +177,41 @@ async function handleSignUp() {
 
                         </form>
 
-
                         <!-- RESEND -->
-
                         <div class="mt-6 text-center">
-
                             <p class="text-sm text-gray-500">
                                 Didn't receive the code?
                             </p>
 
-                            <button type="button" class="mt-1 font-semibold text-dark-background hover:underline"
-                                @click="authStore.resendOtp()">
-                                Resend code
+                            <button type="button" class="mt-1 font-semibold transition" :class="authStore.loading || resendCooldown > 0
+                                ? 'cursor-not-allowed text-gray-400'
+                                : 'text-dark-background hover:underline'
+                                " :disabled="authStore.loading || resendCooldown > 0
+                                    " @click="handleResendOtp">
+                                <span v-if="authStore.loading">
+                                    Sending code...
+                                </span>
+
+                                <span v-else-if="resendCooldown > 0">
+                                    Resend code in {{ resendCooldown }}s
+                                </span>
+
+                                <span v-else>
+                                    Resend code
+                                </span>
                             </button>
 
+                            <!-- Success notification -->
+                            <p v-if="resendSuccess" class="mt-3 rounded-lg bg-green-50 px-3 py-2 text-sm text-green-700"
+                                role="status" aria-live="polite">
+                                {{ resendSuccess }}
+                            </p>
+
+                            <!-- Error notification -->
+                            <p v-if="resendError" class="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700"
+                                role="alert">
+                                {{ resendError }}
+                            </p>
                         </div>
 
 
