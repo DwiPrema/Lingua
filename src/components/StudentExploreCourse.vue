@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCourseStores } from '@/stores/course_stores'
+import { Search } from '@lucide/vue'
 
 const router = useRouter()
 const courseStore = useCourseStores()
@@ -49,7 +50,6 @@ const retryLoading = () => {
     return loadInitialCourses()
 }
 
-// Reset pagination when the search or sort option changes.
 watch([searchQuery, sortBy], () => {
     clearTimeout(searchTimer)
 
@@ -58,7 +58,6 @@ watch([searchQuery, sortBy], () => {
     }, 300)
 })
 
-// Load another batch when the sentinel approaches the viewport.
 watch(
     [
         sentinelVisible,
@@ -109,7 +108,7 @@ onBeforeUnmount(() => {
     <main class="min-h-screen bg-slate-50">
         <button type="button" class="mb-5 text-sm font-medium text-slate-500 hover:text-primary"
             @click="router.push('/')">
-            &larr; Back
+            &larr; Back to dashboard
         </button>
         <!-- Header -->
         <section class="border-b border-slate-200 bg-white">
@@ -137,12 +136,8 @@ onBeforeUnmount(() => {
             <div class="flex flex-col gap-4 sm:flex-row
                        sm:items-center sm:justify-between">
                 <div class="relative w-full sm:max-w-md">
-                    <svg class="absolute left-4 top-1/2 h-5 w-5
-                               -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.8">
-                        <circle cx="11" cy="11" r="7" />
-                        <path stroke-linecap="round" d="m16 16 4 4" />
-                    </svg>
+                    <Search class="absolute left-4 top-1/2 h-5 w-5
+                               -translate-y-1/2 text-slate-400" />
 
                     <input v-model="searchQuery" type="search" placeholder="Search courses by name..." class="w-full rounded-xl border border-slate-200
                                bg-white py-3 pl-11 pr-4 text-sm

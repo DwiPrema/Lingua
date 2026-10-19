@@ -4,7 +4,6 @@ import { computed, ref } from 'vue'
 import * as enrollmentService from '@/service/enrollments_service'
 
 export const useEnrollmentStores = defineStore('enrollment', () => {
-    // State
     const enrollments = ref([])
     const activeEnrollment = ref(null)
 
@@ -13,12 +12,10 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
     const updatingStatus = ref(false)
     const error = ref(null)
 
-    // Getters
     const hasActiveEnrollment = computed(
         () => activeEnrollment.value !== null,
     )
 
-    // Fetch an existing pending or approved enrollment
     async function fetchActiveEnrollment(studentId, courseId) {
         loading.value = true
         error.value = null
@@ -29,7 +26,6 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
                 courseId,
             )
 
-            // The service returns an array of matching records.
             activeEnrollment.value = data?.[0] ?? null
 
             return activeEnrollment.value
@@ -41,7 +37,6 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
-    // Create an enrollment
     async function addEnrollment(payload) {
         submitting.value = true
         error.value = null
@@ -61,7 +56,6 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
-    // Update enrollment status
     async function updateEnrollmentStatus(enrollmentId, status) {
         updatingStatus.value = true
         error.value = null
@@ -73,7 +67,6 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
                     status,
                 )
 
-            // Update local state if the service returns the updated row.
             if (updatedEnrollment) {
                 const index = enrollments.value.findIndex(
                     (item) => item.id === enrollmentId,
@@ -97,7 +90,6 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
-    // Clear enrollment state when needed
     function clearEnrollmentState() {
         enrollments.value = []
         activeEnrollment.value = null

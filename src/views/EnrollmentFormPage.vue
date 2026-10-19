@@ -79,7 +79,6 @@ async function loadEnrollmentData() {
             throw new Error('Course or program information is missing.')
         }
 
-        // These actions must return the fetched data.
         course.value = await courseStore.fetchCourseById(courseId.value)
 
         const programs =
@@ -148,8 +147,6 @@ async function submitEnrollment() {
             student_id: studentId.value,
             course_id: course.value.id,
             program_id: program.value.id,
-
-            // Match the actual Supabase columns.
             fullname: form.fullname.trim(),
             phone: form.phone.trim(),
             education_level: form.education_level,
@@ -163,7 +160,6 @@ async function submitEnrollment() {
 
         showConfirmation.value = false
 
-        // Update this route name when your enrollment detail page exists.
         await router.push({
             name: 'student.enrollment-detail',
             params: { enrollmentId: enrollment.id },
@@ -184,8 +180,8 @@ async function submitEnrollment() {
 </script>
 
 <template>
-    <main class="min-h-screen bg-slate-50 px-4 py-10 sm:px-6">
-        <div class="mx-auto max-w-4xl">
+    <main class="min-h-screen bg-slate-50 py-10">
+        <div class="mx-auto">
             <button
                 type="button"
                 class="mb-6 text-sm font-medium text-slate-600 hover:text-slate-950"
@@ -207,7 +203,7 @@ async function submitEnrollment() {
                 <h1 class="text-xl font-bold text-slate-900">
                     Unable to load enrollment
                 </h1>
-                <p class="mt-2 text-sm text-red-600">{{ pageError }}</p>
+                <p class="mt-2 text-sm text-alert">{{ pageError }}</p>
 
                 <button
                     type="button"
@@ -220,7 +216,7 @@ async function submitEnrollment() {
 
             <template v-else>
                 <header class="mb-8">
-                    <p class="text-sm font-semibold uppercase tracking-wider text-rose-800">
+                    <p class="text-sm font-semibold uppercase tracking-wider text-accent">
                         Student enrollment
                     </p>
 
@@ -235,8 +231,8 @@ async function submitEnrollment() {
                 </header>
 
                 <!-- Course and program summary -->
-                <section class="rounded-2xl border border-rose-100 bg-white p-6 shadow-sm">
-                    <p class="text-xs font-bold uppercase tracking-widest text-rose-800">
+                <section class="rounded-2xl border border-accent/10 bg-white p-6 shadow-sm">
+                    <p class="text-xs font-bold uppercase tracking-widest text-accent">
                         Selected course
                     </p>
 
@@ -248,8 +244,8 @@ async function submitEnrollment() {
                         {{ course.description || 'No course description available.' }}
                     </p>
 
-                    <div class="mt-5 rounded-xl bg-rose-50 p-4">
-                        <p class="text-xs font-semibold text-rose-800">
+                    <div class="mt-5 rounded-xl bg-accent/25 p-4">
+                        <p class="text-xs font-semibold text-accent">
                             Selected program
                         </p>
                         <p class="mt-1 font-bold text-slate-900">
@@ -306,7 +302,7 @@ async function submitEnrollment() {
                                 maxlength="120"
                                 required
                                 placeholder="Enter your full name"
-                                class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-rose-700 focus:ring-2 focus:ring-rose-100"
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-accent/70 focus:ring-2 focus:ring-accent/10"
                             />
                         </div>
 
@@ -322,7 +318,7 @@ async function submitEnrollment() {
                                 maxlength="20"
                                 required
                                 placeholder="e.g. 08123456789"
-                                class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-rose-700 focus:ring-2 focus:ring-rose-100"
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-accent/70 focus:ring-2 focus:ring-accent/10"
                             />
                         </div>
 
@@ -334,7 +330,7 @@ async function submitEnrollment() {
                                 id="education"
                                 v-model="form.education_level"
                                 required
-                                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none focus:border-rose-700 focus:ring-2 focus:ring-rose-100"
+                                class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 outline-none focus:border-accent/70 focus:ring-2 focus:ring-accent/10"
                             >
                                 <option disabled value="">
                                     Select education level
@@ -361,7 +357,7 @@ async function submitEnrollment() {
                                 maxlength="150"
                                 required
                                 placeholder="Enter your school or institution"
-                                class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-rose-700 focus:ring-2 focus:ring-rose-100"
+                                class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-accent/70 focus:ring-2 focus:ring-accent/10"
                             />
                         </div>
 
@@ -376,7 +372,7 @@ async function submitEnrollment() {
                                 maxlength="500"
                                 required
                                 placeholder="Enter your current address"
-                                class="w-full resize-y rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-rose-700 focus:ring-2 focus:ring-rose-100"
+                                class="w-full resize-y rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-accent/70 focus:ring-2 focus:ring-accent/10"
                             />
                         </div>
                     </div>
@@ -399,7 +395,7 @@ async function submitEnrollment() {
 
                     <button
                         type="submit"
-                        class="mt-7 w-full rounded-xl bg-rose-800 px-5 py-3.5 font-semibold text-white transition hover:bg-rose-900 focus:outline-none focus:ring-2 focus:ring-rose-300"
+                        class="mt-7 w-full rounded-xl bg-accent/90 px-5 py-3.5 font-semibold text-white transition hover:bg-accent focus:outline-none focus:ring-2 focus:ring-rose-300"
                     >
                         Review Enrollment
                     </button>
@@ -475,7 +471,7 @@ async function submitEnrollment() {
 
                     <button
                         type="button"
-                        class="flex-1 rounded-xl bg-rose-800 px-4 py-3 font-semibold text-white hover:bg-rose-900 disabled:cursor-not-allowed disabled:opacity-60"
+                        class="flex-1 rounded-xl bg-accent/90 px-4 py-3 font-semibold text-white hover:bg-accent disabled:cursor-not-allowed disabled:opacity-60"
                         :disabled="enrollmentStore.submitting"
                         @click="submitEnrollment"
                     >
