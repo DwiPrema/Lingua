@@ -94,3 +94,11 @@ export async function getMyEnrollments(studentId) {
 
     return data ?? []
 }
+
+export async function deleteEnrollments(enrollmentId) {
+    const {error} = await supabase.from(DatabaseTableName.enrollmentsCollection).delete().eq('id', enrollmentId)
+
+    if(error) {
+        throw error
+    }
+}

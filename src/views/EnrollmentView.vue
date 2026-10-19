@@ -145,8 +145,8 @@ watch(studentId, (newId, oldId) => {
             <header class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
                 <div>
                     <button type="button" class="mb-5 text-sm font-medium text-slate-500 hover:text-primary"
-                        @click="router.back()">
-                        &larr; Back 
+                        @click="router.push('/')">
+                        &larr; Back to dashboard
                     </button>
 
                     <p class="text-sm font-semibold uppercase tracking-widest text-accent">

@@ -140,7 +140,9 @@ async function cancelEnrollment() {
     pageError.value = ''
 
     try {
-        await enrollmentStore.cancelEnrollment(enrollment.value.id)
+        await enrollmentStore.deleteEnrollments(enrollment.value.id)
+
+        router.push({ name: 'student.enrollments' })
 
         showCancelConfirmation.value = false
         await loadEnrollmentDetail()
@@ -255,7 +257,7 @@ function viewMyCourse() {
                     <div class="mt-4 grid gap-4 sm:grid-cols-2">
                         <div class="rounded-2xl border border-slate-200 bg-white p-5">
                             <div class="flex items-center gap-2 text-sm text-slate-500">
-                                <ReceiptText :size="16"/>
+                                <ReceiptText :size="16" />
                                 Registration Fee
                             </div>
                             <p class="mt-3 text-xl font-bold text-slate-900">
@@ -265,7 +267,7 @@ function viewMyCourse() {
 
                         <div class="rounded-2xl border border-slate-200 bg-white p-5">
                             <div class="flex items-center gap-2 text-sm text-slate-500">
-                                <CalendarDays :size="16"/>
+                                <CalendarDays :size="16" />
                                 Monthly Fee
                             </div>
                             <p class="mt-3 text-xl font-bold text-slate-900">
@@ -380,13 +382,13 @@ function viewMyCourse() {
                     <button v-if="status === 'approved' || status === 'active'" type="button"
                         class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3.5 font-semibold text-white transition hover:bg-rose-900"
                         @click="viewMyCourse">
-                         <BookOpen :size="16"/>
+                        <BookOpen :size="16" />
                         View My Course
                     </button>
 
                     <div v-if="status === 'pending'" class="rounded-2xl border border-amber-200 bg-amber-50 p-4">
                         <div class="flex items-start gap-3">
-                             <Info color="#b45309"/>
+                            <Info color="#b45309" />
                             <p class="text-sm leading-6 text-amber-900">
                                 Please wait while the course administrator
                                 reviews your enrollment. You can return here

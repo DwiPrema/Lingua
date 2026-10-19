@@ -136,6 +136,22 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
+    async function deleteEnrollments(enrollmentId) {
+        loading.value = true
+        error.value = null
+
+        try {
+            await enrollmentService.deleteEnrollments(enrollmentId)
+
+            enrollments.value = enrollments.value.filter(
+                (enrollment) => String(enrollment.id) != String(enrollmentId)
+            )
+        } catch (err) {
+            error.value = err.message ?? "Failed to cancel or delete enrollment"
+        } finally {
+            loading.value = false
+        }
+    }
 
     return {
         enrollments,
@@ -151,5 +167,6 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         clearEnrollmentState,
         fetchEnrollmentById,
         fetchMyEnrollments,
+        deleteEnrollments,
     }
 })
