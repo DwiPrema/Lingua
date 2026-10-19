@@ -1,5 +1,5 @@
 <script setup>
-import CoursesData from '@/components/CoursesData.vue';
+import CoursesData from '@/views/course/CoursesData.vue';
 import Header from '@/components/Header.vue';
 import { BookOpenCheck, PackagePlus } from '@lucide/vue';
 import { useRouter } from 'vue-router';

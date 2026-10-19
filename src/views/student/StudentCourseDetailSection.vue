@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useCourseStores } from '@/stores/course_stores'
 import { useCourseProgramStore } from '@/stores/course_program_stores'
+import { formatCurrency } from '@/constant/format_currency'
 
 const route = useRoute()
 const router = useRouter()
@@ -25,20 +26,6 @@ const selectedProgram = computed(
             (program) => program.id === selectedProgramId.value,
         ) ?? null,
 )
-
-const formatCurrency = (value) => {
-    const amount = Number(value)
-
-    if (!Number.isFinite(amount)) {
-        return 'Not specified'
-    }
-
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'IDR',
-        maximumFractionDigits: 0,
-    }).format(amount)
-}
 
 const loadCourseDetail = async () => {
     const courseId = route.params.id

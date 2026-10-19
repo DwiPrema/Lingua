@@ -14,22 +14,19 @@ import {
 
 import { useCourseStores } from "@/stores/course_stores";
 import { useCourseProgramStore } from "@/stores/course_program_stores";
+import { formatCurrency } from "@/constant/format_currency";
 
 const route = useRoute();
 const router = useRouter();
 
-// STORES
 const courseStore = useCourseStores();
 const courseProgramStore = useCourseProgramStore();
 
-// Reactive state from Pinia
 const { loading, error } = storeToRefs(courseProgramStore);
 
-// ROUTE PARAMETERS
 const courseId = computed(() => route.params.courseId ?? null);
 const programId = computed(() => route.params.programId ?? null);
 
-// PAGE MODE
 const isEditMode = computed(() => Boolean(programId.value));
 
 const pageTitle = computed(() =>
@@ -59,7 +56,6 @@ const form = reactive({
     monthlyFee: "",
 });
 
-// RESET FORM
 function resetForm() {
     form.name = "";
     form.description = "";
@@ -69,31 +65,12 @@ function resetForm() {
     selectedProgram.value = null;
 }
 
-// FORMAT RUPIAH
-function formatRupiah(value) {
-    if (value === null || value === undefined || value === "") {
-        return "";
-    }
-
-    const amount = Number(value);
-
-    if (!Number.isFinite(amount)) {
-        return "";
-    }
-
-    return new Intl.NumberFormat("id-ID", {
-        maximumFractionDigits: 0,
-    }).format(amount);
-}
-
-// PARSE AMOUNT
 function parseAmount(value) {
     const digits = String(value).replace(/\D/g, "");
 
     return digits === "" ? null : Number(digits);
 }
 
-// HANDLE FEE INPUT
 function handleFeeInput(field, value) {
     const digits = String(value).replace(/\D/g, "");
 
@@ -102,20 +79,18 @@ function handleFeeInput(field, value) {
         return;
     }
 
-    form[field] = formatRupiah(Number(digits));
+    form[field] = formatCurrency(Number(digits));
 }
 
-// POPULATE FORM FOR EDIT MODE
 function populateForm(program) {
     selectedProgram.value = program;
 
     form.name = program.name ?? "";
     form.description = program.description ?? "";
-    form.registrationFee = formatRupiah(program.registration_fee);
-    form.monthlyFee = formatRupiah(program.monthly_fee);
+    form.registrationFee = formatCurrency(program.registration_fee);
+    form.monthlyFee = formatCurrency(program.monthly_fee);
 }
 
-// INITIALIZE PAGE
 watch(
     [courseId, programId],
     async ([currentCourseId, currentProgramId]) => {

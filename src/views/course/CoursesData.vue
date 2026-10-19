@@ -2,7 +2,7 @@
 import { useCourseStores } from '@/stores/course_stores.js';
 import { CircleX, MapPin } from '@lucide/vue';
 import { onMounted } from 'vue';
-import CourseCardSkeleton from './CourseCardSkeleton.vue';
+import CourseCardSkeleton from '@/components/CourseCardSkeleton.vue';
 
 const courseStore = useCourseStores()
 

@@ -15,12 +15,10 @@ const userStore = useUserDataStores()
 
 const router = useRouter()
 
-// Reactive data from Pinia
 const user = computed(() => userStore.userData)
 const loading = computed(() => userStore.loading)
 const error = computed(() => userStore.error ?? '')
 
-// Update functionality will be implemented later.
 const saving = ref(false)
 
 const isEditing = ref(false)
@@ -45,7 +43,6 @@ function syncUser(userData) {
     original.value = { ...form.value }
 }
 
-// Sync the form when the store fetches the database record.
 watch(
     user,
     (userData) => {
@@ -56,7 +53,6 @@ watch(
     { immediate: true },
 )
 
-// Fetch the current user's data when this page is mounted.
 onMounted(async () => {
     if (!user.value) {
         await userStore.getUserData()
@@ -126,13 +122,12 @@ function handleAvatarChange(event) {
 
     avatarPreview.value = URL.createObjectURL(file)
 
-    // Preview only; no upload to Supabase yet.
     event.target.value = ''
 }
 
-function retry() {
-    return userStore.getUserData()
-}
+// function retry() {
+//     return userStore.getUserData()
+// }
 
 onBeforeUnmount(() => {
     if (avatarPreview.value) {
@@ -161,7 +156,6 @@ async function confirmLogout() {
 
     try {
         await authStore.signOut()
-        // Your existing signOut() redirects to the login page.
     } catch (err) {
         console.error('Failed to log out:', err)
     } finally {
@@ -173,27 +167,17 @@ async function confirmLogout() {
 
 
 <template>
-        <!-- Logout confirmation modal -->
+    <!-- Logout confirmation modal -->
     <Teleport to="body">
-        <div
-            v-if="showLogoutModal"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6"
-            @click.self="cancelLogout"
-        >
-            <section
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="logout-title"
-                class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl sm:p-8"
-            >
+        <div v-if="showLogoutModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6"
+            @click.self="cancelLogout">
+            <section role="dialog" aria-modal="true" aria-labelledby="logout-title"
+                class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl sm:p-8">
                 <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
                     <span class="text-2xl" aria-hidden="true">↪</span>
                 </div>
 
-                <h2
-                    id="logout-title"
-                    class="text-xl font-bold text-gray-900"
-                >
+                <h2 id="logout-title" class="text-xl font-bold text-gray-900">
                     Log out of Lingua?
                 </h2>
 
@@ -203,21 +187,15 @@ async function confirmLogout() {
                 </p>
 
                 <div class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                    <button
-                        type="button"
-                        :disabled="loggingOut"
+                    <button type="button" :disabled="loggingOut"
                         class="rounded-xl border border-gray-300 px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-                        @click="cancelLogout"
-                    >
+                        @click="cancelLogout">
                         Cancel
                     </button>
 
-                    <button
-                        type="button"
-                        :disabled="loggingOut"
+                    <button type="button" :disabled="loggingOut"
                         class="rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-                        @click="confirmLogout"
-                    >
+                        @click="confirmLogout">
                         {{ loggingOut ? 'Logging out...' : 'Yes, log out' }}
                     </button>
                 </div>

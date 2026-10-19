@@ -6,6 +6,7 @@ import { useEnrollmentStores } from '@/stores/enrollments_stores'
 import { useCourseStores } from '@/stores/course_stores'
 import { useCourseProgramStore } from '@/stores/course_program_stores'
 import { BadgeCheck, BookOpen, CalendarDays, CheckCircle2, CircleMinus, CircleX, Clock3, GraduationCap, Info, ReceiptText, Ticket, TriangleAlert, XCircle } from '@lucide/vue'
+import { formatCurrency } from '@/constant/format_currency'
 
 const route = useRoute()
 const router = useRouter()
@@ -72,13 +73,6 @@ const statusInfo = computed(() => {
 
     return statuses[status.value] ?? statuses.pending
 })
-
-const formatCurrency = (amount) =>
-    new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        maximumFractionDigits: 0,
-    }).format(Number(amount) || 0)
 
 const formatDate = (value) => {
     if (!value) return 'Not available'

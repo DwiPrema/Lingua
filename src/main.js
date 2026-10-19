@@ -16,10 +16,8 @@ app.use(router);
 
 const authStore = useAuthStore(pinia);
 
-// Ambil session awal terlebih dahulu
 await authStore.initializeAuth();
 
-// Setelah itu dengarkan perubahan auth
 const subscription =
     authStore.listenToAuthChanges();
 

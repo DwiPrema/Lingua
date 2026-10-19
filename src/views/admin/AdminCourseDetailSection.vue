@@ -20,6 +20,7 @@ import {
 
 import { useCourseStores } from "@/stores/course_stores";
 import { useCourseProgramStore } from "@/stores/course_program_stores";
+import { formatCurrency } from "@/constant/format_currency";
 
 const route = useRoute();
 const router = useRouter();
@@ -153,24 +154,6 @@ watch(courseId, async () => {
         refreshProgram(),
     ]);
 });
-
-function formatCurrency(value) {
-    if (value == null || value === "") {
-        return "Not set";
-    }
-
-    const amount = Number(value);
-
-    if (!Number.isFinite(amount)) {
-        return "Invalid amount";
-    }
-
-    return new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        maximumFractionDigits: 0,
-    }).format(amount);
-}
 </script>
 
 <template>

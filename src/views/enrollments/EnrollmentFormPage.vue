@@ -9,6 +9,7 @@ import { useEnrollmentStores } from '@/stores/enrollments_stores'
 import { StatusEnrollments } from '@/constant/enrollment_status'
 import { EnrollmentException } from '@/utils/exception/enrollment_exception'
 import { useAuthStore } from '@/stores/auth_stores'
+import { formatCurrency } from '@/constant/format_currency'
 
 const route = useRoute()
 const router = useRouter()
@@ -60,13 +61,6 @@ const monthlyFee = computed(
         ?? program.value?.monthly_fee
         ?? 0,
 )
-
-const formatCurrency = (amount) =>
-    new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        maximumFractionDigits: 0,
-    }).format(Number(amount) || 0)
 
 onMounted(loadEnrollmentData)
 

@@ -1,30 +1,28 @@
-
 import { useAuthStore } from "@/stores/auth_stores";
 import { useOrganizationStore } from "@/stores/organization_stores";
 import { useUserDataStores } from "@/stores/user_data_stores";
 
-import AuthPage from "@/views/AuthPage.vue";
+import AuthPage from "@/views/auth/AuthPage.vue";
 import LandingPage from "@/views/LandingPage.vue";
-import AdminDashboardPage from "@/views/AdminDashboardPage.vue";
-import OrganizationSetup from "@/views/OrganizationSetup.vue";
-import AdminDashboardOverview from "@/components/AdminDashboardOverview.vue";
-import OrganizationSetting from "@/components/OrganizationSetting.vue";
-import CourseForm from "@/views/CourseForm.vue";
-import AdminCourseDetailSection from "@/components/AdminCourseDetailSection.vue";
-import CourseProgramForm from "@/views/CourseProgramForm.vue";
-import ProfilePage from "@/views/ProfilePage.vue";
-import StudentDashboardPage from "@/views/StudentDashboardPage.vue";
-
+import AdminDashboardPage from "@/views/admin/AdminDashboardPage.vue";
+import OrganizationSetup from "@/views/organization/OrganizationSetup.vue";
+import AdminDashboardOverview from "@/views/admin/AdminDashboardOverview.vue";
+import OrganizationSetting from "@/views/organization/OrganizationSetting.vue";
+import CourseForm from "@/views/course/CourseForm.vue";
+import AdminCourseDetailSection from "@/views/admin/AdminCourseDetailSection.vue";
+import CourseProgramForm from "@/views/course/CourseProgramForm.vue";
+import ProfilePage from "@/views/profile/ProfilePage.vue";
+import StudentDashboardPage from "@/views/student/StudentDashboardPage.vue";
 import {
     createRouter,
     createWebHistory,
 } from "vue-router";
-import StudentDashboardOverview from "@/components/StudentDashboardOverview.vue";
-import StudentCourseDetailSection from "@/components/StudentCourseDetailSection.vue";
-import StudentExploreCourse from "@/components/StudentExploreCourse.vue";
-import EnrollmentFormPage from "@/views/EnrollmentFormPage.vue";
-import EnrollmentDetailPage from "@/views/EnrollmentDetailPage.vue";
-import EnrollmentView from "@/views/EnrollmentView.vue";
+import StudentDashboardOverview from "@/views/student/StudentDashboardOverview.vue";
+import StudentCourseDetailSection from "@/views/student/StudentCourseDetailSection.vue";
+import StudentExploreCourse from "@/views/student/StudentExploreCourse.vue";
+import EnrollmentFormPage from "@/views/enrollments/EnrollmentFormPage.vue";
+import EnrollmentDetailPage from "@/views/enrollments/EnrollmentDetailPage.vue";
+import EnrollmentView from "@/views/enrollments/EnrollmentView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
