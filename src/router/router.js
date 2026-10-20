@@ -18,11 +18,12 @@ import {
     createWebHistory,
 } from "vue-router";
 import StudentDashboardOverview from "@/views/student/StudentDashboardOverview.vue";
-import StudentCourseDetailSection from "@/views/student/StudentCourseDetailSection.vue";
-import StudentExploreCourse from "@/views/student/StudentExploreCourse.vue";
 import EnrollmentFormPage from "@/views/enrollments/EnrollmentFormPage.vue";
 import EnrollmentDetailPage from "@/views/enrollments/EnrollmentDetailPage.vue";
 import EnrollmentView from "@/views/enrollments/EnrollmentView.vue";
+import CoursesExplorer from "@/views/course/CoursesExplorer.vue";
+import GuestCourseExplorer from "@/views/course/GuestCourseExplorer.vue";
+import CourseDetail from "@/views/course/CourseDetail.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +57,17 @@ const router = createRouter({
             meta: {
                 requiresOtpFlow: true,
             },
+        },
+        {
+            path: "/courses/:id",
+            name: "guest.course-detail",
+            component: CourseDetail,
+            requiresGuest: true
+        },
+        {
+            path: "/explore-courses",
+            name: "guest.explore-courses",
+            component: GuestCourseExplorer,
         },
         {
             path: "/dashboard",
@@ -141,7 +153,7 @@ const router = createRouter({
                 {
                     path: "explore",
                     name: "student.explore",
-                    component: StudentExploreCourse,
+                    component: CoursesExplorer,
                 },
                 {
                     path: "courses/:courseId/programs/:programId/enroll",
@@ -161,7 +173,7 @@ const router = createRouter({
                 {
                     path: "courses/:id",
                     name: "student.course-detail",
-                    component: StudentCourseDetailSection,
+                    component: CourseDetail,
                 },
             ],
         },

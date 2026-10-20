@@ -3,9 +3,11 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCourseStores } from '@/stores/course_stores'
 import { Search } from '@lucide/vue'
+import { useAuthStore } from '@/stores/auth_stores'
 
 const router = useRouter()
 const courseStore = useCourseStores()
+const authStore = useAuthStore()
 
 const searchQuery = ref('')
 const sortBy = ref('newest')
@@ -32,10 +34,11 @@ const formatDate = (date) => {
 }
 
 const openCourse = (id) => {
-    router.push({
-        name: 'student.course-detail',
-        params: { id },
-    })
+    const targetRoute = !authStore.session
+        ? { name: 'guest.course-detail', params: { id } }
+        : { name: 'student.course-detail', params: { id } }
+
+    router.push(targetRoute)
 }
 
 const loadInitialCourses = () => {
@@ -108,7 +111,7 @@ onBeforeUnmount(() => {
     <main class="min-h-screen bg-slate-50">
         <button type="button" class="mb-5 text-sm font-medium text-slate-500 hover:text-primary"
             @click="router.push('/')">
-            &larr; Back to dashboard
+            &larr; Back
         </button>
         <!-- Header -->
         <section class="border-b border-slate-200 bg-white">

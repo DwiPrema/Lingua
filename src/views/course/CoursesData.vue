@@ -3,6 +3,9 @@ import { useCourseStores } from '@/stores/course_stores.js';
 import { CircleX, MapPin } from '@lucide/vue';
 import { onMounted } from 'vue';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter()
 
 const courseStore = useCourseStores()
 
@@ -55,13 +58,9 @@ onMounted(() => {
 
             <!-- Footer Actions -->
             <div class="flex items-center justify-between pt-4 border-t border-gray-300">
-                <button class="cursor-pointer text-xs font-semibold text-gray-500 hover:text-accent transition-colors">
+                <button class="cursor-pointer text-xs font-semibold text-gray-500 hover:text-accent transition-colors"
+                    @click="router.push({ name: 'guest.course-detail', params: {id: course.id}})">
                     See Details →
-                </button>
-
-                <button
-                    class="cursor-pointer px-4 py-2 rounded-lg bg-accent text-white text-xs font-bold hover:bg-accent/80 active:scale-95 transition-all duration-200 shadow-sm">
-                    Join
                 </button>
             </div>
         </div>

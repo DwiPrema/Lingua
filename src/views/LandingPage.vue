@@ -314,7 +314,7 @@ const router = useRouter()
                         </div>
                     </div>
 
-                    <a href="/become-creator" class="mt-8 inline-flex items-center gap-2 font-semibold
+                    <a href="/dashboard" class="mt-8 inline-flex items-center gap-2 font-semibold
                    text-dark-background transition-all ease-in-out duration-300 hover:text-accent">
                         Become a Creator
                         <span aria-hidden="true">→</span>

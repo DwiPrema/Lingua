@@ -1,15 +1,17 @@
 <script setup>
+import { useAuthStore } from '@/stores/auth_stores.js';
+import { formatCurrency } from '@/constant/format_currency'
 import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute, useRouter, RouterLink } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useCourseStores } from '@/stores/course_stores'
 import { useCourseProgramStore } from '@/stores/course_program_stores'
-import { formatCurrency } from '@/constant/format_currency'
 
 const route = useRoute()
 const router = useRouter()
 
 const courseStore = useCourseStores()
 const courseProgramStore = useCourseProgramStore()
+const authStore = useAuthStore()
 
 const course = ref(null)
 const selectedProgramId = ref(null)
@@ -88,6 +90,14 @@ watch(
         }
     },
 )
+
+const backLink = computed(() => {
+    if (!authStore.session) {
+        return { name: 'guest.explore-courses' }
+    }
+
+    return { name: 'student.explore' }
+})
 </script>
 
 <template>
@@ -96,7 +106,7 @@ watch(
         <header class="border-b border-slate-200 bg-white">
             <div class="mx-auto flex max-w-7xl items-center justify-between
                        px-4 py-4 sm:px-6 lg:px-8">
-                <RouterLink :to="{ name: 'student.explore' }" class="inline-flex items-center gap-2 text-sm font-medium
+                <RouterLink :to="backLink" class="inline-flex items-center gap-2 text-sm font-medium
                            text-slate-600 transition hover:text-indigo-600">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6" />
