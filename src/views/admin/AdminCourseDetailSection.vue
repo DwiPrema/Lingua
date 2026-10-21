@@ -46,7 +46,6 @@ const courseAddress = computed(
     () => course.value?.address || "No address provided.",
 );
 
-// Belum terhubung ke data enrollment dan classes.
 const overview = computed(() => [
     {
         label: "Students",
@@ -561,7 +560,7 @@ watch(courseId, async () => {
                         <button type="button" class="group flex items-center gap-4 rounded-2xl border
                      border-slate-200/80 bg-white p-5 text-left shadow-sm
                      transition hover:-translate-y-0.5 hover:border-indigo-300
-                     hover:shadow-md" @click="router.push({name: 'manage-student', params: {courseId: course.id}})">
+                     hover:shadow-md" @click="router.push({ name: 'manage-student', params: { courseId: course.id } })">
                             <div class="flex h-12 w-12 shrink-0 items-center justify-center
                        rounded-xl bg-blue-50 text-blue-600">
                                 <Users class="h-6 w-6" />
@@ -582,7 +581,10 @@ watch(courseId, async () => {
                         <button type="button" class="group flex items-center gap-4 rounded-2xl border
                      border-slate-200/80 bg-white p-5 text-left shadow-sm
                      transition hover:-translate-y-0.5 hover:border-indigo-300
-                     hover:shadow-md" @click="showComingSoon('Enrollment')">
+                     hover:shadow-md" @click="router.push({
+                        name: 'manage-enrollment',
+                        params: { courseId: course.id },
+                    })">
                             <div class="flex h-12 w-12 shrink-0 items-center justify-center
                        rounded-xl bg-amber-50 text-amber-600">
                                 <ClipboardList class="h-6 w-6" />

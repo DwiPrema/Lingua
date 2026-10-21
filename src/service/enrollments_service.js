@@ -151,3 +151,67 @@ export async function fetchApprovedStudentByCourseId(courseId) {
 
     return data ?? []
 }
+
+export async function fetchPendingEnrollmentsByCourseId(courseId) {
+    if (!courseId) {
+        throw new Error('Course ID is required.')
+    }
+
+    const { data, error } = await supabase
+        .from(DatabaseTableName.enrollmentsCollection)
+        .select(`
+            id,
+            created_at,
+            course_id,
+            program_id,
+            student_id,
+            fullname,
+            address,
+            education_level,
+            phone,
+            school_name,
+            status
+        `)
+        .eq('course_id', courseId)
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+
+    if (error) throw error
+
+    return data ?? []
+}
+
+export async function approveEnrollment(enrollmentId) {
+    if (!enrollmentId) {
+        throw new Error('Enrollment ID is required.')
+    }
+
+    const { error } = await supabase.rpc('approve_enrollment', {
+        p_enrollment_id: enrollmentId,
+    })
+
+    if (error) throw error
+
+    return true
+}
+
+export async function rejectEnrollment(enrollmentId, reason) {
+    if (!enrollmentId) {
+        throw new Error('Enrollment ID is required.')
+    }
+
+    const normalizedReason = reason?.trim()
+
+    if (!normalizedReason) {
+        throw new Error('Rejection reason is required.')
+    }
+
+    const { error } = await supabase.rpc('reject_enrollment', {
+        p_enrollment_id: enrollmentId,
+        p_reason: normalizedReason,
+    })
+
+    if (error) throw error
+
+    return true
+}

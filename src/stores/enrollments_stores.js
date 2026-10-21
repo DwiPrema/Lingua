@@ -181,6 +181,77 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
+    const pendingEnrollments = ref([])
+    const loadingPendingEnrollments = ref(false)
+    const processingEnrollmentId = ref(null)
+    const enrollmentActionError = ref(null)
+
+    async function fetchPendingEnrollmentsByCourseId(courseId) {
+        loadingPendingEnrollments.value = true
+        enrollmentActionError.value = null
+
+        try {
+            const data =
+                await enrollmentService.fetchPendingEnrollmentsByCourseId(
+                    courseId,
+                )
+
+            pendingEnrollments.value = data
+            return data
+        } catch (err) {
+            enrollmentActionError.value =
+                err?.message ?? 'Failed to fetch pending enrollments.'
+
+            throw err
+        } finally {
+            loadingPendingEnrollments.value = false
+        }
+    }
+
+    async function approveEnrollment(enrollmentId) {
+        processingEnrollmentId.value = enrollmentId
+        enrollmentActionError.value = null
+
+        try {
+            await enrollmentService.approveEnrollment(enrollmentId)
+
+            pendingEnrollments.value = pendingEnrollments.value.filter(
+                (item) => item.id !== enrollmentId,
+            )
+
+            return true
+        } catch (err) {
+            enrollmentActionError.value =
+                err?.message ?? 'Failed to approve enrollment.'
+
+            throw err
+        } finally {
+            processingEnrollmentId.value = null
+        }
+    }
+
+    async function rejectEnrollment(enrollmentId, reason) {
+        processingEnrollmentId.value = enrollmentId
+        enrollmentActionError.value = null
+
+        try {
+            await enrollmentService.rejectEnrollment(enrollmentId, reason)
+
+            pendingEnrollments.value = pendingEnrollments.value.filter(
+                (item) => item.id !== enrollmentId,
+            )
+
+            return true
+        } catch (err) {
+            enrollmentActionError.value =
+                err?.message ?? 'Failed to reject enrollment.'
+
+            throw err
+        } finally {
+            processingEnrollmentId.value = null
+        }
+    }
+
     return {
         enrollments,
         activeEnrollment,
@@ -192,6 +263,11 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         approvedStudents,
         loadingApprovedStudents,
         approvedStudentsError,
+        pendingEnrollments,
+        loadingPendingEnrollments,
+        processingEnrollmentId,
+        enrollmentActionError,
+
         fetchActiveEnrollment,
         addEnrollment,
         updateEnrollmentStatus,
@@ -200,5 +276,8 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         fetchMyEnrollments,
         deleteEnrollments,
         fetchApprovedStudentByCourseId,
+        fetchPendingEnrollmentsByCourseId,
+        approveEnrollment,
+        rejectEnrollment,
     }
 })
