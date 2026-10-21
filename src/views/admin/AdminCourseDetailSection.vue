@@ -561,7 +561,7 @@ watch(courseId, async () => {
                         <button type="button" class="group flex items-center gap-4 rounded-2xl border
                      border-slate-200/80 bg-white p-5 text-left shadow-sm
                      transition hover:-translate-y-0.5 hover:border-indigo-300
-                     hover:shadow-md" @click="showComingSoon('Student')">
+                     hover:shadow-md" @click="router.push({name: 'manage-student', params: {courseId: course.id}})">
                             <div class="flex h-12 w-12 shrink-0 items-center justify-center
                        rounded-xl bg-blue-50 text-blue-600">
                                 <Users class="h-6 w-6" />

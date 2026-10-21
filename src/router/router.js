@@ -24,6 +24,7 @@ import EnrollmentView from "@/views/enrollments/EnrollmentView.vue";
 import CoursesExplorer from "@/views/course/CoursesExplorer.vue";
 import GuestCourseExplorer from "@/views/course/GuestCourseExplorer.vue";
 import CourseDetail from "@/views/course/CourseDetail.vue";
+import ManageStudentPage from "@/views/student/ManageStudentPage.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -121,6 +122,12 @@ const router = createRouter({
                     name: "course-program-edit",
                     component: CourseProgramForm,
                 },
+                {
+                    path: "/courses/:courseId/manage-student",
+                    name: "manage-student",
+                    component: ManageStudentPage,
+                    props: true,
+                }
             ],
         },
         {

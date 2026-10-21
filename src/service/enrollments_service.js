@@ -42,21 +42,39 @@ export async function addEnrollments(payload) {
     return data
 }
 
-
-export async function updateEnrollmentsStatus(enrollmentId, statusEnrollment) {
-    const updates = {
-        status: statusEnrollment,
-    }
+export async function updateEnrollmentsStatus(
+    enrollmentId,
+    statusEnrollment,
+    rejectionReason = null,
+) {
+    let rpcName
+    let params
 
     if (statusEnrollment === StatusEnrollments.APPROVED) {
-        updates.enrolled_at = new Date().toISOString()
+        rpcName = 'approve_enrollment'
+        params = {
+            p_enrollment_id: enrollmentId,
+        }
+    } else if (statusEnrollment === StatusEnrollments.REJECTED) {
+        rpcName = 'reject_enrollment'
+        params = {
+            p_enrollment_id: enrollmentId,
+            p_reason: rejectionReason,
+        }
+    } else {
+        throw new Error('Unsupported enrollment status transition.')
+    }
+
+    const { error: rpcError } = await supabase.rpc(rpcName, params)
+
+    if (rpcError) {
+        throw rpcError
     }
 
     const { data, error } = await supabase
         .from(DatabaseTableName.enrollmentsCollection)
-        .update(updates)
-        .eq('id', enrollmentId)
         .select()
+        .eq('id', enrollmentId)
         .single()
 
     if (error) {
@@ -65,7 +83,6 @@ export async function updateEnrollmentsStatus(enrollmentId, statusEnrollment) {
 
     return data
 }
-
 
 export async function getEnrollmentById(enrollmentId) {
     const { data, error } = await supabase
@@ -96,9 +113,41 @@ export async function getMyEnrollments(studentId) {
 }
 
 export async function deleteEnrollments(enrollmentId) {
-    const {error} = await supabase.from(DatabaseTableName.enrollmentsCollection).delete().eq('id', enrollmentId)
+    const { error } = await supabase.from(DatabaseTableName.enrollmentsCollection).delete().eq('id', enrollmentId)
 
-    if(error) {
+    if (error) {
         throw error
     }
+}
+
+export async function fetchApprovedStudentByCourseId(courseId) {
+    if (!courseId) {
+        throw new Error('Course ID is required.')
+    }
+
+    const { data, error } = await supabase
+        .from(DatabaseTableName.enrollmentsCollection)
+        .select(`
+            id,
+            course_id,
+            program_id,
+            student_id,
+            fullname,
+            phone,
+            school_name,
+            education_level,
+            status,
+            approved_at,
+            enrolled_at,
+            created_at
+        `)
+        .eq('course_id', courseId)
+        .in('status', ['approved', 'active'])
+        .order('created_at', { ascending: false })
+
+    if (error) {
+        throw error
+    }
+
+    return data ?? []
 }

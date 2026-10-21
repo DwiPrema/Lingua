@@ -12,6 +12,10 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
     const updatingStatus = ref(false)
     const error = ref(null)
 
+    const approvedStudents = ref([])
+    const loadingApprovedStudents = ref(false)
+    const approvedStudentsError = ref(null)
+
     const hasActiveEnrollment = computed(
         () => activeEnrollment.value !== null,
     )
@@ -56,7 +60,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
-    async function updateEnrollmentStatus(enrollmentId, status) {
+    async function updateEnrollmentStatus(enrollmentId, status, rejectionReason) {
         updatingStatus.value = true
         error.value = null
 
@@ -65,6 +69,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
                 await enrollmentService.updateEnrollmentsStatus(
                     enrollmentId,
                     status,
+                    rejectionReason
                 )
 
             if (updatedEnrollment) {
@@ -153,6 +158,29 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
+    async function fetchApprovedStudentByCourseId(courseId) {
+        loadingApprovedStudents.value = true
+        approvedStudentsError.value = null
+
+        try {
+            const data =
+                await enrollmentService.fetchApprovedStudentByCourseId(
+                    courseId,
+                )
+
+            approvedStudents.value = data
+
+            return data
+        } catch (err) {
+            approvedStudentsError.value =
+                err?.message ?? 'Failed to load approved students.'
+
+            throw err
+        } finally {
+            loadingApprovedStudents.value = false
+        }
+    }
+
     return {
         enrollments,
         activeEnrollment,
@@ -161,6 +189,9 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         updatingStatus,
         error,
         hasActiveEnrollment,
+        approvedStudents,
+        loadingApprovedStudents,
+        approvedStudentsError,
         fetchActiveEnrollment,
         addEnrollment,
         updateEnrollmentStatus,
@@ -168,5 +199,6 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         fetchEnrollmentById,
         fetchMyEnrollments,
         deleteEnrollments,
+        fetchApprovedStudentByCourseId,
     }
 })
