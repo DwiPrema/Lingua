@@ -1,0 +1,7 @@
+BEGIN;
+
+REVOKE UPDATE, TRUNCATE, REFERENCES, TRIGGER
+ON TABLE public.enrollments
+FROM authenticated;
+
+COMMIT;
