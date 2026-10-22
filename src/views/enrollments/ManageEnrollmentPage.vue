@@ -8,7 +8,6 @@ import {
     Phone,
     School,
     GraduationCap,
-    CalendarDays,
     CircleAlert,
     RefreshCw,
     Check,

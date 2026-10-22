@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 
 import { useEnrollmentStores } from '@/stores/enrollments_stores'
 import { useAuthStore } from '@/stores/auth_stores'
-import { ArrowUpRight, BookOpen, CalendarDays, CheckCircle2, CircleAlert, Clock3, GraduationCap, Layers, Search } from '@lucide/vue'
+import { AlertCircle, ArrowUpRight, BookOpen, CalendarDays, CheckCircle2, CircleAlert, Clock3, GraduationCap, Layers, Search } from '@lucide/vue'
 
 const router = useRouter()
 const enrollmentStore = useEnrollmentStores()
@@ -62,6 +62,7 @@ const summary = computed(() => ({
     pending: countByStatus('pending'),
     approved: countByStatus('approved'),
     active: countByStatus('active'),
+    rejected: countByStatus('rejected'),
 }))
 
 function countByStatus(status) {
@@ -171,7 +172,7 @@ watch(studentId, (newId, oldId) => {
             </header>
 
             <!-- Summary cards -->
-            <section class="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <section class="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-5">
                 <article class="rounded-2xl border border-slate-200 bg-white p-5">
                     <div class="flex items-center justify-between gap-2">
                         <p class="text-sm font-medium text-slate-500">
@@ -217,6 +218,18 @@ watch(studentId, (newId, oldId) => {
                     </div>
                     <p class="mt-3 text-3xl font-extrabold text-indigo-700">
                         {{ summary.active }}
+                    </p>
+                </article>
+
+                <article class="rounded-2xl border border-alert/20 bg-white p-5">
+                    <div class="flex items-center justify-between gap-2">
+                        <p class="text-sm font-medium text-slate-500">
+                            Rejected
+                        </p>
+                        <AlertCircle class="text-alert" size="18"/>
+                    </div>
+                    <p class="mt-3 text-3xl font-extrabold text-alert">
+                        {{ summary.rejected }}
                     </p>
                 </article>
             </section>
