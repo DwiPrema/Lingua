@@ -53,6 +53,7 @@ const statusInfo = computed(() => {
             icon: CircleX,
             classes: 'bg-red-50 text-red-700 border-red-200',
             badge: 'bg-red-100 text-red-800',
+            rejectionMessage: enrollment.value.rejection_reason
         },
         active: {
             title: 'Enrollment Active',
@@ -202,6 +203,10 @@ function viewMyCourse() {
 
                     <p class="mx-auto mt-3 max-w-xl text-sm leading-6 opacity-90">
                         {{ statusInfo.description }}
+                    </p>
+
+                    <p class="mx-auto mt-3 max-w-xl text-sm leading-6 opacity-90" v-if="statusInfo.rejectionMessage">
+                        Rejection reason: {{ statusInfo.rejectionMessage }}
                     </p>
 
                     <span class="mt-5 inline-flex rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider"
