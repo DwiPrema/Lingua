@@ -21,15 +21,19 @@ import {
 import { useCourseStores } from "@/stores/course_stores";
 import { useCourseProgramStore } from "@/stores/course_program_stores";
 import { formatCurrency } from "@/constant/format_currency";
+import { useEnrollmentStores } from "@/stores/enrollments_stores";
 
 const route = useRoute();
 const router = useRouter();
 const courseStore = useCourseStores();
 const programStore = useCourseProgramStore();
+const enrollmentStore = useEnrollmentStores();
 
 const programs = computed(() => programStore.coursePrograms);
 const error = computed(() => programStore.error);
 const loading = computed(() => programStore.loading);
+
+const approvedStudent = computed(() => enrollmentStore.approvedStudents);
 
 const course = ref(null);
 const isLoading = ref(false);
@@ -49,7 +53,7 @@ const courseAddress = computed(
 const overview = computed(() => [
     {
         label: "Students",
-        value: "—",
+        value: approvedStudent.value.length,
         description: "Enrolled students",
         icon: Users,
     },
@@ -109,6 +113,7 @@ async function refreshProgram() {
 
     try {
         await programStore.getAllCourseProgram(courseId.value);
+        await enrollmentStore.fetchApprovedStudentByCourseId(courseId.value);
     } catch (err) {
         console.error("Failed to refresh programs:", err);
     }
