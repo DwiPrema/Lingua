@@ -2,7 +2,7 @@ export const StatusEnrollments = Object.freeze({
     PENDING: 'pending',
     APPROVED: 'approved',
     REJECTED: 'rejected',
-    CANCELLED: 'cancelled',
+    ACTIVE: 'active',
 })
 
 export const StatusEnrollmentsExtension = {
