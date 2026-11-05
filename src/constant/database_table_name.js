@@ -5,4 +5,6 @@ export const DatabaseTableName = {
   organizationMemberCollection: 'organization_member',
   programsCollection: 'programs',
   enrollmentsCollection: 'enrollments',
+  invoicesCollection: 'invoices',
+  paymentsCollection: 'payments',
 }
