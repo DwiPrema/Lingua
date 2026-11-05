@@ -7,6 +7,7 @@ import { useCourseStores } from '@/stores/course_stores'
 import { useCourseProgramStore } from '@/stores/course_program_stores'
 import { BadgeCheck, BookOpen, CalendarDays, CheckCircle2, CircleMinus, CircleX, Clock3, GraduationCap, Info, ReceiptText, Ticket, TriangleAlert, XCircle } from '@lucide/vue'
 import { formatCurrency } from '@/constant/format_currency'
+import { useInvoiceStore } from '@/stores/invoice_stores'
 
 const route = useRoute()
 const router = useRouter()
@@ -14,6 +15,10 @@ const router = useRouter()
 const enrollmentStore = useEnrollmentStores()
 const courseStore = useCourseStores()
 const courseProgramStore = useCourseProgramStore()
+const invoiceStore = useInvoiceStore()
+
+const invoice = ref(null)
+const invoiceError = ref('')
 
 const enrollment = ref(null)
 const course = ref(null)
@@ -41,7 +46,7 @@ const statusInfo = computed(() => {
         approved: {
             title: 'Enrollment Approved',
             description:
-                'Your enrollment has been approved by the course administrator.',
+                'Your enrollment has been approved by the course administrator. To activate your enrollment, please finish the payment bellow!',
             icon: CheckCircle2,
             classes: 'bg-emerald-50 text-emerald-700 border-emerald-200',
             badge: 'bg-emerald-100 text-emerald-800',
@@ -109,6 +114,17 @@ async function loadEnrollmentDetail() {
         }
 
         enrollment.value = result
+
+        // Fetch initial invoice
+        try {
+            invoice.value = await invoiceStore.getInvoiceByEnrollmentId(
+                result.id
+            )
+            invoiceError.value = ''
+        } catch (err) {
+            invoice.value = null
+            invoiceError.value = err?.message ?? 'Unable to load invoice.'
+        }
 
         course.value = await courseStore.fetchCourseById(
             result.course_id,
@@ -214,6 +230,116 @@ function viewMyCourse() {
                         {{ status }}
                     </span>
                 </section>
+
+                <!-- INVOICE SUMMARY -->
+                <section v-if="status === 'approved' || status === 'active'" class="mt-8">
+                    <div class="flex items-center justify-between gap-3">
+                        <h2 class="text-xl font-bold text-slate-900">
+                            Payment Information
+                        </h2>
+
+                        <span v-if="invoice" class="rounded-full px-3 py-1 text-xs font-bold uppercase" :class="{
+                            'bg-amber-100 text-amber-800': invoice.status === 'unpaid',
+                            'bg-blue-100 text-blue-800': invoice.status === 'pending_verification',
+                            'bg-emerald-100 text-emerald-800': invoice.status === 'paid',
+                            'bg-slate-100 text-slate-700': invoice.status === 'cancelled',
+                        }">
+                            {{ invoice.status.replaceAll('_', ' ') }}
+                        </span>
+                    </div>
+
+                    <!-- Loading / Error / Empty -->
+                    <div v-if="invoiceError"
+                        class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                        {{ invoiceError }}
+                    </div>
+
+                    <div v-else-if="!invoice" class="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+                        <p class="text-sm text-slate-600">
+                            No invoice is available for this enrollment yet.
+                        </p>
+                    </div>
+
+                    <!-- Invoice Card -->
+                    <div v-else class="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        <div class="p-5 sm:p-6">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                        Invoice Number
+                                    </p>
+
+                                    <p class="mt-1 break-all font-bold text-slate-900">
+                                        {{ invoice.invoice_number }}
+                                    </p>
+                                </div>
+
+                                <div class="rounded-xl bg-accent/15 p-3 text-accent">
+                                    <ReceiptText :size="22" />
+                                </div>
+                            </div>
+
+                            <div class="mt-5 space-y-3">
+                                <div class="flex justify-between gap-3 text-sm">
+                                    <span class="text-slate-500">
+                                        Registration Fee
+                                    </span>
+
+                                    <span class="font-semibold text-slate-800">
+                                        {{ formatCurrency(invoice.registration_fee) }}
+                                    </span>
+                                </div>
+
+                                <div class="flex justify-between gap-3 text-sm">
+                                    <span class="text-slate-500">
+                                        First Month Fee
+                                    </span>
+
+                                    <span class="font-semibold text-slate-800">
+                                        {{ formatCurrency(invoice.monthly_fee) }}
+                                    </span>
+                                </div>
+
+                                <div class="border-t border-slate-100 pt-4">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <span class="font-bold text-slate-900">
+                                            Total Amount
+                                        </span>
+
+                                        <span class="text-xl font-extrabold text-slate-900">
+                                            {{ formatCurrency(invoice.total_amount) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-slate-100 bg-slate-50 p-4">
+                            <p class="mb-3 text-sm text-slate-600">
+                                {{
+                                    invoice.status === 'unpaid'
+                                        ? 'Your enrollment has been approved. Complete your payment to activate your enrollment.'
+                                : invoice.status === 'pending_verification'
+                                    ? 'Your payment is currently being verified.'
+                                    : invoice.status === 'paid'
+                                        ? 'Your initial payment has been successfully verified.'
+                                        : 'This invoice has been cancelled.'
+                                }}
+                            </p>
+
+                            <button type="button"
+                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 font-semibold text-white transition hover:opacity-90"
+                                @click="router.push({
+                                    name: 'student.invoice-detail',
+                                    params: { invoiceId: invoice.id }
+                                })">
+                                <ReceiptText :size="17" />
+                                View Invoice Details
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
 
                 <!-- Course information -->
                 <section class="mt-8">

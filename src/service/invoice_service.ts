@@ -105,3 +105,23 @@ export async function fetchInvoicesByCourseId(
 
     return (data ?? []) as Invoice[];
 }
+
+// Fetch invoice by enrollment ID
+export async function fetchInvoiceByEnrollmentId(
+    enrollmentId: string
+): Promise<Invoice | null> {
+    if (!enrollmentId) {
+        throw new Error("Enrollment ID is required.");
+    }
+
+    const { data, error } = await supabase
+        .from(DatabaseTableName.invoicesCollection)
+        .select("*")
+        .eq("enrollment_id", enrollmentId)
+        .eq("invoice_type", "initial")
+        .maybeSingle();
+
+    if (error) throw error;
+
+    return data as Invoice | null;
+}

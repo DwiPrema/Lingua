@@ -26,6 +26,7 @@ import GuestCourseExplorer from "@/views/course/GuestCourseExplorer.vue";
 import CourseDetail from "@/views/course/CourseDetail.vue";
 import ManageStudentPage from "@/views/student/ManageStudentPage.vue";
 import ManageEnrollmentPage from "@/views/enrollments/ManageEnrollmentPage.vue";
+import InvoiceDetailView from "@/views/invoices/InvoiceDetailView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -189,6 +190,16 @@ const router = createRouter({
                     name: "student.course-detail",
                     component: CourseDetail,
                 },
+                {
+                    path: "/student/invoices/:invoiceId",
+                    name: "student.invoice-detail",
+                    component: InvoiceDetailView,
+                    meta: {
+                        requiresAuth: true,
+                        requiresStudent: true,
+                    },
+                },
+
             ],
         },
     ],
