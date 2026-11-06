@@ -1,6 +1,6 @@
 import { DatabaseTableName } from "@/constant/database_table_name";
 import { supabase } from "@/lib/supabase";
-import { Course } from "@/types/course_type";
+import { Course, CreateCourseInput, UpdateCourseInput } from "@/types/course_type";
 
 export async function getAllCourseData(): Promise<Course[]> {
     const { data, error } = await supabase.from(DatabaseTableName.coursesCollection).select().order('created_at', { ascending: false })
@@ -65,7 +65,7 @@ export async function addCourse({
     description,
     organization_id,
     address
-}: Course) {
+}: CreateCourseInput) {
     const {
         data: { user },
         error: authError,
@@ -104,7 +104,7 @@ export async function updateCourse({
     name,
     description,
     address,
-}: Course) {
+}: UpdateCourseInput) {
     const { data, error } = await supabase
         .from(DatabaseTableName.coursesCollection)
         .update({

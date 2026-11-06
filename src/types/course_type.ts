@@ -8,3 +8,17 @@ export interface Course {
     created_at: string,
     updated_at: string,
 }
+
+export interface UpdateCourseInput {
+    id: string;
+    name?: string;
+    description?: string;
+    address?: string;
+}
+
+export interface CreateCourseInput {
+    name: string;
+    description: string;
+    address: string;
+    organization_id: string;
+}

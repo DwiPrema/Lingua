@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import * as courseDataService from "@/service/course_data_service";
-import { Course } from "@/types/course_type";
+import { Course, CreateCourseInput, UpdateCourseInput } from "@/types/course_type";
 
 export const useCourseStores = defineStore("courses", () => {
     const courses = ref<Course[]>([]);
@@ -96,7 +96,7 @@ export const useCourseStores = defineStore("courses", () => {
         }
     }
 
-    async function addCourse(payload: Course) {
+    async function addCourse(payload: CreateCourseInput) {
         loading.value = true;
         error.value = null;
 
@@ -113,7 +113,7 @@ export const useCourseStores = defineStore("courses", () => {
         }
     }
 
-    async function updateCourse(payload: Course) {
+    async function updateCourse(payload: UpdateCourseInput) {
         loading.value = true;
         error.value = null;
 
