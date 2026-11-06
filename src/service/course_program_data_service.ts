@@ -1,6 +1,6 @@
 import { DatabaseTableName } from "@/constant/database_table_name"
 import { supabase } from "@/lib/supabase"
-import { Programs } from "@/types/program_types";
+import { CreateProgramInput, Programs, UpdateProgramInput } from "@/types/program_types";
 
 export const courseProgramService = {
 
@@ -11,7 +11,7 @@ export const courseProgramService = {
         description,
         registration_fee,
         monthly_fee,
-    }: Programs) {
+    }: CreateProgramInput) {
         const { data, error } = await supabase.from(DatabaseTableName.programsCollection)
             .insert({
                 course_id: course_id,
@@ -38,7 +38,7 @@ export const courseProgramService = {
         description,
         registration_fee,
         monthly_fee,
-    }: Programs) {
+    }: UpdateProgramInput) {
         const { data, error } = await supabase.from(DatabaseTableName.programsCollection)
             .update({
                 name: name,

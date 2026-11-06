@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 import { courseProgramService } from "@/service/course_program_data_service";
-import { Programs } from "@/types/program_types";
+import { CreateProgramInput, Programs, UpdateProgramInput } from "@/types/program_types";
 
 export const useCourseProgramStore = defineStore(
     "course_program",
@@ -13,7 +13,7 @@ export const useCourseProgramStore = defineStore(
         const error = ref(null);
 
         // CREATE
-        async function addCourseProgram(payload: Programs) {
+        async function addCourseProgram(payload: CreateProgramInput) {
             loading.value = true;
             error.value = null;
 
@@ -35,7 +35,7 @@ export const useCourseProgramStore = defineStore(
         }
 
         // UPDATE
-        async function updateCourseProgram(payload: Programs) {
+        async function updateCourseProgram(payload: UpdateProgramInput) {
             loading.value = true;
             error.value = null;
 
