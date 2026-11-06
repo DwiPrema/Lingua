@@ -1,23 +1,24 @@
 import { DatabaseTableName } from "@/constant/database_table_name"
 import { supabase } from "@/lib/supabase"
+import { Programs } from "@/types/program_types";
 
 export const courseProgramService = {
 
     //ADD COURSE PROGRAM
     async addCourseProgram({
-        courseId,
+        course_id,
         name,
         description,
-        registrationFee,
-        monthlyFee,
-    }) {
+        registration_fee,
+        monthly_fee,
+    }: Programs) {
         const { data, error } = await supabase.from(DatabaseTableName.programsCollection)
             .insert({
-                course_id: courseId,
+                course_id: course_id,
                 name: name,
                 description: description,
-                registration_fee: registrationFee,
-                monthly_fee: monthlyFee,
+                registration_fee: registration_fee,
+                monthly_fee: monthly_fee,
             })
             .select()
             .single();
@@ -32,20 +33,20 @@ export const courseProgramService = {
 
     //UPDATE COURSE PROGRAM
     async updateCourseProgram({
-        programId,
+        id,
         name,
         description,
-        registrationFee,
-        monthlyFee,
-    }) {
+        registration_fee,
+        monthly_fee,
+    }: Programs) {
         const { data, error } = await supabase.from(DatabaseTableName.programsCollection)
             .update({
                 name: name,
                 description: description,
-                registration_fee: registrationFee,
-                monthly_fee: monthlyFee,
+                registration_fee: registration_fee,
+                monthly_fee: monthly_fee,
             })
-            .eq('id', programId)
+            .eq('id', id)
             .select().single();
 
             if (error) {
@@ -57,7 +58,7 @@ export const courseProgramService = {
 
 
     //DELETE COURSE PROGRAM
-    async deleteCourseProgram(programId) {
+    async deleteCourseProgram(programId: string) {
         const {error} = await supabase.from(DatabaseTableName.programsCollection).delete().eq('id', programId)
 
         if(error) {
@@ -67,7 +68,7 @@ export const courseProgramService = {
 
 
     //GET ALL COURSE PROGRAM
-    async getAllCourseProgram(courseId){
+    async getAllCourseProgram(courseId: string){
         const {data, error} = await supabase.from(DatabaseTableName.programsCollection).select().eq('course_id', courseId);
 
         if(error) {

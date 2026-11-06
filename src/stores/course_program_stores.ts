@@ -2,28 +2,29 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 import { courseProgramService } from "@/service/course_program_data_service";
+import { Programs } from "@/types/program_types";
 
 export const useCourseProgramStore = defineStore(
     "course_program",
     () => {
         // STATE
-        const coursePrograms = ref([]);
+        const coursePrograms = ref<Programs[]>([]);
         const loading = ref(false);
         const error = ref(null);
 
         // CREATE
-        async function addCourseProgram(payload) {
+        async function addCourseProgram(payload: Programs) {
             loading.value = true;
             error.value = null;
 
             try {
-                const courseProgram =
+                const courseProgram: Programs =
                     await courseProgramService.addCourseProgram(payload);
 
                 coursePrograms.value.push(courseProgram);
 
                 return courseProgram;
-            } catch (err) {
+            } catch (err: any) {
                 error.value =
                     err.message ?? "Failed to create course program.";
 
@@ -34,7 +35,7 @@ export const useCourseProgramStore = defineStore(
         }
 
         // UPDATE
-        async function updateCourseProgram(payload) {
+        async function updateCourseProgram(payload: Programs) {
             loading.value = true;
             error.value = null;
 
@@ -44,7 +45,7 @@ export const useCourseProgramStore = defineStore(
 
                 const index = coursePrograms.value.findIndex(
                     (program) =>
-                        String(program.id) === String(payload.programId),
+                        String(program.id) === String(payload.id),
                 );
 
                 if (index !== -1) {
@@ -52,7 +53,7 @@ export const useCourseProgramStore = defineStore(
                 }
 
                 return updatedCourseProgram;
-            } catch (err) {
+            } catch (err: any) {
                 error.value =
                     err.message ?? "Failed to update course program.";
 
@@ -63,7 +64,7 @@ export const useCourseProgramStore = defineStore(
         }
 
         // DELETE
-        async function deleteCourseProgram(programId) {
+        async function deleteCourseProgram(programId: string) {
             loading.value = true;
             error.value = null;
 
@@ -73,7 +74,7 @@ export const useCourseProgramStore = defineStore(
                 coursePrograms.value = coursePrograms.value.filter(
                     (program) => String(program.id) !== String(programId),
                 );
-            } catch (err) {
+            } catch (err: any) {
                 error.value =
                     err.message ?? "Failed to delete course program.";
 
@@ -84,7 +85,7 @@ export const useCourseProgramStore = defineStore(
         }
 
         // READ: GET ALL PROGRAMS FOR A COURSE
-        async function getAllCourseProgram(courseId) {
+        async function getAllCourseProgram(courseId: string) {
             loading.value = true;
             error.value = null;
 
@@ -93,7 +94,7 @@ export const useCourseProgramStore = defineStore(
                     await courseProgramService.getAllCourseProgram(courseId);
 
                 return coursePrograms.value;
-            } catch (err) {
+            } catch (err: any) {
                 error.value = err.message ?? "Failed to load course programs.";
 
                 throw err;
@@ -103,7 +104,7 @@ export const useCourseProgramStore = defineStore(
         }
 
         // READ: GET ONE PROGRAM BY COURSE ID AND PROGRAM ID
-        async function getCourseProgramById(courseId, programId) {
+        async function getCourseProgramById(courseId: string, programId: string) {
             if (!courseId || !programId) {
                 throw new Error("Course ID and program ID are required.");
             }
