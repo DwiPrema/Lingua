@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import * as courseDataService from "@/service/course_data_service";
+import { Course } from "@/types/course_type";
 
 export const useCourseStores = defineStore("courses", () => {
-    const courses = ref([]);
+    const courses = ref<Course[]>([]);
     const loading = ref(false);
     const error = ref(null);
 
@@ -14,7 +15,7 @@ export const useCourseStores = defineStore("courses", () => {
         try {
             courses.value = await courseDataService.getAllCourseData();
             return courses.value;
-        } catch (err) {
+        } catch (err: any) {
             error.value = err.message ?? "Failed to load data.";
             throw err;
         } finally {
@@ -29,7 +30,7 @@ export const useCourseStores = defineStore("courses", () => {
         try {
             courses.value = await courseDataService.getCourseForLandingPreview();
             return courses.value;
-        } catch (err) {
+        } catch (err: any) {
             error.value = err.message ?? "Failed to load data.";
             throw err;
         } finally {
@@ -44,7 +45,7 @@ export const useCourseStores = defineStore("courses", () => {
         try {
             courses.value = await courseDataService.fetchMyCourses();
             return courses.value;
-        } catch (err) {
+        } catch (err: any) {
             error.value = err.message ?? "Failed to load courses.";
             throw err;
         } finally {
@@ -52,7 +53,7 @@ export const useCourseStores = defineStore("courses", () => {
         }
     }
 
-    async function fetchMyCourseById(courseId) {
+    async function fetchMyCourseById(courseId: string) {
         loading.value = true;
         error.value = null;
 
@@ -71,7 +72,7 @@ export const useCourseStores = defineStore("courses", () => {
             }
 
             return course;
-        } catch (err) {
+        } catch (err: any) {
             error.value = err.message ?? "Failed to load course.";
             throw err;
         } finally {
@@ -79,7 +80,7 @@ export const useCourseStores = defineStore("courses", () => {
         }
     }
 
-    async function fetchCourseById(courseId) {
+    async function fetchCourseById(courseId: string) {
         loading.value = true;
         error.value = null;
 
@@ -87,7 +88,7 @@ export const useCourseStores = defineStore("courses", () => {
             const course = await courseDataService.fetchCourseById(courseId);
 
             return course;
-        } catch (err) {
+        } catch (err: any) {
             error.value = err.message ?? "Failed to load course.";
             throw err;
         } finally {
@@ -95,7 +96,7 @@ export const useCourseStores = defineStore("courses", () => {
         }
     }
 
-    async function addCourse(payload) {
+    async function addCourse(payload: Course) {
         loading.value = true;
         error.value = null;
 
@@ -104,7 +105,7 @@ export const useCourseStores = defineStore("courses", () => {
             courses.value.push(course);
 
             return course;
-        } catch (err) {
+        } catch (err: any) {
             error.value = err.message ?? "Failed to create course.";
             throw err;
         } finally {
@@ -112,7 +113,7 @@ export const useCourseStores = defineStore("courses", () => {
         }
     }
 
-    async function updateCourse(payload) {
+    async function updateCourse(payload: Course) {
         loading.value = true;
         error.value = null;
 
@@ -122,7 +123,7 @@ export const useCourseStores = defineStore("courses", () => {
 
             const index = courses.value.findIndex(
                 (course) =>
-                    String(course.id) === String(payload.courseId),
+                    String(course.id) === String(payload.id),
             );
 
             if (index !== -1) {
@@ -130,7 +131,7 @@ export const useCourseStores = defineStore("courses", () => {
             }
 
             return updatedCourse;
-        } catch (err) {
+        } catch (err: any) {
             error.value = err.message ?? "Failed to update course.";
             throw err;
         } finally {
@@ -138,7 +139,7 @@ export const useCourseStores = defineStore("courses", () => {
         }
     }
 
-    async function deleteCourse(courseId) {
+    async function deleteCourse(courseId: string) {
         loading.value = true;
         error.value = null;
 
@@ -148,7 +149,7 @@ export const useCourseStores = defineStore("courses", () => {
             courses.value = courses.value.filter(
                 (course) => String(course.id) !== String(courseId),
             );
-        } catch (err) {
+        } catch (err: any) {
             error.value = err.message ?? "Failed to delete course.";
             throw err;
         } finally {

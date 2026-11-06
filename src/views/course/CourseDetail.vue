@@ -1,10 +1,11 @@
-<script setup>
+<script setup lang="ts">
 import { useAuthStore } from '@/stores/auth_stores.js';
 import { formatCurrency } from '@/constant/format_currency'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCourseStores } from '@/stores/course_stores'
 import { useCourseProgramStore } from '@/stores/course_program_stores'
+import { Course } from '@/types/course_type';
 
 const route = useRoute()
 const router = useRouter()
@@ -13,10 +14,10 @@ const courseStore = useCourseStores()
 const courseProgramStore = useCourseProgramStore()
 const authStore = useAuthStore()
 
-const course = ref(null)
-const selectedProgramId = ref(null)
+const course = ref<Course | null>(null)
+const selectedProgramId = ref<string | null>(null)
 const pageLoading = ref(false)
-const pageError = ref(null)
+const pageError = ref<string | null>(null)
 
 const programs = computed(
     () => courseProgramStore.coursePrograms ?? [],
@@ -30,7 +31,7 @@ const selectedProgram = computed(
 )
 
 const loadCourseDetail = async () => {
-    const courseId = route.params.id
+    const courseId: string = route.params.id as string
 
     pageLoading.value = true
     pageError.value = null
@@ -50,15 +51,16 @@ const loadCourseDetail = async () => {
         course.value = courseData
 
         await courseProgramStore.getAllCourseProgram(courseId)
-    } catch (error) {
+    } catch (error: unknown) {
+        const err = error as {message?: string}
         pageError.value =
-            error?.message || 'Something went wrong while loading the course.'
+            err?.message || 'Something went wrong while loading the course.'
     } finally {
         pageLoading.value = false
     }
 }
 
-const selectProgram = (programId) => {
+const selectProgram = (programId: string) => {
     selectedProgramId.value =
         selectedProgramId.value === programId ? null : programId
 }

@@ -1,7 +1,8 @@
 import { DatabaseTableName } from "@/constant/database_table_name";
 import { supabase } from "@/lib/supabase";
+import { Course } from "@/types/course_type";
 
-export async function getAllCourseData() {
+export async function getAllCourseData(): Promise<Course[]> {
     const { data, error } = await supabase.from(DatabaseTableName.coursesCollection).select().order('created_at', { ascending: false })
 
     if (error) {
@@ -11,7 +12,7 @@ export async function getAllCourseData() {
     return data
 }
 
-export async function getCourseForLandingPreview() {
+export async function getCourseForLandingPreview(): Promise<Course[]> {
     const { data, error } = await supabase.from(DatabaseTableName.coursesCollection).select().limit(6).order('created_at', { ascending: false })
 
     if (error) {
@@ -22,7 +23,7 @@ export async function getCourseForLandingPreview() {
 }
 
 // GET MY COURSES
-export async function fetchMyCourses() {
+export async function fetchMyCourses(): Promise<Course[]> {
   const {
     data: { user },
     error: authError,
@@ -42,7 +43,7 @@ export async function fetchMyCourses() {
   return data ?? [];
 }
 
-export async function fetchCourseById(courseId) {
+export async function fetchCourseById(courseId: string): Promise<Course> {
     const { data, error } = await supabase
         .from("courses")
         .select("*")
@@ -62,9 +63,9 @@ export async function fetchCourseById(courseId) {
 export async function addCourse({
     name,
     description,
-    organizationId,
-    address,
-}) {
+    organization_id,
+    address
+}: Course) {
     const {
         data: { user },
         error: authError,
@@ -84,7 +85,7 @@ export async function addCourse({
             owner_id: user.id,
             name,
             description,
-            organization_id: organizationId,
+            organization_id: organization_id,
             address,
         })
         .select()
@@ -99,11 +100,11 @@ export async function addCourse({
 
 // UPDATE COURSE
 export async function updateCourse({
-    courseId,
+    id,
     name,
     description,
     address,
-}) {
+}: Course) {
     const { data, error } = await supabase
         .from(DatabaseTableName.coursesCollection)
         .update({
@@ -111,7 +112,7 @@ export async function updateCourse({
             description,
             address,
         })
-        .eq("id", courseId)
+        .eq("id", id)
         .select()
         .single();
 
@@ -123,7 +124,7 @@ export async function updateCourse({
 }
 
 // DELETE COURSE
-export async function deleteCourse(courseId) {
+export async function deleteCourse(courseId: string) {
     const { error } = await supabase
         .from(DatabaseTableName.coursesCollection)
         .delete()
