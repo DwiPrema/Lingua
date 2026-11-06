@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, reactive, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
@@ -15,6 +15,8 @@ import {
 import { useCourseStores } from "@/stores/course_stores";
 import { useCourseProgramStore } from "@/stores/course_program_stores";
 import { formatCurrency } from "@/constant/format_currency";
+import { Course } from "@/types/course_type";
+import { Programs } from "@/types/program_types";
 
 const route = useRoute();
 const router = useRouter();
@@ -24,8 +26,16 @@ const courseProgramStore = useCourseProgramStore();
 
 const { loading, error } = storeToRefs(courseProgramStore);
 
-const courseId = computed(() => route.params.courseId ?? null);
-const programId = computed(() => route.params.programId ?? null);
+const courseId = computed(() => {
+    const id = route.params.courseId;
+    return typeof id === "string" ? id : null;
+});
+
+const programId = computed(() => {
+    const id = route.params.programId;
+
+    return typeof id == "string" ? id : null
+});
 
 const isEditMode = computed(() => Boolean(programId.value));
 
@@ -45,9 +55,9 @@ const submitLabel = computed(() =>
 
 
 const initializing = ref(true);
-const validationMessage = ref("");
-const selectedProgram = ref(null);
-const course = ref(null);
+const validationMessage = ref<string>("");
+const selectedProgram = ref<Programs | null>(null);
+const course = ref<Course | null>(null);
 
 const form = reactive({
     name: "",
@@ -65,13 +75,13 @@ function resetForm() {
     selectedProgram.value = null;
 }
 
-function parseAmount(value) {
+function parseAmount(value: string | number): number | null {
     const digits = String(value).replace(/\D/g, "");
 
     return digits === "" ? null : Number(digits);
 }
 
-function handleFeeInput(field, value) {
+function handleFeeInput(field: keyof typeof form, value: string) {
     const digits = String(value).replace(/\D/g, "");
 
     if (!digits) {
@@ -79,16 +89,16 @@ function handleFeeInput(field, value) {
         return;
     }
 
-    form[field] = formatCurrency(Number(digits));
+    form[field as keyof typeof form] = formatCurrency(digits);
 }
 
-function populateForm(program) {
+function populateForm(program: Programs) {
     selectedProgram.value = program;
 
     form.name = program.name ?? "";
     form.description = program.description ?? "";
-    form.registrationFee = formatCurrency(program.registration_fee);
-    form.monthlyFee = formatCurrency(program.monthly_fee);
+    form.registrationFee = program.registration_fee.toString();
+    form.monthlyFee = program.monthly_fee.toString();
 }
 
 watch(
@@ -120,7 +130,7 @@ watch(
                     );
 
                 const parentCourseId =
-                    program.courseId ?? program.course_id;
+                    program.course_id ?? program.course_id;
 
                 if (
                     parentCourseId != null &&
@@ -133,7 +143,8 @@ watch(
 
                 populateForm(program);
             }
-        } catch (err) {
+        } catch (error: unknown) {
+            const err = error as { message?: string }
             validationMessage.value =
                 err.message ?? "Failed to load course program.";
         } finally {
@@ -187,6 +198,10 @@ function validateForm() {
     return true;
 }
 
+const course_id = computed(
+    () => course.value?.id ?? ""
+);
+
 // SUBMIT FORM
 async function handleSubmit() {
     validationMessage.value = "";
@@ -202,28 +217,28 @@ async function handleSubmit() {
     const payload = {
         name: form.name.trim(),
         description: form.description.trim(),
-        registrationFee: parseAmount(form.registrationFee),
-        monthlyFee: parseAmount(form.monthlyFee),
+        registration_fee: parseAmount(form.registrationFee),
+        monthly_fee: parseAmount(form.monthlyFee),
     };
 
     try {
-        if (isEditMode.value) {
+        if (isEditMode.value && selectedProgram.value) {
             await courseProgramStore.updateCourseProgram({
-                programId: selectedProgram.value.id,
+                id: selectedProgram.value.id,
                 ...payload,
             });
         } else {
             await courseProgramStore.addCourseProgram({
-                courseId: course.value.id,
+                course_id: course_id.value,
                 ...payload,
-                isActive: true,
             });
         }
 
         router.back();
-    } catch (err) {
-        console.error("Failed to save course program:", err);
+    } catch (error) {
+        console.error("Failed to save course program:", error);
 
+        const err = error as { message?: string }
         validationMessage.value =
             err.message ?? "Failed to save course program.";
     }
@@ -356,7 +371,7 @@ function handleCancel() {
                                         @input="
                                             handleFeeInput(
                                                 'registrationFee',
-                                                $event.target.value,
+                                                ($event.target as HTMLInputElement).value,
                                             )
                                             " />
                                 </div>
@@ -386,7 +401,7 @@ function handleCancel() {
                                         @input="
                                             handleFeeInput(
                                                 'monthlyFee',
-                                                $event.target.value,
+                                                ($event.target as HTMLInputElement).value
                                             )
                                             " />
                                 </div>
@@ -452,7 +467,7 @@ function handleCancel() {
                                     ? isEditMode
                                         ? "Updating Program..."
                                         : "Creating Program..."
-                            : submitLabel
+                                    : submitLabel
                             }}
                         </button>
                     </div>

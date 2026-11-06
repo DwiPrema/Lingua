@@ -1,5 +1,5 @@
-<script setup>
-import {
+<script setup lang="ts">
+import { 
   computed,
   reactive,
   ref,
@@ -17,6 +17,7 @@ import {
 
 import { useCourseStores } from "@/stores/course_stores";
 import { useOrganizationStore } from "@/stores/organization_stores";
+import { Course } from "@/types/course_type";
 
 const router = useRouter();
 const route = useRoute();
@@ -27,39 +28,34 @@ const organizationStore = useOrganizationStore();
 const { loading, error } = storeToRefs(courseStore);
 const { organization } = storeToRefs(organizationStore);
 
-const courseId = computed(
-  () => route.params.courseId ?? null,
-);
+const courseId = computed(() => {
+  const id = route.params.courseId;
+  return typeof id === "string" ? id : null;
+});
 
-const isEditMode = computed(
-  () => Boolean(courseId.value),
-);
+const isEditMode = computed(() => Boolean(courseId.value));
 
 const pageTitle = computed(() =>
-  isEditMode.value
-    ? "Edit Course"
-    : "Create a New Course",
+  isEditMode.value ? "Edit Course" : "Create a New Course"
 );
 
 const pageDescription = computed(() =>
   isEditMode.value
     ? "Update the details of your course."
-    : "Set up a new course for your organization.",
+    : "Set up a new course for your organization."
 );
 
 const submitLabel = computed(() =>
-  isEditMode.value
-    ? "Update Course"
-    : "Add Course",
+  isEditMode.value ? "Update Course" : "Add Course"
 );
 
 const organizationId = computed(
-  () => organization.value?.id ?? "",
+  () => organization.value?.id ?? ""
 );
 
 const initializing = ref(true);
 const validationMessage = ref("");
-const selectedCourse = ref(null);
+const selectedCourse = ref<Course | null>(null);
 
 const form = reactive({
   name: "",
@@ -74,7 +70,7 @@ function resetForm() {
   selectedCourse.value = null;
 }
 
-function populateForm(course) {
+function populateForm(course: Course) {
   selectedCourse.value = course;
 
   form.name = course.name ?? "";
@@ -92,13 +88,16 @@ watch(
     try {
       if (id) {
         const course = await courseStore.fetchMyCourseById(id);
-        populateForm(course);
+        if (course) {
+          populateForm(course);
+        }
       } else if (!organization.value) {
         await organizationStore.fetchMyOrganization();
       }
-    } catch (err) {
+    } catch (error: unknown) {
+      const err = error as { message?: string };
       validationMessage.value =
-        err.message ?? "Failed to initialize the course form.";
+        err?.message ?? "Failed to initialize the course form.";
     } finally {
       initializing.value = false;
     }
@@ -106,22 +105,19 @@ watch(
   { immediate: true },
 );
 
-function validateForm() {
+function validateForm(): boolean {
   if (!form.name.trim() || !form.address.trim()) {
-    validationMessage.value =
-      "Please complete all required fields.";
+    validationMessage.value = "Please complete all required fields.";
     return false;
   }
 
   if (isEditMode.value && !selectedCourse.value?.id) {
-    validationMessage.value =
-      "Course data could not be found.";
+    validationMessage.value = "Course data could not be found.";
     return false;
   }
 
   if (!isEditMode.value && !organizationId.value) {
-    validationMessage.value =
-      "Your organization could not be found. Please try again.";
+    validationMessage.value = "Your organization could not be found. Please try again.";
     return false;
   }
 
@@ -141,21 +137,23 @@ async function handleSubmit() {
   };
 
   try {
-    if (isEditMode.value) {
+    if (isEditMode.value && selectedCourse.value) {
       await courseStore.updateCourse({
-        courseId: selectedCourse.value.id,
+        id: selectedCourse.value.id,
         ...payload,
       });
     } else {
       await courseStore.addCourse({
         ...payload,
-        organizationId: organizationId.value,
+        organization_id: organizationId.value,
       });
     }
 
     router.back();
-  } catch (err) {
+  } catch (error: unknown) {
+    const err = error as { message?: string };
     console.error("Failed to save course:", err);
+    validationMessage.value = err?.message || "Failed to save the course.";
   }
 }
 

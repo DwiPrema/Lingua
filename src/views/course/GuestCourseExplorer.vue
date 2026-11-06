@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import CoursesExplorer from './CoursesExplorer.vue';
-
 </script>
 
 <template>

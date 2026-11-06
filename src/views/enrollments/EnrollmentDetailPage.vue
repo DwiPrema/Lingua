@@ -505,7 +505,7 @@ function viewMyCourse() {
                 <!-- Status-specific actions -->
                 <section class="mt-8 space-y-4">
                     <button v-if="status === 'approved' || status === 'active'" type="button"
-                        class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3.5 font-semibold text-white transition hover:bg-rose-900"
+                        class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3.5 font-semibold text-white transition hover:bg-accent/90"
                         @click="viewMyCourse">
                         <BookOpen :size="16" />
                         View My Course

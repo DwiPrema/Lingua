@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useCourseStores } from '@/stores/course_stores.js';
 import { CircleX, MapPin } from '@lucide/vue';
 import { onMounted } from 'vue';

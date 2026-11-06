@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -20,6 +19,8 @@ import {
     TriangleAlert,
 } from "@lucide/vue";
 import { Invoice } from "@/types/invoice_type";
+import { Course } from "@/types/course_type";
+import { Programs } from "@/types/program_types";
 
 const route = useRoute();
 const router = useRouter();
@@ -31,8 +32,8 @@ const courseProgramStore = useCourseProgramStore();
 
 const invoice = ref<Invoice | null>(null);
 const enrollment = ref(null);
-const course = ref(null);
-const program = ref(null);
+const course = ref<Course | null>(null);
+const program = ref<Programs | null>(null);
 
 const loadingPage = ref(true);
 const pageError = ref("");
