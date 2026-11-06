@@ -3,10 +3,11 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { supabase } from '@/lib/supabase'
 import { organizationService } from '@/service/organization_service'
+import { Organization } from '@/types/organization'
 
 export const useOrganizationStore = defineStore('organization', () => {
   // State
-  const organization = ref(null)
+  const organization = ref<Organization | null>(null)
   const loading = ref(false)
   const error = ref(null)
 
@@ -32,7 +33,7 @@ export const useOrganizationStore = defineStore('organization', () => {
         await organizationService.getByOwnerId(user.id)
 
       return organization.value
-    } catch (err) {
+    } catch (err: any) {
       error.value = err.message || 'Gagal mengambil data organization.'
       throw err
     } finally {
@@ -40,7 +41,7 @@ export const useOrganizationStore = defineStore('organization', () => {
     }
   }
 
-  async function saveOrganization(payload) {
+  async function saveOrganization(payload: Organization) {
     loading.value = true
     error.value = null
 
@@ -54,20 +55,12 @@ export const useOrganizationStore = defineStore('organization', () => {
         throw new Error('Silakan login kembali.')
       }
 
-      const savedOrganization = await organizationService.createOrganization({
-        ownerId: user.id,
-        name: payload.name,
-        bankName: payload.bankName,
-        accountNumber: payload.accountNumber,
-        accountName: payload.accountName,
-        qrisUrl: payload.qrisUrl,
-        paymentNotes: payload.paymentNotes,
-      })
+      const savedOrganization = await organizationService.createOrganization(payload)
 
       organization.value = savedOrganization
 
       return savedOrganization
-    } catch (err) {
+    } catch (err: any) {
       error.value = err.message || 'Gagal menyimpan organization.'
       throw err
     } finally {
