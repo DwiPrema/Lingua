@@ -2,11 +2,12 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import * as userDataService from "@/service/user_data_service";
 import { useAuthStore } from "./auth_stores";
+import { UpdateUserPayload } from "@/types/user_type";
 
 export const useUserDataStores = defineStore('users', () => {
     const userData = ref(null)
     const loading = ref(false)
-    const error = ref(null)
+    const error = ref<string | null>(null)
 
     async function getUserData() {
         const authStore = useAuthStore();
@@ -29,7 +30,8 @@ export const useUserDataStores = defineStore('users', () => {
 
             console.log("User data:", userData.value);
         } catch (err) {
-            error.value = err.message ?? "User Data Not Found!";
+            const e = err as {message?: string}
+            error.value = e.message ?? "User Data Not Found!";
             console.error(err);
         } finally {
             loading.value = false;
@@ -37,7 +39,7 @@ export const useUserDataStores = defineStore('users', () => {
         }
     }
 
-    async function updateUserData(payload) {
+    async function updateUserData(payload: UpdateUserPayload) {
         loading.value = true,
             error.value = null
 
@@ -46,11 +48,12 @@ export const useUserDataStores = defineStore('users', () => {
         const currentUser = authStore.currentUser;
 
         try {
-            const updatedData = await userDataService.updateDataUser(currentUser.id, payload)
+            const updatedData = await userDataService.updateDataUser(currentUser?.id ?? "", payload)
             userData.value = updatedData
             return updatedData
         } catch (err) {
-            error.value = err.message ?? "Failed to update profile data.";
+            const e = err as {message?: string}
+            error.value = e.message ?? "Failed to update profile data.";
             throw err;
         } finally {
             loading.value = false;

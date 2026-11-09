@@ -1,78 +1,93 @@
-<script setup>
-import LoadingDotsScale from '@/components/LoadingDotsScale.vue';
-import { useAuthStore } from '@/stores/auth_stores';
-import { ArrowLeft } from '@lucide/vue';
-import { nextTick, onUnmounted, ref } from 'vue';
+<script setup lang="ts">
+import LoadingDotsScale from "@/components/LoadingDotsScale.vue";
+import { useAuthStore } from "@/stores/auth_stores";
+import { ArrowLeft } from "@lucide/vue";
+import { nextTick, onUnmounted, ref } from "vue";
 
 const authStore = useAuthStore();
-const signupErrorRef = ref(null);
 
-const resendCooldown = ref(0);
-const resendSuccess = ref('');
-const resendError = ref('');
+const signupErrorRef = ref<HTMLElement | null>(null);
 
-let resendTimer = null;
+const resendCooldown = ref<number>(0);
+const resendSuccess = ref<string>("");
+const resendError = ref<string>("");
 
-function startResendCooldown() {
+let resendTimer: ReturnType<typeof setInterval> | null = null;
+
+function startResendCooldown(): void {
     resendCooldown.value = 60;
 
-    clearInterval(resendTimer);
+    if (resendTimer !== null) {
+        clearInterval(resendTimer);
+    }
 
     resendTimer = setInterval(() => {
         if (resendCooldown.value > 0) {
-            resendCooldown.value--;
+            resendCooldown.value -= 1;
         }
 
-        if (resendCooldown.value <= 0) {
+        if (resendCooldown.value <= 0 && resendTimer !== null) {
             clearInterval(resendTimer);
             resendTimer = null;
         }
     }, 1000);
 }
 
-async function handleResendOtp() {
+function getErrorMessage(
+    error: unknown,
+    fallback = "Failed to resend verification code.",
+): string {
     if (
-        authStore.loading ||
-        resendCooldown.value > 0
+        typeof error === "object" &&
+        error !== null &&
+        "message" in error &&
+        typeof error.message === "string"
     ) {
+        return error.message;
+    }
+
+    return fallback;
+}
+
+async function handleResendOtp(): Promise<void> {
+    if (authStore.loading || resendCooldown.value > 0) {
         return;
     }
 
-    resendSuccess.value = '';
-    resendError.value = '';
+    resendSuccess.value = "";
+    resendError.value = "";
 
     try {
         await authStore.handleResendOtp();
 
         resendSuccess.value =
-            'A new verification code has been sent to your email.';
+            "A new verification code has been sent to your email.";
 
         startResendCooldown();
-    } catch (err) {
-        resendError.value =
-            err?.message ||
-            'Failed to resend verification code.';
+    } catch (error: unknown) {
+        resendError.value = getErrorMessage(error);
+    }
+}
+
+async function handleSignUp(): Promise<void> {
+    await authStore.handleSignUp();
+
+    if (authStore.error || Object.keys(authStore.errors).length > 0) {
+        await nextTick();
+
+        signupErrorRef.value?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+        });
     }
 }
 
 onUnmounted(() => {
-    if (resendTimer) {
+    if (resendTimer !== null) {
         clearInterval(resendTimer);
+        resendTimer = null;
     }
 });
-
-async function handleSignUp() {
-    await authStore.handleSignUp();
-
-    if (authStore.error) {
-        await nextTick();
-
-        signupErrorRef.value?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-        });
-    }
-}
 </script>
 
 <template>
@@ -117,7 +132,7 @@ async function handleSignUp() {
 
                     <button type="button" @click="authStore.router.push('/')"
                         class="mb-6 inline-flex items-center gap-2 rounded-lg text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-dark-background">
-                        <ArrowLeft size="24" />
+                        <ArrowLeft :size="24" />
                         Back
                     </button>
 

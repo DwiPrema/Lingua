@@ -1,7 +1,7 @@
 
 import { DatabaseTableName } from '@/constant/database_table_name'
 import { supabase } from '@/lib/supabase'
-import { Organization } from '@/types/organization'
+import { Organization } from '@/types/organization_type'
 
 const ORGANIZATIONS_TABLE = DatabaseTableName.organizationsCollection
 const ORGANIZATION_MEMBERS_TABLE = DatabaseTableName.organizationMemberCollection

@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import type {
     Payment,
     SubmitPaymentPayload,
-} from "@/types/payment_types";
+} from "@/types/payment_type";
 
 // =====================================================
 // Constants

@@ -1,5 +1,4 @@
-
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -10,6 +9,9 @@ import { StatusEnrollments } from '@/constant/enrollment_status'
 import { EnrollmentException } from '@/utils/exception/enrollment_exception'
 import { useAuthStore } from '@/stores/auth_stores'
 import { formatCurrency } from '@/constant/format_currency'
+import { Course } from '@/types/course_type'
+import { Programs } from '@/types/program_type'
+import { EnrollmentForm } from '@/types/enrollment_type'
 
 const route = useRoute()
 const router = useRouter()
@@ -19,15 +21,15 @@ const courseProgramStore = useCourseProgramStore()
 const enrollmentStore = useEnrollmentStores()
 const authStore = useAuthStore()
 
-const course = ref(null)
-const program = ref(null)
+const course = ref<Course | null>(null)
+const program = ref<Programs | null>(null)
 
-const loadingPage = ref(true)
-const pageError = ref('')
-const formError = ref('')
-const showConfirmation = ref(false)
+const loadingPage = ref<boolean>(true)
+const pageError = ref<string>('')
+const formError = ref<string>('')
+const showConfirmation = ref<boolean>(false)
 
-const form = reactive({
+const form = reactive<EnrollmentForm>({
     fullname: '',
     phone: '',
     education_level: '',
@@ -35,7 +37,7 @@ const form = reactive({
     address: '',
 })
 
-const educationLevels = [
+const educationLevels: string[] = [
     'Elementary School',
     'Junior High School',
     'Senior High School',
@@ -43,28 +45,25 @@ const educationLevels = [
     'Other',
 ]
 
-const courseId = computed(() => route.params.courseId)
-const programId = computed(() => route.params.programId)
+const courseId = computed(() => route.params.courseId as string)
+const programId = computed(() => route.params.programId as string)
 
-const studentId = computed(
+const studentId = computed<string | null>(
     () => authStore.user?.id ?? authStore.session?.user?.id ?? null,
 )
 
-const registrationFee = computed(
-    () => program.value?.registrationFee
-        ?? program.value?.registration_fee
-        ?? 0,
+const registrationFee = computed<number>(
+    () => program.value?.registration_fee ?? 0
 )
 
-const monthlyFee = computed(
-    () => program.value?.monthlyFee
-        ?? program.value?.monthly_fee
+const monthlyFee = computed<number>(
+    () => program.value?.monthly_fee
         ?? 0,
 )
 
 onMounted(loadEnrollmentData)
 
-async function loadEnrollmentData() {
+async function loadEnrollmentData(): Promise<void> {
     loadingPage.value = true
     pageError.value = ''
 
@@ -79,8 +78,8 @@ async function loadEnrollmentData() {
             await courseProgramStore.getAllCourseProgram(courseId.value)
 
         program.value = programs.find(
-            (item) => String(item.id) === String(programId.value),
-        )
+            (item: Programs) => String(item.id) === String(programId.value),
+        ) ?? null
 
         if (!course.value) {
             throw new Error('Course not found.')
@@ -89,7 +88,7 @@ async function loadEnrollmentData() {
         if (!program.value) {
             throw new Error('Program not found.')
         }
-    } catch (err) {
+    } catch (err: any) {
         pageError.value =
             err?.message ?? 'Unable to load enrollment information.'
     } finally {
@@ -97,7 +96,7 @@ async function loadEnrollmentData() {
     }
 }
 
-function validateForm() {
+function validateForm(): boolean {
     if (!studentId.value) {
         formError.value = 'Please sign in before enrolling.'
         return false
@@ -123,12 +122,12 @@ function validateForm() {
     return true
 }
 
-function reviewEnrollment() {
+function reviewEnrollment(): void {
     if (!validateForm()) return
     showConfirmation.value = true
 }
 
-async function submitEnrollment() {
+async function submitEnrollment(): Promise<void> {
     if (enrollmentStore.submitting) return
 
     if (!validateForm()) {
@@ -137,8 +136,12 @@ async function submitEnrollment() {
     }
 
     try {
+        if (!course.value || !program.value) {
+            throw new Error('Course or program data is missing.')
+        }
+
         const payload = {
-            student_id: studentId.value,
+            student_id: studentId.value as string,
             course_id: course.value.id,
             program_id: program.value.id,
             fullname: form.fullname.trim(),
@@ -146,7 +149,6 @@ async function submitEnrollment() {
             education_level: form.education_level,
             school_name: form.school_name.trim(),
             address: form.address.trim(),
-
             status: StatusEnrollments.PENDING,
         }
 
@@ -158,7 +160,7 @@ async function submitEnrollment() {
             name: 'student.enrollment-detail',
             params: { enrollmentId: enrollment.id },
         })
-    } catch (err) {
+    } catch (err: any) {
         if (err instanceof EnrollmentException) {
             formError.value = err.message
         } else {
@@ -231,11 +233,11 @@ async function submitEnrollment() {
                     </p>
 
                     <h2 class="mt-2 text-2xl font-bold text-slate-900">
-                        {{ course.name }}
+                        {{ course?.name }}
                     </h2>
 
                     <p class="mt-2 text-sm leading-6 text-slate-600">
-                        {{ course.description || 'No course description available.' }}
+                        {{ course?.description || 'No course description available.' }}
                     </p>
 
                     <div class="mt-5 rounded-xl bg-accent/25 p-4">
@@ -243,7 +245,7 @@ async function submitEnrollment() {
                             Selected program
                         </p>
                         <p class="mt-1 font-bold text-slate-900">
-                            {{ program.name }}
+                            {{ program?.name }}
                         </p>
                     </div>
 

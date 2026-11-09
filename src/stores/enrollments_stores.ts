@@ -1,26 +1,27 @@
-
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import * as enrollmentService from '@/service/enrollments_service'
+import { Enrollment } from '@/constant/enrollment_status'
+import { CreateEnrollmentPayload } from '@/types/enrollment_type'
 
 export const useEnrollmentStores = defineStore('enrollment', () => {
-    const enrollments = ref([])
-    const activeEnrollment = ref(null)
+    const enrollments = ref<Enrollment[]>([])
+    const activeEnrollment = ref<Enrollment | null>(null)
 
-    const loading = ref(false)
-    const submitting = ref(false)
-    const updatingStatus = ref(false)
-    const error = ref(null)
+    const loading = ref<boolean>(false)
+    const submitting = ref<boolean>(false)
+    const updatingStatus = ref<boolean>(false)
+    const error = ref<string | null>(null)
 
-    const approvedStudents = ref([])
-    const loadingApprovedStudents = ref(false)
-    const approvedStudentsError = ref(null)
+    const approvedStudents = ref<Enrollment[]>([])
+    const loadingApprovedStudents = ref<boolean>(false)
+    const approvedStudentsError = ref<string | null>(null)
 
-    const hasActiveEnrollment = computed(
+    const hasActiveEnrollment = computed<boolean>(
         () => activeEnrollment.value !== null,
     )
 
-    async function fetchActiveEnrollment(studentId, courseId) {
+    async function fetchActiveEnrollment(studentId: string, courseId: string): Promise<Enrollment | null> {
         loading.value = true
         error.value = null
 
@@ -33,7 +34,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
             activeEnrollment.value = data?.[0] ?? null
 
             return activeEnrollment.value
-        } catch (err) {
+        } catch (err: any) {
             error.value = err?.message ?? 'Failed to fetch enrollment.'
             throw err
         } finally {
@@ -41,7 +42,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
-    async function addEnrollment(payload) {
+    async function addEnrollment(payload: CreateEnrollmentPayload): Promise<Enrollment> {
         submitting.value = true
         error.value = null
 
@@ -52,7 +53,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
             activeEnrollment.value = enrollment
 
             return enrollment
-        } catch (err) {
+        } catch (err: any) {
             error.value = err?.message ?? 'Failed to create enrollment.'
             throw err
         } finally {
@@ -60,7 +61,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
-    async function updateEnrollmentStatus(enrollmentId, status, rejectionReason) {
+    async function updateEnrollmentStatus(enrollmentId: string, status: string, rejectionReason?: string): Promise<Enrollment | null> {
         updatingStatus.value = true
         error.value = null
 
@@ -87,7 +88,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
             }
 
             return updatedEnrollment
-        } catch (err) {
+        } catch (err: any) {
             error.value = err?.message ?? 'Failed to update enrollment.'
             throw err
         } finally {
@@ -95,14 +96,13 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
-    function clearEnrollmentState() {
+    function clearEnrollmentState(): void {
         enrollments.value = []
         activeEnrollment.value = null
         error.value = null
     }
 
-
-    async function fetchEnrollmentById(enrollmentId) {
+    async function fetchEnrollmentById(enrollmentId: string): Promise<Enrollment> {
         loading.value = true
         error.value = null
 
@@ -112,7 +112,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
 
             activeEnrollment.value = data
             return data
-        } catch (err) {
+        } catch (err: any) {
             error.value = err?.message ?? 'Failed to fetch enrollment.'
             throw err
         } finally {
@@ -120,7 +120,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
-    async function fetchMyEnrollments(studentId) {
+    async function fetchMyEnrollments(studentId: string): Promise<void> {
         if (!studentId) {
             enrollments.value = []
             error.value = 'Please sign in to view your enrollments.'
@@ -133,7 +133,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         try {
             enrollments.value =
                 await enrollmentService.getMyEnrollments(studentId)
-        } catch (err) {
+        } catch (err: any) {
             error.value = err?.message ?? 'Failed to fetch your enrollments.'
             throw err
         } finally {
@@ -141,7 +141,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
-    async function deleteEnrollments(enrollmentId) {
+    async function deleteEnrollments(enrollmentId: string): Promise<void> {
         loading.value = true
         error.value = null
 
@@ -149,16 +149,16 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
             await enrollmentService.deleteEnrollments(enrollmentId)
 
             enrollments.value = enrollments.value.filter(
-                (enrollment) => String(enrollment.id) != String(enrollmentId)
+                (enrollment) => String(enrollment.id) !== String(enrollmentId)
             )
-        } catch (err) {
-            error.value = err.message ?? "Failed to cancel or delete enrollment"
+        } catch (err: any) {
+            error.value = err?.message ?? "Failed to cancel or delete enrollment"
         } finally {
             loading.value = false
         }
     }
 
-    async function fetchApprovedStudentByCourseId(courseId) {
+    async function fetchApprovedStudentByCourseId(courseId: string): Promise<Enrollment[]> {
         loadingApprovedStudents.value = true
         approvedStudentsError.value = null
 
@@ -171,7 +171,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
             approvedStudents.value = data
 
             return data
-        } catch (err) {
+        } catch (err: any) {
             approvedStudentsError.value =
                 err?.message ?? 'Failed to load approved students.'
 
@@ -181,12 +181,12 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
-    const pendingEnrollments = ref([])
-    const loadingPendingEnrollments = ref(false)
-    const processingEnrollmentId = ref(null)
-    const enrollmentActionError = ref(null)
+    const pendingEnrollments = ref<Enrollment[]>([])
+    const loadingPendingEnrollments = ref<boolean>(false)
+    const processingEnrollmentId = ref<string | null>(null)
+    const enrollmentActionError = ref<string | null>(null)
 
-    async function fetchPendingEnrollmentsByCourseId(courseId) {
+    async function fetchPendingEnrollmentsByCourseId(courseId: string): Promise<Enrollment[]> {
         loadingPendingEnrollments.value = true
         enrollmentActionError.value = null
 
@@ -198,7 +198,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
 
             pendingEnrollments.value = data
             return data
-        } catch (err) {
+        } catch (err: any) {
             enrollmentActionError.value =
                 err?.message ?? 'Failed to fetch pending enrollments.'
 
@@ -208,7 +208,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
-    async function approveEnrollment(enrollmentId) {
+    async function approveEnrollment(enrollmentId: string): Promise<boolean> {
         processingEnrollmentId.value = enrollmentId
         enrollmentActionError.value = null
 
@@ -220,7 +220,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
             )
 
             return true
-        } catch (err) {
+        } catch (err: any) {
             enrollmentActionError.value =
                 err?.message ?? 'Failed to approve enrollment.'
 
@@ -230,7 +230,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         }
     }
 
-    async function rejectEnrollment(enrollmentId, reason) {
+    async function rejectEnrollment(enrollmentId: string, reason: string): Promise<boolean> {
         processingEnrollmentId.value = enrollmentId
         enrollmentActionError.value = null
 
@@ -242,7 +242,7 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
             )
 
             return true
-        } catch (err) {
+        } catch (err: any) {
             enrollmentActionError.value =
                 err?.message ?? 'Failed to reject enrollment.'
 

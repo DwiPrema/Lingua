@@ -1,6 +1,6 @@
 import { DatabaseTableName } from "@/constant/database_table_name"
 import { supabase } from "@/lib/supabase"
-import { CreateProgramInput, Programs, UpdateProgramInput } from "@/types/program_types";
+import { CreateProgramInput, Programs, UpdateProgramInput } from "@/types/program_type";
 
 export const courseProgramService = {
 

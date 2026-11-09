@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { supabase } from '@/lib/supabase'
 import { organizationService } from '@/service/organization_service'
-import { Organization } from '@/types/organization'
+import { Organization } from '@/types/organization_type'
 
 export const useOrganizationStore = defineStore('organization', () => {
   // State

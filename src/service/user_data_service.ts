@@ -1,7 +1,8 @@
 import { DatabaseTableName } from "@/constant/database_table_name";
 import { supabase } from "@/lib/supabase";
+import { UpdateUserPayload } from "@/types/user_type";
 
-export async function getDataUser(uid) {
+export async function getDataUser(uid: string) {
     const { data, error } = await supabase
         .from(DatabaseTableName.usersCollection)
         .select('*')
@@ -20,7 +21,7 @@ export async function getDataUser(uid) {
 }
 
 
-export async function updateDataUser(uid, payload) {
+export async function updateDataUser(uid: string, payload: UpdateUserPayload) {
     const { data, error } = await supabase
         .from(DatabaseTableName.usersCollection)
         .update({

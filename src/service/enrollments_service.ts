@@ -1,9 +1,10 @@
 import { DatabaseTableName } from "@/constant/database_table_name";
-import { StatusEnrollments } from "@/constant/enrollment_status";
+import { StatusEnrollments, StatusEnrollmentType } from "@/constant/enrollment_status";
 import { supabase } from "@/lib/supabase";
+import { CreateEnrollmentPayload } from "@/types/enrollment_type";
 import { EnrollmentException } from "@/utils/exception/enrollment_exception";
 
-export async function getActiveEnrollment(studentId, courseId) {
+export async function getActiveEnrollment(studentId: string, courseId: string) {
     const approved = StatusEnrollments.APPROVED
     const pending = StatusEnrollments.PENDING
 
@@ -20,7 +21,7 @@ export async function getActiveEnrollment(studentId, courseId) {
     return data ?? []
 }
 
-export async function addEnrollments(payload) {
+export async function addEnrollments(payload: CreateEnrollmentPayload) {
     const existingEnrollment = await getActiveEnrollment(
         payload.student_id,
         payload.course_id,
@@ -43,9 +44,9 @@ export async function addEnrollments(payload) {
 }
 
 export async function updateEnrollmentsStatus(
-    enrollmentId,
-    statusEnrollment,
-    rejectionReason = null,
+    enrollmentId: string,
+    statusEnrollment: string,
+    rejectionReason: string | null = null,
 ) {
     let rpcName
     let params
@@ -84,7 +85,7 @@ export async function updateEnrollmentsStatus(
     return data
 }
 
-export async function getEnrollmentById(enrollmentId) {
+export async function getEnrollmentById(enrollmentId: string) {
     const { data, error } = await supabase
         .from(DatabaseTableName.enrollmentsCollection)
         .select('*')
@@ -96,7 +97,7 @@ export async function getEnrollmentById(enrollmentId) {
     return data
 }
 
-export async function getMyEnrollments(studentId) {
+export async function getMyEnrollments(studentId: string) {
     const { data, error } = await supabase
         .from(DatabaseTableName.enrollmentsCollection)
         .select(`
@@ -112,7 +113,7 @@ export async function getMyEnrollments(studentId) {
     return data ?? []
 }
 
-export async function deleteEnrollments(enrollmentId) {
+export async function deleteEnrollments(enrollmentId: string) {
     const { error } = await supabase.from(DatabaseTableName.enrollmentsCollection).delete().eq('id', enrollmentId)
 
     if (error) {
@@ -120,7 +121,7 @@ export async function deleteEnrollments(enrollmentId) {
     }
 }
 
-export async function fetchApprovedStudentByCourseId(courseId) {
+export async function fetchApprovedStudentByCourseId(courseId: string) {
     if (!courseId) {
         throw new Error('Course ID is required.')
     }
@@ -152,7 +153,7 @@ export async function fetchApprovedStudentByCourseId(courseId) {
     return data ?? []
 }
 
-export async function fetchPendingEnrollmentsByCourseId(courseId) {
+export async function fetchPendingEnrollmentsByCourseId(courseId: string) {
     if (!courseId) {
         throw new Error('Course ID is required.')
     }
@@ -181,7 +182,7 @@ export async function fetchPendingEnrollmentsByCourseId(courseId) {
     return data ?? []
 }
 
-export async function approveEnrollment(enrollmentId) {
+export async function approveEnrollment(enrollmentId: string) {
     if (!enrollmentId) {
         throw new Error('Enrollment ID is required.')
     }
@@ -195,7 +196,7 @@ export async function approveEnrollment(enrollmentId) {
     return true
 }
 
-export async function rejectEnrollment(enrollmentId, reason) {
+export async function rejectEnrollment(enrollmentId: string, reason: string) {
     if (!enrollmentId) {
         throw new Error('Enrollment ID is required.')
     }
