@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
@@ -22,6 +22,8 @@ import { useCourseStores } from "@/stores/course_stores";
 import { useCourseProgramStore } from "@/stores/course_program_stores";
 import { formatCurrency } from "@/constant/format_currency";
 import { useEnrollmentStores } from "@/stores/enrollments_stores";
+import { Course } from "@/types/course_type";
+import { Programs } from "@/types/program_type";
 
 const route = useRoute();
 const router = useRouter();
@@ -35,12 +37,12 @@ const loading = computed(() => programStore.loading);
 
 const approvedStudent = computed(() => enrollmentStore.approvedStudents);
 
-const course = ref(null);
+const course = ref<Course | null>(null);
 const isLoading = ref(false);
 const pageError = ref("");
 const notice = ref("");
 
-const courseId = computed(() => route.params.courseId);
+const courseId = computed(() => route.params.courseId as string);
 
 const courseName = computed(() => course.value?.name ?? "Course Detail");
 const courseDescription = computed(
@@ -84,7 +86,8 @@ async function loadCourse() {
     try {
         course.value = await courseStore.fetchMyCourseById(courseId.value);
     } catch (error) {
-        pageError.value = error?.message ?? "Failed to load course details.";
+        const err = error as {message?: string}
+        pageError.value = err?.message ?? "Failed to load course details.";
     } finally {
         isLoading.value = false;
     }
@@ -101,7 +104,7 @@ function editCourse() {
     });
 }
 
-function showComingSoon(feature) {
+function showComingSoon(feature: string) {
     notice.value = `${feature} management is not connected yet.`;
 }
 
@@ -119,7 +122,7 @@ async function refreshProgram() {
     }
 }
 
-function editProgram(programId) {
+function editProgram(programId: string) {
     router.push({
         name: "course-program-edit",
         params: {
@@ -129,7 +132,7 @@ function editProgram(programId) {
     });
 }
 
-async function removeProgram(program) {
+async function removeProgram(program: Programs) {
     const confirmed = window.confirm(
         `Are you sure you want to delete "${program.name}"?`,
     );
@@ -141,7 +144,8 @@ async function removeProgram(program) {
         notice.value = "Program deleted successfully.";
     } catch (err) {
         console.error("Failed to delete program:", err);
-        notice.value = err?.message ?? "Failed to delete program.";
+        const error = err as {message?: string}
+        notice.value = error?.message ?? "Failed to delete program.";
     }
 }
 

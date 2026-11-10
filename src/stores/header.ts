@@ -10,7 +10,7 @@ export const useHeaderStore = defineStore('header', () => {
 
     const isMenuOpen = ref(false)
 
-    function scrollToSection(href) {
+    function scrollToSection(href: string) {
         isMenuOpen.value = false
 
         const element = document.querySelector(href)
