@@ -9,10 +9,12 @@ export interface User {
     created_at?: string
     updated_at?: string
     role?: string | null
+    avatar_url: string | null
 }
 
 export interface UpdateUserPayload {
-    fullname: string
-    nickname: string
-    phone: string
+    fullname?: string
+    nickname?: string
+    phone?: string
+    avatar_url?: string
 }

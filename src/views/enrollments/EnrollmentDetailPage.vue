@@ -1,13 +1,31 @@
-<script setup>
-import { computed, onMounted, ref } from 'vue'
+<script setup lang="ts">
+import { computed, onMounted, ref, type Component } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { useEnrollmentStores } from '@/stores/enrollments_stores'
 import { useCourseStores } from '@/stores/course_stores'
 import { useCourseProgramStore } from '@/stores/course_program_stores'
-import { BadgeCheck, BookOpen, CalendarDays, CheckCircle2, CircleMinus, CircleX, Clock3, GraduationCap, Info, ReceiptText, Ticket, TriangleAlert, XCircle } from '@lucide/vue'
-import { formatCurrency } from '@/constant/format_currency'
 import { useInvoiceStore } from '@/stores/invoice_stores'
+
+import {
+    BadgeCheck,
+    BookOpen,
+    CalendarDays,
+    CheckCircle2,
+    CircleX,
+    Clock3,
+    GraduationCap,
+    Info,
+    ReceiptText,
+    Ticket,
+    TriangleAlert,
+} from '@lucide/vue'
+
+import { formatCurrency } from '@/constant/format_currency'
+import type { Invoice } from '@/types/invoice_type'
+import type { Course } from '@/types/course_type'
+import type { Programs } from '@/types/program_type'
+import { Enrollment, StatusEnrollments, StatusEnrollmentType } from '@/types/enrollment_type'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,75 +35,89 @@ const courseStore = useCourseStores()
 const courseProgramStore = useCourseProgramStore()
 const invoiceStore = useInvoiceStore()
 
-const invoice = ref(null)
-const invoiceError = ref('')
+const invoice = ref<Invoice | null>(null)
+const invoiceError = ref<string>('')
 
-const enrollment = ref(null)
-const course = ref(null)
-const program = ref(null)
+const enrollment = ref<Enrollment | null>(null)
+const course = ref<Course | null>(null)
+const program = ref<Programs | null>(null)
 
-const loadingPage = ref(true)
-const pageError = ref('')
-const cancelling = ref(false)
-const showCancelConfirmation = ref(false)
+const loadingPage = ref<boolean>(true)
+const pageError = ref<string>('')
+const cancelling = ref<boolean>(false)
+const showCancelConfirmation = ref<boolean>(false)
 
-const status = computed(
-    () => enrollment.value?.status?.toLowerCase() ?? 'pending',
-)
+interface StatusInfo {
+    title: string
+    description: string
+    icon: Component
+    classes: string
+    badge: string
+    rejectionMessage?: string | null
+}
 
-const statusInfo = computed(() => {
-    const statuses = {
-        pending: {
-            title: 'Waiting for Approval',
-            description:
-                'Your enrollment has been submitted and is waiting for the course administrator to review.',
-            icon: Clock3,
-            classes: 'bg-amber-50 text-amber-700 border-amber-200',
-            badge: 'bg-amber-100 text-amber-800',
-        },
-        approved: {
-            title: 'Enrollment Approved',
-            description:
-                'Your enrollment has been approved by the course administrator. To activate your enrollment, please finish the payment bellow!',
-            icon: CheckCircle2,
-            classes: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-            badge: 'bg-emerald-100 text-emerald-800',
-        },
-        rejected: {
-            title: 'Enrollment Rejected',
-            description:
-                'Unfortunately, your enrollment was rejected by the course administrator.',
-            icon: CircleX,
-            classes: 'bg-red-50 text-red-700 border-red-200',
-            badge: 'bg-red-100 text-red-800',
-            rejectionMessage: enrollment.value.rejection_reason
-        },
-        active: {
-            title: 'Enrollment Active',
-            description:
-                'You are now an active student in this course.',
-            icon: BadgeCheck,
-            classes: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-            badge: 'bg-indigo-100 text-indigo-800',
-        },
-        cancelled: {
-            title: 'Enrollment Cancelled',
-            description: 'This enrollment has been cancelled.',
-            icon: CircleMinus,
-            classes: 'bg-slate-50 text-slate-600 border-slate-200',
-            badge: 'bg-slate-100 text-slate-700',
-        },
-    }
-
-    return statuses[status.value] ?? statuses.pending
+const status = computed<StatusEnrollmentType>(() => {
+    return enrollment.value?.status ?? StatusEnrollments.PENDING
 })
 
-const formatDate = (value) => {
+const statuses: Record<StatusEnrollmentType, StatusInfo> = {
+    [StatusEnrollments.PENDING]: {
+        title: 'Waiting for Approval',
+        description:
+            'Your enrollment has been submitted and is waiting for the course administrator to review.',
+        icon: Clock3,
+        classes: 'bg-amber-50 text-amber-700 border-amber-200',
+        badge: 'bg-amber-100 text-amber-800',
+    },
+
+    [StatusEnrollments.APPROVED]: {
+        title: 'Enrollment Approved',
+        description:
+            'Your enrollment has been approved by the course administrator. To activate your enrollment, please finish the payment below!',
+        icon: CheckCircle2,
+        classes: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        badge: 'bg-emerald-100 text-emerald-800',
+    },
+
+    [StatusEnrollments.REJECTED]: {
+        title: 'Enrollment Rejected',
+        description:
+            'Unfortunately, your enrollment was rejected by the course administrator.',
+        icon: CircleX,
+        classes: 'bg-red-50 text-red-700 border-red-200',
+        badge: 'bg-red-100 text-red-800',
+    },
+
+    [StatusEnrollments.ACTIVE]: {
+        title: 'Enrollment Active',
+        description:
+            'You are now an active student in this course.',
+        icon: BadgeCheck,
+        classes: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+        badge: 'bg-indigo-100 text-indigo-800',
+    },
+}
+
+const statusInfo = computed<StatusInfo>(() => {
+    const info = statuses[status.value]
+
+    return {
+        ...info,
+        rejectionMessage:
+            status.value === StatusEnrollments.REJECTED
+                ? enrollment.value?.rejection_reason ?? null
+                : null,
+    }
+})
+
+function formatDate(value: string | null | undefined): string {
     if (!value) return 'Not available'
 
     const date = new Date(value)
 
-    if (Number.isNaN(date.getTime())) return 'Not available'
+    if (Number.isNaN(date.getTime())) {
+        return 'Not available'
+    }
 
     return new Intl.DateTimeFormat('en-ID', {
         dateStyle: 'medium',
@@ -93,14 +125,27 @@ const formatDate = (value) => {
     }).format(date)
 }
 
-onMounted(loadEnrollmentDetail)
+function getErrorMessage(
+    error: unknown,
+    fallback: string,
+): string {
+    return error instanceof Error ? error.message : fallback
+}
 
-async function loadEnrollmentDetail() {
+onMounted(() => {
+    void loadEnrollmentDetail()
+})
+
+async function loadEnrollmentDetail(): Promise<void> {
     loadingPage.value = true
     pageError.value = ''
 
     try {
-        const enrollmentId = route.params.enrollmentId
+        const routeParam = route.params.enrollmentId
+
+        const enrollmentId = Array.isArray(routeParam)
+            ? routeParam[0]
+            : routeParam
 
         if (!enrollmentId) {
             throw new Error('Enrollment ID is missing.')
@@ -117,62 +162,100 @@ async function loadEnrollmentDetail() {
 
         // Fetch initial invoice
         try {
-            invoice.value = await invoiceStore.getInvoiceByEnrollmentId(
-                result.id
-            )
+            invoice.value =
+                await invoiceStore.getInvoiceByEnrollmentId(result.id)
+
             invoiceError.value = ''
-        } catch (err) {
+        } catch (error: unknown) {
             invoice.value = null
-            invoiceError.value = err?.message ?? 'Unable to load invoice.'
+
+            invoiceError.value = getErrorMessage(
+                error,
+                'Unable to load invoice.',
+            )
         }
 
+        // Fetch course
         course.value = await courseStore.fetchCourseById(
             result.course_id,
         )
 
+        // Fetch program
         const programs =
-            await courseProgramStore.getAllCourseProgram(result.course_id)
+            await courseProgramStore.getAllCourseProgram(
+                result.course_id,
+            )
 
-        program.value = programs.find(
-            (item) => String(item.id) === String(result.program_id),
-        ) ?? null
-    } catch (err) {
-        pageError.value =
-            err?.message ?? 'Unable to load enrollment details.'
+        program.value =
+            programs.find(
+                (item) => String(item.id) === String(result.program_id),
+            ) ?? null
+
+    } catch (error: unknown) {
+        pageError.value = getErrorMessage(
+            error,
+            'Unable to load enrollment details.',
+        )
     } finally {
         loadingPage.value = false
     }
 }
 
-async function cancelEnrollment() {
-    if (cancelling.value || status.value !== 'pending') return
+// =====================================================
+// CANCEL ENROLLMENT
+// =====================================================
+
+async function cancelEnrollment(): Promise<void> {
+    const currentEnrollment = enrollment.value
+
+    if (
+        cancelling.value ||
+        status.value !== StatusEnrollments.PENDING ||
+        !currentEnrollment
+    ) {
+        return
+    }
 
     cancelling.value = true
     pageError.value = ''
 
     try {
-        await enrollmentStore.deleteEnrollments(enrollment.value.id)
-
-        router.push({ name: 'student.enrollments' })
+        await enrollmentStore.deleteEnrollments(
+            currentEnrollment.id,
+        )
 
         showCancelConfirmation.value = false
-        await loadEnrollmentDetail()
-    } catch (err) {
-        pageError.value =
-            err?.message ?? 'Unable to cancel your enrollment.'
+
+        await router.push({
+            name: 'student.enrollments',
+        })
+
+    } catch (error: unknown) {
+        pageError.value = getErrorMessage(
+            error,
+            'Unable to cancel your enrollment.',
+        )
+
         showCancelConfirmation.value = false
     } finally {
         cancelling.value = false
     }
 }
 
-function viewMyCourse() {
-    router.push({
+function viewMyCourse(): void {
+    const currentEnrollment = enrollment.value
+
+    if (!currentEnrollment) return
+
+    void router.push({
         name: 'student.course-detail',
-        params: { courseId: enrollment.value.course_id },
+        params: {
+            courseId: currentEnrollment.course_id,
+        },
     })
 }
 </script>
+
 
 <template>
     <main class="min-h-screen bg-slate-50 py-8 sm:py-10">

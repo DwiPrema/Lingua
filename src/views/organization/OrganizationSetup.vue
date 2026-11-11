@@ -1,67 +1,70 @@
-
-<script setup>
+<script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useOrganizationStore } from '@/stores/organization_stores'
+import { Organization } from '@/types/organization_type'
 
 const router = useRouter()
 const organizationStore = useOrganizationStore()
 
-const form = reactive({
+type FormErrors = Partial<Record<keyof Organization, string>>
+
+const form = reactive<Organization>({
   name: '',
-  bankName: '',
-  accountNumber: '',
-  accountName: '',
-  qrisUrl: '',
-  paymentNotes: '',
-})
+  bank_name: '',
+  account_number: '',
+  account_name: '',
+  qris_url: '',
+  payment_notes: '',
+} as Organization)
 
-const errors = reactive({})
-const joinModalOpen = ref(false)
-const organizationId = ref('')
-const joining = ref(false)
-const joinError = ref('')
+const errors = reactive<FormErrors>({})
+const joinModalOpen = ref<boolean>(false)
+const organizationId = ref<string>('')
+const joinError = ref<string>('')
 
-function validateForm() {
-  Object.keys(errors).forEach((key) => delete errors[key])
+function validateForm(): boolean {
+  Object.keys(errors).forEach((key) => {
+    delete errors[key as keyof FormErrors]
+  })
 
   if (!form.name.trim()) errors.name = 'Nama organisasi wajib diisi.'
-  if (!form.bankName.trim()) errors.bankName = 'Nama bank wajib diisi.'
-  if (!form.accountNumber.trim()) {
-    errors.accountNumber = 'Nomor rekening wajib diisi.'
-  } else if (!/^[0-9 -]+$/.test(form.accountNumber.trim())) {
-    errors.accountNumber = 'Nomor rekening tidak valid.'
+  if (!form.bank_name.trim()) errors.bank_name = 'Nama bank wajib diisi.'
+  if (!form.account_number.trim()) {
+    errors.account_number = 'Nomor rekening wajib diisi.'
+  } else if (!/^[0-9 -]+$/.test(form.account_number.trim())) {
+    errors.account_number = 'Nomor rekening tidak valid.'
   }
-  if (!form.accountName.trim()) {
-    errors.accountName = 'Nama pemilik rekening wajib diisi.'
+  if (!form.account_name.trim()) {
+    errors.account_name = 'Nama pemilik rekening wajib diisi.'
   }
 
-  if (form.qrisUrl.trim()) {
+  if (form.qris_url?.trim()) {
     try {
-      const url = new URL(form.qrisUrl)
+      const url = new URL(form.qris_url)
       if (!['http:', 'https:'].includes(url.protocol)) {
-        errors.qrisUrl = 'URL QRIS tidak valid.'
+        errors.qris_url = 'URL QRIS tidak valid.'
       }
     } catch {
-      errors.qrisUrl = 'Masukkan URL QRIS yang valid.'
+      errors.qris_url = 'Masukkan URL QRIS yang valid.'
     }
   }
 
   return Object.keys(errors).length === 0
 }
 
-async function handleSubmit() {
+async function handleSubmit(): Promise<void> {
   if (!validateForm() || organizationStore.loading) return
 
   try {
     await organizationStore.saveOrganization({ ...form })
     await router.replace({ name: 'dashboard' })
   } catch {
-    // Pesan error ditampilkan dari store.
+    organizationStore.error
   }
 }
 
-async function handleJoin() {
+async function handleJoin(): Promise<void> {
   joinError.value = ''
 
   if (!organizationId.value.trim()) {
@@ -69,8 +72,6 @@ async function handleJoin() {
     return
   }
 
-  // Join belum terhubung ke service/store.
-  // Jangan menganggap user sudah bergabung sampai server mengonfirmasi.
   joinError.value = 'Fitur join organization belum dihubungkan.'
 }
 </script>
@@ -151,65 +152,65 @@ async function handleJoin() {
 
           <div class="grid gap-5 sm:grid-cols-2">
             <div>
-              <label for="bankName" class="mb-2 block text-sm font-medium">
+              <label for="bank_name" class="mb-2 block text-sm font-medium">
                 Nama Bank <span class="text-rose-500">*</span>
               </label>
               <input
-                id="bankName"
-                v-model="form.bankName"
+                id="bank_name"
+                v-model="form.bank_name"
                 placeholder="Contoh: BCA"
                 class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
               />
-              <p v-if="errors.bankName" class="mt-1 text-xs text-rose-600">
-                {{ errors.bankName }}
+              <p v-if="errors.bank_name" class="mt-1 text-xs text-rose-600">
+                {{ errors.bank_name }}
               </p>
             </div>
 
             <div>
-              <label for="accountNumber" class="mb-2 block text-sm font-medium">
+              <label for="account_number" class="mb-2 block text-sm font-medium">
                 Nomor Rekening <span class="text-rose-500">*</span>
               </label>
               <input
-                id="accountNumber"
-                v-model="form.accountNumber"
+                id="account_number"
+                v-model="form.account_number"
                 inputmode="numeric"
                 placeholder="Nomor rekening"
                 class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
               />
-              <p v-if="errors.accountNumber" class="mt-1 text-xs text-rose-600">
-                {{ errors.accountNumber }}
+              <p v-if="errors.account_number" class="mt-1 text-xs text-rose-600">
+                {{ errors.account_number }}
               </p>
             </div>
 
             <div class="sm:col-span-2">
-              <label for="accountName" class="mb-2 block text-sm font-medium">
+              <label for="account_name" class="mb-2 block text-sm font-medium">
                 Atas Nama Rekening <span class="text-rose-500">*</span>
               </label>
               <input
-                id="accountName"
-                v-model="form.accountName"
+                id="account_name"
+                v-model="form.account_name"
                 placeholder="Nama pemilik rekening"
                 class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
               />
-              <p v-if="errors.accountName" class="mt-1 text-xs text-rose-600">
-                {{ errors.accountName }}
+              <p v-if="errors.account_name" class="mt-1 text-xs text-rose-600">
+                {{ errors.account_name }}
               </p>
             </div>
           </div>
 
           <div>
-            <label for="qrisUrl" class="mb-2 block text-sm font-medium">
+            <label for="qris_url" class="mb-2 block text-sm font-medium">
               URL QRIS <span class="text-slate-400">(Opsional)</span>
             </label>
             <input
-              id="qrisUrl"
-              v-model="form.qrisUrl"
+              id="qris_url"
+              v-model="form.qris_url"
               type="url"
               placeholder="https://example.com/qris.png"
               class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
             />
-            <p v-if="errors.qrisUrl" class="mt-1 text-xs text-rose-600">
-              {{ errors.qrisUrl }}
+            <p v-if="errors.qris_url" class="mt-1 text-xs text-rose-600">
+              {{ errors.qris_url }}
             </p>
           </div>
 
@@ -219,7 +220,7 @@ async function handleJoin() {
             </label>
             <textarea
               id="paymentNotes"
-              v-model="form.paymentNotes"
+              v-model="form.payment_notes"
               rows="3"
               placeholder="Instruksi tambahan untuk siswa"
               class="w-full resize-y rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
@@ -325,7 +326,6 @@ async function handleJoin() {
               <button
                 type="submit"
                 class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700"
-                @click="handleJoin"
               >
                 Lanjutkan
               </button>

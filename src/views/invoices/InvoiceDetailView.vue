@@ -21,6 +21,7 @@ import {
 import { Invoice } from "@/types/invoice_type";
 import { Course } from "@/types/course_type";
 import { Programs } from "@/types/program_type";
+import { Enrollment } from "@/types/enrollment_type";
 
 const route = useRoute();
 const router = useRouter();
@@ -31,12 +32,12 @@ const courseStore = useCourseStores();
 const courseProgramStore = useCourseProgramStore();
 
 const invoice = ref<Invoice | null>(null);
-const enrollment = ref(null);
+const enrollment = ref<Enrollment | null>(null);
 const course = ref<Course | null>(null);
 const program = ref<Programs | null>(null);
 
-const loadingPage = ref(true);
-const pageError = ref("");
+const loadingPage = ref<boolean>(true);
+const pageError = ref<string>("");
 
 const invoiceStatus = computed(() => {
     const statuses = {
@@ -126,7 +127,7 @@ async function loadInvoiceDetail() {
 
         program.value = programs.find(
             (item) =>
-                String(item.id) === String(enrollment.value.program_id)
+                String(item.id) === String(enrollment.value?.program_id)
         ) ?? null;
 
     } catch (err: unknown) {

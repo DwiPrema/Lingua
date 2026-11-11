@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {
     computed,
     onMounted,
@@ -9,31 +9,38 @@ import {
 
 import { useUserDataStores } from '@/stores/user_data_stores'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '@/stores/auth_stores.js'
+import { useAuthStore } from '@/stores/auth_stores'
+import type { UpdateUserPayload, User } from '@/types/user_type'
+import { supabase } from '@/lib/supabase'
 
 const userStore = useUserDataStores()
-
 const router = useRouter()
+const authStore = useAuthStore()
 
-const user = computed(() => userStore.userData)
-const loading = computed(() => userStore.loading)
-const error = computed(() => userStore.error ?? '')
+const user = computed<User | null>(() => userStore.userData)
+const loading = computed<boolean>(() => userStore.loading)
+const error = computed<string>(() => userStore.error ?? '')
 
-const saving = ref(false)
+const saving = ref<boolean>(false)
+const isEditing = ref<boolean>(false)
+const avatarPreview = ref<string | null>('')
+const avatarInput = ref<HTMLInputElement | null>(null)
 
-const isEditing = ref(false)
-const avatarPreview = ref('')
-const avatarInput = ref(null)
+interface UserForm {
+    fullname: string
+    nickname: string
+    phone: string
+}
 
-const form = ref({
+const form = ref<UserForm>({
     fullname: '',
     nickname: '',
     phone: '',
 })
 
-const original = ref({ ...form.value })
+const original = ref<UserForm>({ ...form.value })
 
-function syncUser(userData) {
+function syncUser(userData: User): void {
     form.value = {
         fullname: userData?.fullname ?? '',
         nickname: userData?.nickname ?? '',
@@ -59,7 +66,7 @@ onMounted(async () => {
     }
 })
 
-const initials = computed(() => {
+const initials = computed<string>(() => {
     const name = form.value.fullname.trim()
 
     return (
@@ -72,62 +79,93 @@ const initials = computed(() => {
     )
 })
 
-function startEditing() {
+function startEditing(): void {
     original.value = { ...form.value }
     isEditing.value = true
 }
 
-function cancelEditing() {
+function cancelEditing(): void {
     form.value = { ...original.value }
     isEditing.value = false
 }
 
-
-async function saveEditing() {
+async function saveEditing(): Promise<void> {
     const payload = {
         fullname: form.value.fullname.trim(),
         nickname: form.value.nickname.trim(),
         phone: form.value.phone.trim(),
-    }
+    } as UpdateUserPayload
 
     if (!payload.fullname || !payload.phone) {
         return
     }
 
+    saving.value = true
+
     try {
         const updatedUser = await userStore.updateUserData(payload)
 
-        syncUser(updatedUser)
+        if (updatedUser) {
+            syncUser(updatedUser)
+        }
 
         isEditing.value = false
 
         console.info('Profile updated successfully.')
     } catch (err) {
         console.error('Failed to update profile:', err)
+    } finally {
+        saving.value = false
     }
 }
 
-
-function handleAvatarChange(event) {
-    const file = event.target.files?.[0]
+async function handleAvatarChange(event: Event) {
+    const target = event.target as HTMLInputElement
+    const file = target.files?.[0]
 
     if (!file || !file.type.startsWith('image/')) {
-        event.target.value = ''
+        alert('Pilih file gambar yang valid!')
+        target.value = ''
         return
     }
 
-    if (avatarPreview.value) {
-        URL.revokeObjectURL(avatarPreview.value)
+    if (file.size > 2 * 1024 * 1024) {
+        alert('Ukuran file maksimal 2MB!')
+        target.value = ''
+        return
     }
 
-    avatarPreview.value = URL.createObjectURL(file)
+    try {
+        saving.value = true
 
-    event.target.value = ''
+        if (avatarPreview.value) {
+            URL.revokeObjectURL(avatarPreview.value)
+        }
+        avatarPreview.value = URL.createObjectURL(file)
+
+        const updatedUser = await userStore.updateAvatar(file)
+
+        if (updatedUser?.avatar_url) {
+
+            avatarPreview.value = `${updatedUser.avatar_url}?t=${Date.now()}`
+            console.info('Avatar berhasil diperbarui!')
+        }
+    } catch (err) {
+        console.error('Gagal mengunggah avatar:', err)
+        alert('Gagal mengunggah foto profil.')
+
+        avatarPreview.value = user.value?.avatar_url
+            ? `${user.value.avatar_url}?t=${Date.now()}`
+            : null
+    } finally {
+        saving.value = false
+        target.value = ''
+    }
 }
 
-// function retry() {
-//     return userStore.getUserData()
-// }
+function retry(): void {
+    userStore.getUserData()
+}
 
 onBeforeUnmount(() => {
     if (avatarPreview.value) {
@@ -135,21 +173,19 @@ onBeforeUnmount(() => {
     }
 })
 
-const authStore = useAuthStore()
+const showLogoutModal = ref<boolean>(false)
+const loggingOut = ref<boolean>(false)
 
-const showLogoutModal = ref(false)
-const loggingOut = ref(false)
-
-function handleLogout() {
+function handleLogout(): void {
     showLogoutModal.value = true
 }
 
-function cancelLogout() {
+function cancelLogout(): void {
     if (loggingOut.value) return
     showLogoutModal.value = false
 }
 
-async function confirmLogout() {
+async function confirmLogout(): Promise<void> {
     if (loggingOut.value) return
 
     loggingOut.value = true
@@ -162,9 +198,7 @@ async function confirmLogout() {
         loggingOut.value = false
     }
 }
-
 </script>
-
 
 <template>
     <!-- Logout confirmation modal -->
@@ -231,7 +265,7 @@ async function confirmLogout() {
 
             <!-- Loading state -->
             <div v-if="loading" class="rounded-2xl border border-gray-200 bg-white p-10
-               text-center text-sm text-gray-500" role="status">
+                text-center text-sm text-gray-500" role="status">
                 Loading your profile...
             </div>
 
@@ -244,7 +278,7 @@ async function confirmLogout() {
                     {{ error }}
                 </p>
                 <button type="button" class="mt-4 rounded-lg bg-alert px-4 py-2
-                 text-sm font-medium text-white hover:bg-red-900" @click="emit('retry')">
+                 text-sm font-medium text-white hover:bg-red-900" @click="retry">
                     Try again
                 </button>
             </div>
@@ -259,20 +293,22 @@ async function confirmLogout() {
 
                     <div class="mt-6 flex flex-col items-center text-center">
                         <div class="relative">
-                            <img v-if="avatarPreview || user?.avatar_url" :src="avatarPreview || user.avatar_url"
-                                alt="Profile photo" class="h-28 w-28 rounded-full border-4
-                       border-white object-cover shadow-md" />
+                            <img v-if="avatarPreview || user?.avatar_url"
+                                :src="avatarPreview || (user?.avatar_url ? `${user.avatar_url}?t=${Date.now()}` : '')"
+                                alt="Profile photo"
+                                class="h-28 w-28 rounded-full border-4 border-white object-cover shadow-md"
+                                @error="avatarPreview = null" />
 
                             <div v-else class="flex h-28 w-28 items-center justify-center
-                       rounded-full bg-accent/20 text-3xl font-bold
-                       text-accent" aria-label="Profile initials">
+                rounded-full bg-accent/20 text-3xl font-bold
+                text-accent" aria-label="Profile initials">
                                 {{ initials }}
                             </div>
 
                             <button type="button" aria-label="Change profile photo" title="Change profile photo" class="absolute bottom-0 right-0 flex h-9 w-9
-                       items-center justify-center rounded-full
-                       border-4 border-white bg-accent/80 duration-300 ease-in-out
-                       text-white transition hover:bg-accent" @click="avatarInput?.click()">
+                items-center justify-center rounded-full
+                border-4 border-white bg-accent/80 duration-300 ease-in-out
+                text-white transition hover:bg-accent" @click="avatarInput?.click()">
                                 <span aria-hidden="true">✎</span>
                             </button>
 
@@ -289,7 +325,7 @@ async function confirmLogout() {
                         </p>
 
                         <span class="mt-4 rounded-full bg-red-50 px-3 py-1
-                     text-xs font-medium capitalize text-accent">
+                     xs font-medium capitalize text-accent">
                             {{ user?.role || 'Member' }}
                         </span>
                     </div>
@@ -377,16 +413,16 @@ async function confirmLogout() {
                         <div v-if="isEditing" class="flex flex-col-reverse gap-3 border-t
                      border-gray-100 pt-6 sm:flex-row sm:justify-end">
                             <button type="button" :disabled="saving" class="rounded-xl border border-gray-300 px-5 py-3
-                       text-sm font-medium text-gray-700
-                       hover:bg-gray-50 disabled:opacity-50" @click="cancelEditing">
+                        text-sm font-medium text-gray-700
+                        hover:bg-gray-50 disabled:opacity-50" @click="cancelEditing">
                                 Cancel
                             </button>
 
                             <button type="submit" :disabled="saving || !form.fullname.trim() || !form.phone.trim()"
                                 class="rounded-xl bg-accent px-5 py-3
-                       text-sm font-semibold text-white
-                       transition hover:bg-red-900
-                       disabled:cursor-not-allowed disabled:opacity-50">
+                        text-sm font-semibold text-white
+                        transition hover:bg-red-900
+                        disabled:cursor-not-allowed disabled:opacity-50">
                                 {{ saving ? 'Saving...' : 'Save changes' }}
                             </button>
                         </div>

@@ -1,5 +1,4 @@
-```vue
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
@@ -18,6 +17,8 @@ import {
 
 import { useCourseStores } from '@/stores/course_stores'
 import { useEnrollmentStores } from '@/stores/enrollments_stores'
+import { Course } from '@/types/course_type'
+import { Enrollment } from '@/types/enrollment_type'
 
 const route = useRoute()
 const router = useRouter()
@@ -25,17 +26,17 @@ const router = useRouter()
 const courseStore = useCourseStores()
 const enrollmentStore = useEnrollmentStores()
 
-const course = ref(null)
-const enrollments = ref([])
-const loading = ref(false)
-const error = ref(null)
+const course = ref<Course | null>(null)
+const enrollments = ref<Enrollment[]>([])
+const loading = ref<boolean>(false)
+const error = ref<string | null>(null)
 
-const processingId = ref(null)
-const rejectingEnrollmentId = ref(null)
-const rejectionReason = ref('')
-const actionError = ref(null)
+const processingId = ref<string | null>(null)
+const rejectingEnrollmentId = ref<string | null>(null)
+const rejectionReason = ref<string>('')
+const actionError = ref<string | null>(null)
 
-const courseId = computed(() => route.params.courseId)
+const courseId = computed(() => route.params.courseId as string)
 
 const pendingEnrollments = computed(() =>
     enrollments.value.filter(
@@ -43,7 +44,7 @@ const pendingEnrollments = computed(() =>
     ),
 )
 
-function getInitials(name) {
+function getInitials(name: string) {
     if (!name?.trim()) return '?'
 
     return name
@@ -55,7 +56,7 @@ function getInitials(name) {
         .toUpperCase()
 }
 
-function formatDate(date) {
+function formatDate(date: string) {
     if (!date) return '-'
 
     const parsedDate = new Date(date)
@@ -83,7 +84,7 @@ async function fetchEnrollments() {
             courseId.value,
         )
 
-        course.value = courseData?.data ?? courseData ?? null
+        course.value = courseData
 
         if (!course.value) {
             throw new Error('Data course tidak ditemukan.')
@@ -98,16 +99,16 @@ async function fetchEnrollments() {
             ? result
             : result?.data ?? []
     } catch (err) {
-        console.error('Failed to load enrollments:', err)
+        const e = err as {message?: string}
 
         error.value =
-            err?.message ?? 'Gagal memuat data pendaftaran.'
+            e.message ?? 'Gagal memuat data pendaftaran.'
     } finally {
         loading.value = false
     }
 }
 
-async function approveEnrollment(enrollment) {
+async function approveEnrollment(enrollment: Enrollment) {
     const confirmed = window.confirm(
         `Setujui pendaftaran ${enrollment.fullname || 'siswa ini'}?`,
     )
@@ -118,23 +119,22 @@ async function approveEnrollment(enrollment) {
     actionError.value = null
 
     try {
-        // Action store memanggil RPC approve_enrollment.
         await enrollmentStore.approveEnrollment(enrollment.id)
 
         enrollments.value = enrollments.value.filter(
             (item) => item.id !== enrollment.id,
         )
     } catch (err) {
-        console.error('Failed to approve enrollment:', err)
+        const e = err as {message?: string}
 
         actionError.value =
-            err?.message ?? 'Gagal menyetujui pendaftaran.'
+            e.message ?? 'Gagal menyetujui pendaftaran.'
     } finally {
         processingId.value = null
     }
 }
 
-function openRejectForm(enrollment) {
+function openRejectForm(enrollment: Enrollment) {
     rejectingEnrollmentId.value = enrollment.id
     rejectionReason.value = ''
     actionError.value = null
@@ -146,7 +146,7 @@ function cancelReject() {
     actionError.value = null
 }
 
-async function rejectEnrollment(enrollment) {
+async function rejectEnrollment(enrollment: Enrollment) {
     const reason = rejectionReason.value.trim()
 
     if (!reason) {
@@ -158,7 +158,6 @@ async function rejectEnrollment(enrollment) {
     actionError.value = null
 
     try {
-        // Action store memanggil RPC reject_enrollment.
         await enrollmentStore.rejectEnrollment(
             enrollment.id,
             reason,
@@ -170,10 +169,10 @@ async function rejectEnrollment(enrollment) {
 
         cancelReject()
     } catch (err) {
-        console.error('Failed to reject enrollment:', err)
+        const e = err as {message?: string}
 
         actionError.value =
-            err?.message ?? 'Gagal menolak pendaftaran.'
+            e?.message ?? 'Gagal menolak pendaftaran.'
     } finally {
         processingId.value = null
     }
@@ -474,4 +473,3 @@ watch(courseId, (newId, oldId) => {
         </div>
     </main>
 </template>
-```

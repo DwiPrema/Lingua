@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useCourseStores } from '@/stores/course_stores'
@@ -7,7 +7,7 @@ import { MapPin } from '@lucide/vue'
 const courseStore = useCourseStores()
 const { courses, loading, error } = storeToRefs(courseStore)
 
-const searchQuery = ref('')
+const searchQuery = ref<string>('')
 
 onMounted(async () => {
     await courseStore.fetchAllCourseData()
@@ -132,7 +132,7 @@ const filteredCourses = computed(() => {
 
             <button type="button" class="mt-4 rounded-lg bg-white px-4 py-2
                    text-sm font-semibold text-red-700
-                   ring-1 ring-red-200 hover:bg-red-100" @click="courseStore.fetchCourses()">
+                   ring-1 ring-red-200 hover:bg-red-100" @click="courseStore.fetchMyCourses()">
                 Try again
             </button>
         </div>

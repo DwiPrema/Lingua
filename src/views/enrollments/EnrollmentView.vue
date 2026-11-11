@@ -1,17 +1,57 @@
-<script setup>
+
+<script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { useEnrollmentStores } from '@/stores/enrollments_stores'
 import { useAuthStore } from '@/stores/auth_stores'
-import { AlertCircle, ArrowUpRight, BookOpen, CalendarDays, CheckCircle2, CircleAlert, Clock3, GraduationCap, Layers, Search } from '@lucide/vue'
+
+import {
+    AlertCircle,
+    ArrowUpRight,
+    BookOpen,
+    CalendarDays,
+    CheckCircle2,
+    CircleAlert,
+    Clock3,
+    GraduationCap,
+    Layers,
+} from '@lucide/vue'
+
+import type { Enrollment, StatusEnrollmentType } from '@/types/enrollment_type'
+import type { Course } from '@/types/course_type'
+import type { Programs } from '@/types/program_type'
+
+// =====================================================
+// TYPES
+// =====================================================
+
+type EnrollmentFilterStatus = 'all' | StatusEnrollmentType | 'cancelled'
+
+interface EnrollmentListItem extends Enrollment {
+    course?: Pick<Course, 'name'> | null
+    program?: Pick<Programs, 'name'> | null
+}
+
+// =====================================================
+// ROUTER & STORES
+// =====================================================
 
 const router = useRouter()
+
 const enrollmentStore = useEnrollmentStores()
 const authStore = useAuthStore()
 
-const searchQuery = ref('')
-const selectedStatus = ref('all')
+// =====================================================
+// STATE
+// =====================================================
+
+const searchQuery = ref<string>('')
+const selectedStatus = ref<EnrollmentFilterStatus>('all')
+
+// =====================================================
+// STATUS OPTIONS
+// =====================================================
 
 const statusOptions = [
     { label: 'All Enrollments', value: 'all' },
@@ -20,33 +60,44 @@ const statusOptions = [
     { label: 'Active', value: 'active' },
     { label: 'Rejected', value: 'rejected' },
     { label: 'Cancelled', value: 'cancelled' },
-]
+] satisfies {
+    label: string
+    value: EnrollmentFilterStatus
+}[]
 
-const studentId = computed(
+const studentId = computed<string | null>(
     () => authStore.user?.id ?? authStore.session?.user?.id ?? null,
 )
 
-const enrollments = computed(() => enrollmentStore.enrollments)
-const loading = computed(() => enrollmentStore.loading)
-const error = computed(() => enrollmentStore.error)
+const enrollments = computed<EnrollmentListItem[]>(
+    () => enrollmentStore.enrollments,
+)
 
-const filteredEnrollments = computed(() => {
+const loading = computed<boolean>(
+    () => enrollmentStore.loading,
+)
+
+const error = computed(
+    () => enrollmentStore.error,
+)
+
+const filteredEnrollments = computed<EnrollmentListItem[]>(() => {
     const query = searchQuery.value.trim().toLowerCase()
 
     return enrollments.value.filter((enrollment) => {
         const matchesStatus =
             selectedStatus.value === 'all' ||
-            enrollment.status?.toLowerCase() === selectedStatus.value
+            enrollment.status === selectedStatus.value
 
-        // Uses course/program names if your service provides them.
         const searchableText = [
-            enrollment.course?.name,
-            enrollment.program?.name,
             enrollment.fullname,
             enrollment.school_name,
             enrollment.id,
         ]
-            .filter(Boolean)
+            .filter(
+                (value): value is string =>
+                    typeof value === 'string',
+            )
             .join(' ')
             .toLowerCase()
 
@@ -57,6 +108,12 @@ const filteredEnrollments = computed(() => {
     })
 })
 
+function countByStatus(status: StatusEnrollmentType): number {
+    return enrollments.value.filter(
+        (item) => item.status === status,
+    ).length
+}
+
 const summary = computed(() => ({
     total: enrollments.value.length,
     pending: countByStatus('pending'),
@@ -65,79 +122,86 @@ const summary = computed(() => ({
     rejected: countByStatus('rejected'),
 }))
 
-function countByStatus(status) {
-    return enrollments.value.filter(
-        (item) => item.status?.toLowerCase() === status,
-    ).length
+type DisplayStatus = StatusEnrollmentType | 'cancelled'
+
+const statusStyles: Record<DisplayStatus, string> = {
+    pending: 'bg-amber-100 text-amber-800',
+    approved: 'bg-emerald-100 text-emerald-800',
+    active: 'bg-indigo-100 text-indigo-800',
+    rejected: 'bg-red-100 text-red-800',
+    cancelled: 'bg-slate-100 text-slate-700',
 }
 
-function statusStyle(status) {
-    const styles = {
-        pending: 'bg-amber-100 text-amber-800',
-        approved: 'bg-emerald-100 text-emerald-800',
-        active: 'bg-indigo-100 text-indigo-800',
-        rejected: 'bg-red-100 text-red-800',
-        cancelled: 'bg-slate-100 text-slate-700',
-    }
-
-    return styles[status?.toLowerCase()] ??
-        'bg-slate-100 text-slate-700'
+function statusStyle(status: DisplayStatus): string {
+    return statusStyles[status] ?? 'bg-slate-100 text-slate-700'
 }
 
-function statusDescription(status) {
-    const descriptions = {
-        pending: 'Waiting for administrator review',
-        approved: 'Your enrollment has been approved',
-        active: 'You are an active student',
-        rejected: 'Your enrollment was rejected',
-        cancelled: 'This enrollment was cancelled',
-    }
-
-    return descriptions[status?.toLowerCase()] ??
-        'Check your enrollment status'
+const statusDescriptions: Record<DisplayStatus, string> = {
+    pending: 'Waiting for administrator review',
+    approved: 'Your enrollment has been approved',
+    active: 'You are an active student',
+    rejected: 'Your enrollment was rejected',
+    cancelled: 'This enrollment was cancelled',
 }
 
-function formatDate(value) {
+function statusDescription(status: DisplayStatus): string {
+    return statusDescriptions[status] ?? 'Check your enrollment status'
+}
+
+function formatDate(
+    value: string | null | undefined,
+): string {
     if (!value) return 'Not available'
 
     const date = new Date(value)
 
-    if (Number.isNaN(date.getTime())) return 'Not available'
+    if (Number.isNaN(date.getTime())) {
+        return 'Not available'
+    }
 
     return new Intl.DateTimeFormat('en-ID', {
         dateStyle: 'medium',
     }).format(date)
 }
 
-function openEnrollment(enrollment) {
-    router.push({
+function openEnrollment(enrollment: EnrollmentListItem): void {
+    void router.push({
         name: 'student.enrollment-detail',
-        params: { enrollmentId: enrollment.id },
+        params: {
+            enrollmentId: enrollment.id,
+        },
     })
 }
 
-function exploreCourses() {
-    router.push({ name: 'student.explore' })
+function exploreCourses(): void {
+    void router.push({
+        name: 'student.explore',
+    })
 }
 
-async function loadEnrollments() {
-    if (!studentId.value) return
+async function loadEnrollments(): Promise<void> {
+    const currentStudentId = studentId.value
+
+    if (!currentStudentId) return
 
     try {
-        await enrollmentStore.fetchMyEnrollments(studentId.value)
-    } catch {
-
+        await enrollmentStore.fetchMyEnrollments(currentStudentId)
+    } catch (error: unknown) {
+        console.error('Failed to load enrollments:', error)
     }
 }
 
-onMounted(loadEnrollments)
+onMounted(() => {
+    void loadEnrollments()
+})
 
 watch(studentId, (newId, oldId) => {
-    if (newId !== oldId && newId) {
-        loadEnrollments()
+    if (newId && newId !== oldId) {
+        void loadEnrollments()
     }
 })
 </script>
+
 
 <template>
     <main class="min-h-screen bg-slate-50 py-8 sm:py-10">
@@ -178,7 +242,7 @@ watch(studentId, (newId, oldId) => {
                         <p class="text-sm font-medium text-slate-500">
                             Total Enrollments
                         </p>
-                        <Layers color="#64748b" size="18"/>
+                        <Layers color="#64748b" :size="18"/>
                     </div>
                     <p class="mt-3 text-3xl font-extrabold text-slate-900">
                         {{ summary.total }}
@@ -190,7 +254,7 @@ watch(studentId, (newId, oldId) => {
                         <p class="text-sm font-medium text-slate-500">
                             Pending
                         </p>
-                        <Clock3 color="#b45309" size="18"/>
+                        <Clock3 color="#b45309" :size="18"/>
                     </div>
                     <p class="mt-3 text-3xl font-extrabold text-amber-700">
                         {{ summary.pending }}
@@ -202,7 +266,7 @@ watch(studentId, (newId, oldId) => {
                         <p class="text-sm font-medium text-slate-500">
                             Approved
                         </p>
-                        <CheckCircle2 color="#047857" size="18"/>
+                        <CheckCircle2 color="#047857" :size="18"/>
                     </div>
                     <p class="mt-3 text-3xl font-extrabold text-emerald-700">
                         {{ summary.approved }}
@@ -214,7 +278,7 @@ watch(studentId, (newId, oldId) => {
                         <p class="text-sm font-medium text-slate-500">
                             Active
                         </p>
-                        <GraduationCap color="#4338ca" size="18"/>
+                        <GraduationCap color="#4338ca" :size="18"/>
                     </div>
                     <p class="mt-3 text-3xl font-extrabold text-indigo-700">
                         {{ summary.active }}
@@ -226,7 +290,7 @@ watch(studentId, (newId, oldId) => {
                         <p class="text-sm font-medium text-slate-500">
                             Rejected
                         </p>
-                        <AlertCircle class="text-alert" size="18"/>
+                        <AlertCircle class="text-alert" :size="18"/>
                     </div>
                     <p class="mt-3 text-3xl font-extrabold text-alert">
                         {{ summary.rejected }}
@@ -283,7 +347,7 @@ watch(studentId, (newId, oldId) => {
             <!-- Error state -->
             <section v-else-if="error && enrollments.length === 0"
                 class="mt-6 rounded-2xl border border-accent/20 bg-white p-8 text-center">
-                <CircleAlert size="34" color="#dc2626"/>
+                <CircleAlert :size="34" color="#dc2626"/>
                 <h2 class="mt-4 text-xl font-bold text-slate-900">
                     Couldn't Load Enrollments
                 </h2>
@@ -390,7 +454,7 @@ watch(studentId, (newId, oldId) => {
                         class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-accent/50 hover:bg-accent/15 hover:text-accent"
                         @click="openEnrollment(enrollment)">
                         View Enrollment Details
-                        <ArrowUpRight size="14"/>
+                        <ArrowUpRight :size="14"/>
                     </button>
                 </article>
             </section>

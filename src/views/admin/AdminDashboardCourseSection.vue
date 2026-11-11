@@ -1,13 +1,16 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 
 import { useCourseStores } from "@/stores/course_stores";
 import { Edit, MapPin, Trash } from "@lucide/vue";
+import { useOrganizationStore } from "@/stores/organization_stores";
+import { Course } from "@/types/course_type";
 
 const router = useRouter();
 
 const courseStore = useCourseStores();
+const organizationStore = useOrganizationStore();
 
 const courses = computed(() => courseStore.courses);
 const error = computed(() => courseStore.error);
@@ -17,21 +20,21 @@ function goToCreateCourse() {
     router.push({ name: "course-create" });
 }
 
-function goToEditCourse(courseId) {
+function goToEditCourse(courseId: string) {
     router.push({
         name: "course-edit",
         params: { courseId },
     });
 }
 
-function goToCourseDetail(courseId) {
+function goToCourseDetail(courseId: string) {
     router.push({
         name: "course-detail",
         params: { courseId },
     });
 }
 
-async function handleDeleteCourse(course) {
+async function handleDeleteCourse(course: Course) {
     const confirmed = window.confirm(
         `Are you sure to delete this course: "${course.name}"?`
     );

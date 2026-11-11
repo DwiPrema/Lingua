@@ -54,7 +54,7 @@ const submitLabel = computed(() =>
 );
 
 
-const initializing = ref(true);
+const initializing = ref<boolean>(true);
 const validationMessage = ref<string>("");
 const selectedProgram = ref<Programs | null>(null);
 const course = ref<Course | null>(null);

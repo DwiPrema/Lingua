@@ -5,13 +5,12 @@ import { useRoute, useRouter } from 'vue-router'
 import { useCourseStores } from '@/stores/course_stores'
 import { useCourseProgramStore } from '@/stores/course_program_stores'
 import { useEnrollmentStores } from '@/stores/enrollments_stores'
-import { StatusEnrollments } from '@/constant/enrollment_status'
 import { EnrollmentException } from '@/utils/exception/enrollment_exception'
 import { useAuthStore } from '@/stores/auth_stores'
 import { formatCurrency } from '@/constant/format_currency'
 import { Course } from '@/types/course_type'
 import { Programs } from '@/types/program_type'
-import { EnrollmentForm } from '@/types/enrollment_type'
+import { EnrollmentForm, StatusEnrollments } from '@/types/enrollment_type'
 
 const route = useRoute()
 const router = useRouter()

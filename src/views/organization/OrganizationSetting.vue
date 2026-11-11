@@ -1,10 +1,11 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, reactive, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 
 import { useOrganizationStore } from "@/stores/organization_stores";
 import { Building2, CreditCard, ScanQrCode } from "@lucide/vue";
+import { Organization } from "@/types/organization_type";
 
 const router = useRouter();
 const organizationStore = useOrganizationStore();
@@ -13,7 +14,7 @@ const { organization, loading, error } = storeToRefs(
     organizationStore,
 );
 
-const successMessage = ref("");
+const successMessage = ref<string>("");
 
 const form = reactive({
     name: "",
@@ -24,7 +25,6 @@ const form = reactive({
     paymentNotes: "",
 });
 
-// Copy server data into the editable form.
 watch(
     organization,
     (org) => {
@@ -46,7 +46,7 @@ onMounted(async () => {
     try {
         await organizationStore.fetchMyOrganization();
     } catch {
-        // The store already exposes the error state.
+        
     }
 });
 
@@ -76,12 +76,12 @@ async function handleSave() {
     try {
         await organizationStore.saveOrganization({
             name: form.name.trim(),
-            bankName: form.bankName.trim(),
-            accountNumber: form.accountNumber.trim(),
-            accountName: form.accountName.trim(),
-            qrisUrl: form.qrisUrl.trim(),
-            paymentNotes: form.paymentNotes.trim(),
-        });
+            bank_name: form.bankName.trim(),
+            account_number: form.accountNumber.trim(),
+            account_name: form.accountName.trim(),
+            qris_url: form.qrisUrl.trim(),
+            payment_notes: form.paymentNotes.trim(),
+        } as Organization);
 
         successMessage.value =
             "Organization settings saved successfully.";

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
@@ -14,6 +14,8 @@ import {
 
 import { useCourseStores } from '@/stores/course_stores'
 import { useEnrollmentStores } from '@/stores/enrollments_stores'
+import { Course } from '@/types/course_type'
+import { Enrollment } from '@/types/enrollment_type'
 
 const route = useRoute()
 const router = useRouter()
@@ -22,12 +24,12 @@ const courseStore = useCourseStores()
 const enrollmentStore = useEnrollmentStores()
 
 // Local UI state
-const course = ref(null)
-const enrollments = ref([])
-const loading = ref(false)
-const error = ref(null)
+const course = ref<Course | null>(null)
+const enrollments = ref<Enrollment[]>([])
+const loading = ref<boolean>(false)
+const error = ref<string | null>(null)
 
-const courseId = computed(() => route.params.courseId)
+const courseId = computed(() => route.params.courseId as string)
 
 const students = computed(() =>
     enrollments.value.filter((enrollment) =>
@@ -36,7 +38,7 @@ const students = computed(() =>
 )
 
 // Helpers
-function getInitials(name) {
+function getInitials(name: string) {
     if (!name?.trim()) return '?'
 
     return name
@@ -48,7 +50,7 @@ function getInitials(name) {
         .toUpperCase()
 }
 
-function formatDate(date) {
+function formatDate(date: string | null | undefined) {
     if (!date) return null
 
     const parsedDate = new Date(date)
@@ -62,13 +64,13 @@ function formatDate(date) {
     }).format(parsedDate)
 }
 
-function statusClass(status) {
+function statusClass(status: string) {
     return status === 'active'
         ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20'
         : 'bg-blue-50 text-blue-700 ring-blue-600/20'
 }
 
-function statusLabel(status) {
+function statusLabel(status: string) {
     return status === 'active' ? 'Active' : 'Approved'
 }
 
@@ -87,7 +89,7 @@ async function fetchStudents() {
             courseId.value,
         )
 
-        course.value = courseData?.data ?? courseData ?? null
+        course.value = courseData ?? null
 
         if (!course.value) {
             throw new Error('Data course tidak ditemukan.')
@@ -102,10 +104,10 @@ async function fetchStudents() {
             ? enrollmentData
             : enrollmentData?.data ?? []
     } catch (err) {
-        console.error('Failed to load course students:', err)
+        const e = err as {message?: string}
 
         error.value =
-            err?.message ?? 'Gagal memuat data siswa. Silakan coba lagi.'
+            e.message ?? 'Gagal memuat data siswa. Silakan coba lagi.'
     } finally {
         loading.value = false
     }

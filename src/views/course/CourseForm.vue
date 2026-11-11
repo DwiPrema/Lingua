@@ -53,8 +53,8 @@ const organizationId = computed(
   () => organization.value?.id ?? ""
 );
 
-const initializing = ref(true);
-const validationMessage = ref("");
+const initializing = ref<boolean>(true);
+const validationMessage = ref<String>("");
 const selectedCourse = ref<Course | null>(null);
 
 const form = reactive({

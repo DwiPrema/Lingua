@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import {
     computed,
     nextTick,
@@ -21,14 +21,15 @@ const organizationStore = useOrganizationStore();
 const loading = computed(() => courseStore.loading);
 const organization = computed(() => organizationStore.organization);
 
-const routeContent = ref(null);
+const routeContent = ref<HTMLElement | null>(null);
 
 watch(
     () => route.name,
     async (routeName) => {
+        const routename = routeName as string;
         const shouldScroll = [
             "course-create",
-        ].includes(routeName);
+        ].includes(routename);
 
         if (!shouldScroll) return;
 
@@ -59,6 +60,17 @@ function goToOrganizationSettings() {
 
 function goToProfile() {
     router.push({ name: "instructor.profile" });
+}
+
+async function refreshDashboard() {
+    try {
+        await Promise.all([
+            courseStore.fetchMyCourses(),
+            organizationStore.fetchMyOrganization(),
+        ]);
+    } catch (err) {
+        console.error("Failed to update dashboard:", err);
+    }
 }
 </script>
 
