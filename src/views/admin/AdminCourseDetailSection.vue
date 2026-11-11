@@ -38,9 +38,9 @@ const loading = computed(() => programStore.loading);
 const approvedStudent = computed(() => enrollmentStore.approvedStudents);
 
 const course = ref<Course | null>(null);
-const isLoading = ref(false);
-const pageError = ref("");
-const notice = ref("");
+const isLoading = ref<boolean>(false);
+const pageError = ref<string>("");
+const notice = ref<string>("");
 
 const courseId = computed(() => route.params.courseId as string);
 
@@ -179,8 +179,7 @@ watch(courseId, async () => {
                 <button type="button" class="inline-flex items-center gap-2 rounded-xl border border-slate-200
                  bg-white px-4 py-2.5 text-sm font-semibold text-slate-700
                  transition hover:border-indigo-300 hover:text-indigo-700" :disabled="isLoading" @click="loadCourse">
-                    <RefreshCw class="h-4 w-4" />
-                    Refresh
+                    {{ isLoading ? "Loading..." : "Refresh" }}
                 </button>
             </header>
 

@@ -11,7 +11,6 @@ import { useUserDataStores } from '@/stores/user_data_stores'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth_stores'
 import type { UpdateUserPayload, User } from '@/types/user_type'
-import { supabase } from '@/lib/supabase'
 
 const userStore = useUserDataStores()
 const router = useRouter()

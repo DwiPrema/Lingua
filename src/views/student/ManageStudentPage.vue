@@ -16,12 +16,15 @@ import { useCourseStores } from '@/stores/course_stores'
 import { useEnrollmentStores } from '@/stores/enrollments_stores'
 import { Course } from '@/types/course_type'
 import { Enrollment } from '@/types/enrollment_type'
+import { useUserDataStores } from '@/stores/user_data_stores'
 
 const route = useRoute()
 const router = useRouter()
 
 const courseStore = useCourseStores()
 const enrollmentStore = useEnrollmentStores()
+
+const userStore = useUserDataStores()
 
 // Local UI state
 const course = ref<Course | null>(null)
@@ -48,6 +51,10 @@ function getInitials(name: string) {
         .map((part) => part[0])
         .join('')
         .toUpperCase()
+}
+
+function getStudentAvatarUrl(studentId: string): string | null {
+    return userStore.userDataById[studentId]?.avatar_url ?? null;
 }
 
 function formatDate(date: string | null | undefined) {
@@ -103,8 +110,16 @@ async function fetchStudents() {
         enrollments.value = Array.isArray(enrollmentData)
             ? enrollmentData
             : enrollmentData?.data ?? []
+
+        await Promise.all(
+            students.value.map((student) => {
+                userStore.getUserDataById(student.student_id)
+                console.log(student.student_id)
+            }
+            )
+        );
     } catch (err) {
-        const e = err as {message?: string}
+        const e = err as { message?: string }
 
         error.value =
             e.message ?? 'Gagal memuat data siswa. Silakan coba lagi.'
@@ -252,9 +267,15 @@ watch(courseId, (newId, oldId) => {
                         <div class="flex items-start gap-3">
                             <!-- Avatar -->
                             <div class="flex size-12 shrink-0 items-center justify-center
-                       rounded-full bg-indigo-50 text-sm font-bold
-                       text-indigo-700">
-                                {{ getInitials(enrollment.fullname) }}
+    overflow-hidden rounded-full bg-indigo-50 text-sm font-bold
+    text-indigo-700">
+                                <img v-if="getStudentAvatarUrl(enrollment.student_id)"
+                                    :src="getStudentAvatarUrl(enrollment.student_id)!" alt="Profile photo"
+                                    class="size-full object-cover" />
+
+                                <!-- <span v-else>
+                                    {{ getInitials(enrollment.fullname) }}
+                                </span> -->
                             </div>
 
                             <!-- Student information -->
@@ -296,7 +317,7 @@ watch(courseId, (newId, oldId) => {
                                                 formatDate(
                                                     enrollment.approved_at ||
                                                     enrollment.enrolled_at,
-                                            )
+                                                )
                                             }}
                                         </span>
                                     </p>

@@ -12,21 +12,11 @@ export async function getDataUser(uid: string) {
   if (error) throw error;
   if (!data) throw new Error('User data not found!');
 
-  let avatarUrl: string | null = null;
-  if (data.avatar_path) {
-    const { data: publicUrlData } = supabase.storage
-      .from('avatars')
-      .getPublicUrl(data.avatar_path);
-
-    avatarUrl = publicUrlData.publicUrl;
-  }
-
   return {
     ...data,
-    avatarUrl,
+    avatar_url: data.avatar_url ?? null,
   };
 }
-
 
 export async function updateDataUser(uid: string, payload: UpdateUserPayload) {
     const { data, error } = await supabase
