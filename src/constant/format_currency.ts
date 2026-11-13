@@ -4,12 +4,6 @@ export interface FormatCurrencyOptions {
     fallbackText?: string;
 }
 
-/**
- * Format angka dengan pemisah ribuan (titik untuk id-ID).
- * 
- * @param value - Nilai angka atau string angka yang akan diformat
- * @param options - Konfigurasi opsional (locale, maximumFractionDigits, fallbackText)
- */
 export function formatCurrency(
     value: number | string | null | undefined,
     options: FormatCurrencyOptions = {}

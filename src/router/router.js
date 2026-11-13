@@ -27,6 +27,7 @@ import CourseDetail from "@/views/course/CourseDetail.vue";
 import ManageStudentPage from "@/views/student/ManageStudentPage.vue";
 import ManageEnrollmentPage from "@/views/enrollments/ManageEnrollmentPage.vue";
 import InvoiceDetailView from "@/views/invoices/InvoiceDetailView.vue";
+import PaymentView from "@/views/payment/PaymentView.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -194,6 +195,15 @@ const router = createRouter({
                     path: "/student/invoices/:invoiceId",
                     name: "student.invoice-detail",
                     component: InvoiceDetailView,
+                    meta: {
+                        requiresAuth: true,
+                        requiresStudent: true,
+                    },
+                },
+                {
+                    path: "/student/invoices/:invoiceId/payment",
+                    name: "student.payment",
+                    component: PaymentView,
                     meta: {
                         requiresAuth: true,
                         requiresStudent: true,

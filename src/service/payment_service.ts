@@ -1,6 +1,7 @@
 
 import { DatabaseTableName } from "@/constant/database_table_name";
 import { supabase } from "@/lib/supabase";
+import { OrganizationBankAccount } from "@/types/organization_type";
 
 import type {
     Payment,
@@ -305,4 +306,39 @@ export async function rejectPayment(
     }
 
     return data as string;
+}
+
+
+// =====================================================
+// Fetch organization payment account by invoice ID
+// =====================================================
+
+export async function fetchPaymentAccountByInvoiceId(
+    invoiceId: string,
+): Promise<OrganizationBankAccount | null> {
+
+    // Validate invoice ID
+    if (!invoiceId) {
+        throw new Error("Invoice ID is required.");
+    }
+
+    // Fetch payment account through RPC
+    const { data, error } = await supabase
+        .rpc("get_payment_account_by_invoice_id", {
+            p_invoice_id: invoiceId,
+        })
+        .maybeSingle();
+
+    // Handle Supabase error
+    if (error) {
+        console.error("Failed to fetch payment account:", error);
+        throw error;
+    }
+
+    // No accessible payment account found
+    if (!data) {
+        return null;
+    }
+
+    return data as OrganizationBankAccount;
 }

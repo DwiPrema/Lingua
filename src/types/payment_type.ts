@@ -1,4 +1,3 @@
-
 export type PaymentMethod =
     | "bank_transfer"
     | "qris";
@@ -28,4 +27,14 @@ export interface SubmitPaymentPayload {
     paymentMethod: PaymentMethod;
     amount: number;
     file: File;
+}
+
+export interface PaymentPayload {
+    invoice_id: string;
+    amount: number;
+    payment_method: PaymentMethod;
+    account_holder_name: string;
+    payment_date: string;
+    proof_file: File;
+    notes: string | null;
 }

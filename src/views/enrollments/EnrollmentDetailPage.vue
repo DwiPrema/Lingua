@@ -397,7 +397,7 @@ function viewMyCourse(): void {
                             </div>
                         </div>
 
-                        <div class="border-t border-slate-100 bg-slate-50 p-4">
+                        <div class="border-t border-slate-100 bg-slate-50 p-4 flex flex-col gap-4">
                             <p class="mb-3 text-sm text-slate-600">
                                 {{
                                     invoice.status === 'unpaid'
@@ -411,7 +411,7 @@ function viewMyCourse(): void {
                             </p>
 
                             <button type="button"
-                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 font-semibold text-white transition hover:opacity-90"
+                                class="flex w-full items-center justify-center gap-2 rounded-xl  px-5 py-3 font-semibold text-black transition hover:opacity-90 border border-black"
                                 @click="router.push({
                                     name: 'student.invoice-detail',
                                     params: { invoiceId: invoice.id }
@@ -419,10 +419,18 @@ function viewMyCourse(): void {
                                 <ReceiptText :size="17" />
                                 View Invoice Details
                             </button>
+                            <button type="button"
+                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 font-semibold text-white transition hover:opacity-90"
+                                @click="router.push({
+                                    name: 'student.payment',
+                                    params: { invoiceId: invoice.id }
+                                })">
+                                <ReceiptText :size="17" />
+                                Pay Now
+                            </button>
                         </div>
                     </div>
                 </section>
-
 
                 <!-- Course information -->
                 <section class="mt-8">
