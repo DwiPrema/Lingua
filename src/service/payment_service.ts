@@ -100,18 +100,15 @@ export async function submitPayment(
     if (!user) {
         throw new Error("User is not authenticated.");
     }
-
-    // Generate payment ID before uploading the proof.
+    
     const paymentId = crypto.randomUUID();
 
-    // Upload proof to private Storage.
     const proofPath = await uploadPaymentProof(
         user.id,
         paymentId,
         file,
     );
 
-    // Submit payment through RPC.
     const { data, error } = await supabase.rpc("submit_payment", {
         p_payment_id: paymentId,
         p_invoice_id: invoiceId,
@@ -121,8 +118,6 @@ export async function submitPayment(
     });
 
     if (error) {
-        // The uploaded file may remain in Storage.
-        // Cleanup will be handled separately.
         throw error;
     }
 
