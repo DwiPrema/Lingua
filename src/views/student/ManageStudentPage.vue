@@ -17,6 +17,7 @@ import { useEnrollmentStores } from '@/stores/enrollments_stores'
 import { Course } from '@/types/course_type'
 import { Enrollment } from '@/types/enrollment_type'
 import { useUserDataStores } from '@/stores/user_data_stores'
+import CustomButton from '@/components/CustomButton.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -39,19 +40,6 @@ const students = computed(() =>
         ['approved', 'active'].includes(enrollment.status),
     ),
 )
-
-// Helpers
-function getInitials(name: string) {
-    if (!name?.trim()) return '?'
-
-    return name
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map((part) => part[0])
-        .join('')
-        .toUpperCase()
-}
 
 function getStudentAvatarUrl(studentId: string): string | null {
     return userStore.userDataById[studentId]?.avatar_url ?? null;
@@ -109,7 +97,7 @@ async function fetchStudents() {
 
         enrollments.value = Array.isArray(enrollmentData)
             ? enrollmentData
-            : enrollmentData?.data ?? []
+            : enrollmentData ?? []
 
         await Promise.all(
             students.value.map((student) => {
@@ -272,10 +260,6 @@ watch(courseId, (newId, oldId) => {
                                 <img v-if="getStudentAvatarUrl(enrollment.student_id)"
                                     :src="getStudentAvatarUrl(enrollment.student_id)!" alt="Profile photo"
                                     class="size-full object-cover" />
-
-                                <!-- <span v-else>
-                                    {{ getInitials(enrollment.fullname) }}
-                                </span> -->
                             </div>
 
                             <!-- Student information -->
@@ -291,36 +275,42 @@ watch(courseId, (newId, oldId) => {
                                     </span>
                                 </div>
 
-                                <div class="mt-3 space-y-2 text-sm text-slate-500">
-                                    <p v-if="enrollment.phone" class="flex items-center gap-2">
-                                        <Phone class="size-4 shrink-0" />
-                                        <span class="break-all">{{ enrollment.phone }}</span>
-                                    </p>
+                                <div class="flex flex-row justify-between items-end">
+                                    <div class="mt-3 space-y-2 text-sm text-slate-500">
+                                        <p v-if="enrollment.phone" class="flex items-center gap-2">
+                                            <Phone class="size-4 shrink-0" />
+                                            <span class="break-all">{{ enrollment.phone }}</span>
+                                        </p>
 
-                                    <p v-if="enrollment.school_name" class="flex items-center gap-2">
-                                        <School class="size-4 shrink-0" />
-                                        <span class="wrap-break-word">
-                                            {{ enrollment.school_name }}
-                                        </span>
-                                    </p>
+                                        <p v-if="enrollment.school_name" class="flex items-center gap-2">
+                                            <School class="size-4 shrink-0" />
+                                            <span class="wrap-break-word">
+                                                {{ enrollment.school_name }}
+                                            </span>
+                                        </p>
 
-                                    <p v-if="enrollment.education_level" class="flex items-center gap-2">
-                                        <GraduationCap class="size-4 shrink-0" />
-                                        <span>{{ enrollment.education_level }}</span>
-                                    </p>
+                                        <p v-if="enrollment.education_level" class="flex items-center gap-2">
+                                            <GraduationCap class="size-4 shrink-0" />
+                                            <span>{{ enrollment.education_level }}</span>
+                                        </p>
 
-                                    <p v-if="enrollment.approved_at || enrollment.enrolled_at"
-                                        class="flex items-center gap-2">
-                                        <CalendarDays class="size-4 shrink-0" />
-                                        <span>
-                                            {{
-                                                formatDate(
-                                                    enrollment.approved_at ||
-                                                    enrollment.enrolled_at,
-                                                )
-                                            }}
-                                        </span>
-                                    </p>
+                                        <p v-if="enrollment.approved_at || enrollment.enrolled_at"
+                                            class="flex items-center gap-2">
+                                            <CalendarDays class="size-4 shrink-0" />
+                                            <span>
+                                                {{
+                                                    formatDate(
+                                                        enrollment.approved_at ||
+                                                        enrollment.enrolled_at,
+                                                    )
+                                                }}
+                                            </span>
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <CustomButton @click="router.push({name: 'manage-student-detail', params: {courseId: courseId, enrollmentId: enrollment.id}})" size="sm"><p>Details</p></CustomButton>
+                                    </div>
                                 </div>
                             </div>
                         </div>

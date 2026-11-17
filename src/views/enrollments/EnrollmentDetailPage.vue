@@ -419,7 +419,7 @@ function viewMyCourse(): void {
                                 <ReceiptText :size="17" />
                                 View Invoice Details
                             </button>
-                            <button type="button"
+                            <button type="button" v-if="invoice.status === 'unpaid'"
                                 class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 font-semibold text-white transition hover:opacity-90"
                                 @click="router.push({
                                     name: 'student.payment',
@@ -595,7 +595,7 @@ function viewMyCourse(): void {
 
                 <!-- Status-specific actions -->
                 <section class="mt-8 space-y-4">
-                    <button v-if="status === 'approved' || status === 'active'" type="button"
+                    <button v-if="status === 'active'" type="button"
                         class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3.5 font-semibold text-white transition hover:bg-accent/90"
                         @click="viewMyCourse">
                         <BookOpen :size="16" />

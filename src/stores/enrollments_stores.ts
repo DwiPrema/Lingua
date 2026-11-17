@@ -1,8 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import * as enrollmentService from '@/service/enrollments_service'
-import { Enrollment } from '@/constant/enrollment_status'
-import { CreateEnrollmentPayload } from '@/types/enrollment_type'
+import { CreateEnrollmentPayload, Enrollment } from '@/types/enrollment_type'
 
 export const useEnrollmentStores = defineStore('enrollment', () => {
     const enrollments = ref<Enrollment[]>([])
@@ -102,23 +101,38 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         error.value = null
     }
 
-    async function fetchEnrollmentById(enrollmentId: string): Promise<Enrollment> {
-        loading.value = true
-        error.value = null
-
-        try {
-            const data =
-                await enrollmentService.getEnrollmentById(enrollmentId)
-
-            activeEnrollment.value = data
-            return data
-        } catch (err: any) {
-            error.value = err?.message ?? 'Failed to fetch enrollment.'
-            throw err
-        } finally {
-            loading.value = false
-        }
+    async function fetchEnrollmentById(
+    enrollmentId: string
+): Promise<Enrollment> {
+    if (!enrollmentId) {
+        activeEnrollment.value = null
+        error.value = 'Enrollment ID is required.'
+        throw new Error(error.value)
     }
+
+    loading.value = true
+    error.value = null
+    activeEnrollment.value = null
+
+    try {
+        const data = await enrollmentService.getEnrollmentById(enrollmentId)
+
+        activeEnrollment.value = data
+
+        return data
+    } catch (err: unknown) {
+        const message =
+            err instanceof Error
+                ? err.message
+                : 'Failed to fetch enrollment.'
+
+        error.value = message
+
+        throw err
+    } finally {
+        loading.value = false
+    }
+}
 
     async function fetchMyEnrollments(studentId: string): Promise<void> {
         if (!studentId) {

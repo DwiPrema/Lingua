@@ -1,6 +1,6 @@
 import { DatabaseTableName } from "@/constant/database_table_name";
 import { supabase } from "@/lib/supabase";
-import { CreateEnrollmentPayload, StatusEnrollments } from "@/types/enrollment_type";
+import { CreateEnrollmentPayload, Enrollment, StatusEnrollments } from "@/types/enrollment_type";
 import { EnrollmentException } from "@/utils/exception/enrollment_exception";
 
 export async function getActiveEnrollment(studentId: string, courseId: string) {
@@ -84,7 +84,13 @@ export async function updateEnrollmentsStatus(
     return data
 }
 
-export async function getEnrollmentById(enrollmentId: string) {
+export async function getEnrollmentById(
+    enrollmentId: string
+): Promise<Enrollment> {
+    if (!enrollmentId) {
+        throw new Error('Enrollment ID is required.')
+    }
+
     const { data, error } = await supabase
         .from(DatabaseTableName.enrollmentsCollection)
         .select('*')
@@ -93,7 +99,11 @@ export async function getEnrollmentById(enrollmentId: string) {
 
     if (error) throw error
 
-    return data
+    if (!data) {
+        throw new Error('Enrollment not found.')
+    }
+
+    return data as Enrollment
 }
 
 export async function getMyEnrollments(studentId: string) {
@@ -127,20 +137,7 @@ export async function fetchApprovedStudentByCourseId(courseId: string) {
 
     const { data, error } = await supabase
         .from(DatabaseTableName.enrollmentsCollection)
-        .select(`
-            id,
-            course_id,
-            program_id,
-            student_id,
-            fullname,
-            phone,
-            school_name,
-            education_level,
-            status,
-            approved_at,
-            enrolled_at,
-            created_at
-        `)
+        .select()
         .eq('course_id', courseId)
         .in('status', ['approved', 'active'])
         .order('created_at', { ascending: false })
@@ -159,19 +156,7 @@ export async function fetchPendingEnrollmentsByCourseId(courseId: string) {
 
     const { data, error } = await supabase
         .from(DatabaseTableName.enrollmentsCollection)
-        .select(`
-            id,
-            created_at,
-            course_id,
-            program_id,
-            student_id,
-            fullname,
-            address,
-            education_level,
-            phone,
-            school_name,
-            status
-        `)
+        .select()
         .eq('course_id', courseId)
         .eq('status', 'pending')
         .order('created_at', { ascending: false })

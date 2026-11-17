@@ -4,7 +4,7 @@ import { ref } from "vue";
 
 import type {
     Payment,
-    SubmitPaymentPayload,
+    PaymentPayload,
 } from "@/types/payment_type";
 
 import type {
@@ -231,7 +231,7 @@ export const usePaymentStore = defineStore("payment", () => {
     // =================================================
 
     async function createPayment(
-        payload: SubmitPaymentPayload,
+        payload: PaymentPayload,
     ): Promise<string> {
 
         submitting.value = true;

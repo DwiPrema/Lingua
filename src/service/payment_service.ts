@@ -5,6 +5,7 @@ import { OrganizationBankAccount } from "@/types/organization_type";
 
 import type {
     Payment,
+    PaymentPayload,
     SubmitPaymentPayload,
 } from "@/types/payment_type";
 
@@ -71,16 +72,16 @@ async function uploadPaymentProof(
 // =====================================================
 
 export async function submitPayment(
-    payload: SubmitPaymentPayload,
+    payload: PaymentPayload,
 ): Promise<string> {
     const {
-        invoiceId,
-        paymentMethod,
+        invoice_id,
+        payment_method,
         amount,
-        file,
+        proof_file,
     } = payload;
 
-    if (!invoiceId) {
+    if (!invoice_id) {
         throw new Error("Invoice ID is required.");
     }
 
@@ -106,13 +107,13 @@ export async function submitPayment(
     const proofPath = await uploadPaymentProof(
         user.id,
         paymentId,
-        file,
+        proof_file,
     );
 
     const { data, error } = await supabase.rpc("submit_payment", {
         p_payment_id: paymentId,
-        p_invoice_id: invoiceId,
-        p_payment_method: paymentMethod,
+        p_invoice_id: invoice_id,
+        p_payment_method: payment_method,
         p_amount: amount,
         p_proof_path: proofPath,
     });

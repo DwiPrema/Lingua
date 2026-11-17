@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 import { useInvoiceStore } from "@/stores/invoice_stores";
 import { usePaymentStore } from "@/stores/payment_stores";
 
 import PaymentForm from "@/views/payment/PaymentForm.vue";
+import { PaymentPayload } from "@/types/payment_type";
 
 const route = useRoute();
+const router = useRouter();
 
 const invoiceStore = useInvoiceStore();
 const paymentStore = usePaymentStore();
@@ -46,6 +48,24 @@ async function loadPaymentData(): Promise<void> {
 
     } catch (err) {
         console.error("Failed to load payment data:", err);
+    }
+}
+
+async function handlePaymentSubmit(
+    payload: PaymentPayload
+): Promise<void> {
+    try {
+        await paymentStore.createPayment(payload);
+
+        router.push({
+            name: "student.invoice-detail",
+            params: {
+                invoiceId: payload.invoice_id,
+            },
+        });
+
+    } catch (error) {
+        console.error("Failed to submit payment:", error);
     }
 }
 
@@ -99,7 +119,8 @@ onUnmounted(() => {
         </div>
 
         <!-- Payment Form -->
-        <PaymentForm v-else :invoice="invoice" :payment-account="paymentAccount" :loading="paymentStore.submitting" />
+        <PaymentForm v-else :invoice="invoice" :payment-account="paymentAccount" :loading="paymentStore.submitting"
+            @submit="handlePaymentSubmit" />
 
     </section>
 </template>

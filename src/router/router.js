@@ -28,6 +28,7 @@ import ManageStudentPage from "@/views/student/ManageStudentPage.vue";
 import ManageEnrollmentPage from "@/views/enrollments/ManageEnrollmentPage.vue";
 import InvoiceDetailView from "@/views/invoices/InvoiceDetailView.vue";
 import PaymentView from "@/views/payment/PaymentView.vue";
+import StudentDetailPage from "@/views/student/StudentDetailPage.vue";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -129,6 +130,12 @@ const router = createRouter({
                     path: "/courses/:courseId/manage-student",
                     name: "manage-student",
                     component: ManageStudentPage,
+                    props: true,
+                },
+                {
+                    path: "/courses/:courseId/manage-student/:enrollmentId",
+                    name: "manage-student-detail",
+                    component: StudentDetailPage,
                     props: true,
                 },
                 {
