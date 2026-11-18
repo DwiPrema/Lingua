@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from "vue";
+import { computed, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { StatusEnrollmentsExtension } from "@/types/enrollment_type";
@@ -34,11 +34,15 @@ async function loadEnrollment(): Promise<void> {
     }
 
     try {
-        await enrollmentStore.fetchEnrollmentById(enrollmentId);
+        const enrollmentData = await enrollmentStore.fetchEnrollmentById(enrollmentId);
+        await userStore.getUserDataById(enrollmentData.student_id)
+            
     } catch (err) {
         console.error("Failed to load enrollment:", err);
     }
 }
+
+onMounted(loadEnrollment)
 
 watch(
     () => route.params.enrollmentId,
