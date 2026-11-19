@@ -7,9 +7,12 @@
 
     /* Background Color  */
     --color-dark-background: #020617;
+    --color-light-background: #F8FAFC;
 
     /* Text Colors  */
-    --color-light-text: #F8FAFC;
+    --color-dark-text: #000000;
+    --color-light-text: #FFFFFF;
+    
     --color-muted-text: #94A3B8;
 
     /* Status Color  */

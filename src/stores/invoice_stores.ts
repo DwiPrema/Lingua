@@ -7,8 +7,8 @@ import type { Invoice } from "@/types/invoice_type";
 import {
     fetchInvoiceById,
     fetchMyInvoices,
-    fetchInvoicesByCourseId,
-    fetchInvoiceByEnrollmentId,
+    fetchInvoicesByCourseAndEnrollmentId,
+    fetchInvoiceByEnrollmentIdAndType,
 } from "@/service/invoice_service";
 
 // =====================================================
@@ -87,9 +87,6 @@ export const useInvoiceStore = defineStore("invoice", () => {
     }
 
 
-    /**
-     * Fetch invoices belonging to the authenticated student.
-     */
     async function getMyInvoices(): Promise<Invoice[]> {
         loading.value = true;
         clearError();
@@ -108,18 +105,14 @@ export const useInvoiceStore = defineStore("invoice", () => {
         }
     }
 
-
-    /**
-     * Fetch invoices belonging to a specific course.
-     */
-    async function getInvoicesByCourseId(
+    async function getInvoicesByCourseAndEnrollmentId(
         courseId: string
     ): Promise<Invoice[]> {
         loading.value = true;
         clearError();
 
         try {
-            const result = await fetchInvoicesByCourseId(courseId);
+            const result = await fetchInvoicesByCourseAndEnrollmentId(courseId);
 
             invoices.value = result;
 
@@ -145,7 +138,7 @@ export const useInvoiceStore = defineStore("invoice", () => {
         clearSelectedInvoice();
 
         try {
-            const result = await fetchInvoiceByEnrollmentId(enrollmentId);
+            const result = await fetchInvoiceByEnrollmentIdAndType(enrollmentId);
 
             selectedInvoice.value = result;
 
@@ -173,7 +166,7 @@ export const useInvoiceStore = defineStore("invoice", () => {
         // Actions
         getInvoiceById,
         getMyInvoices,
-        getInvoicesByCourseId,
+        getInvoicesByCourseAndEnrollmentId,
         getInvoiceByEnrollmentId,
 
         // Helpers

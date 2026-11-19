@@ -24,7 +24,7 @@ onMounted(async () => {
     <header class="relative z-50 px-6 py-7">
         <div class="w-full flex justify-between items-center">
             <!-- Logo -->
-            <div class='text-light-text text-3xl font-black cursor-pointer'>
+            <div class='text-light-text text-[36px] font-extrabold cursor-pointer'>
                 Lingua<span class="text-primary">.</span>
             </div>
 

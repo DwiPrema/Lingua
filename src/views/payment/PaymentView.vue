@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from "vue";
+import { computed, onUnmounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useInvoiceStore } from "@/stores/invoice_stores";
@@ -19,7 +19,8 @@ const paymentStore = usePaymentStore();
 // =====================================================
 
 const invoiceId = computed(() => {
-    return route.params.invoiceId as string;
+    const param = route.params.invoiceId;
+    return typeof param === "string" ? param : "";
 });
 
 const invoice = computed(() => {
@@ -30,16 +31,39 @@ const paymentAccount = computed(() => {
     return paymentStore.paymentAccount;
 });
 
+const invoicePaymentMessage = computed(() => {
+    switch (invoice.value?.status) {
+        case "pending_verification":
+            return "Your payment is waiting for verification. Please wait before submitting another attempt.";
+        case "paid":
+            return "This invoice has already been paid.";
+        case "cancelled":
+            return "This invoice is no longer available for payment.";
+        default:
+            return "";
+    }
+});
+
 // =====================================================
 // Fetch Data
 // =====================================================
 
 async function loadPaymentData(): Promise<void> {
-    if (!invoiceId.value) return;
+    paymentStore.clearPaymentAccount();
+    paymentStore.clearError();
+
+    if (!invoiceId.value) {
+        invoiceStore.clearSelectedInvoice();
+        return;
+    }
 
     try {
         // Fetch invoice
-        await invoiceStore.getInvoiceById(invoiceId.value);
+        const loadedInvoice = await invoiceStore.getInvoiceById(invoiceId.value);
+
+        if (!loadedInvoice || loadedInvoice.status !== "unpaid") {
+            return;
+        }
 
         // Fetch organization payment account
         await paymentStore.getPaymentAccountByInvoiceId(
@@ -73,9 +97,9 @@ async function handlePaymentSubmit(
 // Lifecycle
 // =====================================================
 
-onMounted(() => {
-    loadPaymentData();
-});
+watch(invoiceId, () => {
+    void loadPaymentData();
+}, { immediate: true });
 
 onUnmounted(() => {
     invoiceStore.clearSelectedInvoice();
@@ -102,6 +126,17 @@ onUnmounted(() => {
         <!-- Invoice Not Found -->
         <div v-else-if="!invoice">
             Invoice not found.
+        </div>
+
+        <div v-else-if="invoice.status !== 'unpaid'"
+            role="status"
+            class="rounded-xl border border-blue-200 bg-blue-50 p-5 text-blue-900">
+            <h2 class="font-bold">
+                {{ invoice.status === "pending_verification" ? "Payment Verification Pending" : invoice.status === "paid" ? "Payment Completed" : "Payment Unavailable" }}
+            </h2>
+            <p class="mt-1 text-sm leading-6">
+                {{ invoicePaymentMessage }}
+            </p>
         </div>
 
         <!-- Loading Payment Account -->

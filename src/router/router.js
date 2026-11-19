@@ -136,7 +136,6 @@ const router = createRouter({
                     path: "/courses/:courseId/manage-student/:enrollmentId",
                     name: "manage-student-detail",
                     component: StudentDetailPage,
-                    props: true,
                 },
                 {
                     path: "/courses/:courseId/manage-enrollments",

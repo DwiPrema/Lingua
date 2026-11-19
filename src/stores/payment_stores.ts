@@ -2,14 +2,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-import type {
-    Payment,
-    PaymentPayload,
-} from "@/types/payment_type";
-
-import type {
-    OrganizationBankAccount,
-} from "@/types/organization_type";
+import type { Payment, PaymentPayload } from "@/types/payment_type";
+import type { OrganizationBankAccount } from "@/types/organization_type";
 
 import {
     fetchPaymentById,
@@ -17,33 +11,29 @@ import {
     fetchPaymentsByInvoiceId,
     fetchPaymentsByCourseId,
     fetchPaymentAccountByInvoiceId,
+    createPaymentProofSignedUrl,
     submitPayment,
     verifyPayment,
     rejectPayment,
 } from "@/service/payment_service";
 
 // =====================================================
-// Payment Store
+// PAYMENT STORE
 // =====================================================
 
 export const usePaymentStore = defineStore("payment", () => {
 
     // =================================================
-    // State
+    // STATE
     // =================================================
 
-    // Collection of payments
     const payments = ref<Payment[]>([]);
-
-    // Currently selected payment
     const selectedPayment = ref<Payment | null>(null);
 
-    // Organization payment account
     const paymentAccount = ref<OrganizationBankAccount | null>(null);
 
-
     // =================================================
-    // Loading States
+    // LOADING STATES
     // =================================================
 
     const paymentsLoading = ref(false);
@@ -54,17 +44,11 @@ export const usePaymentStore = defineStore("payment", () => {
     const verifying = ref(false);
     const rejecting = ref(false);
 
-
     // =================================================
-    // Error State
+    // ERROR
     // =================================================
 
     const error = ref<string | null>(null);
-
-
-    // =================================================
-    // Helpers
-    // =================================================
 
     function setError(err: unknown): void {
         error.value = err instanceof Error
@@ -75,6 +59,10 @@ export const usePaymentStore = defineStore("payment", () => {
     function clearError(): void {
         error.value = null;
     }
+
+    // =================================================
+    // CLEAR HELPERS
+    // =================================================
 
     function clearPayments(): void {
         payments.value = [];
@@ -95,24 +83,20 @@ export const usePaymentStore = defineStore("payment", () => {
         clearError();
     }
 
-
     // =================================================
-    // Fetch Payment by ID
+    // FETCH PAYMENT BY ID
     // =================================================
 
     async function getPaymentById(
         paymentId: string,
     ): Promise<Payment | null> {
-
         paymentLoading.value = true;
         clearError();
         clearSelectedPayment();
 
         try {
             const result = await fetchPaymentById(paymentId);
-
             selectedPayment.value = result;
-
             return result;
         } catch (err) {
             setError(err);
@@ -122,21 +106,17 @@ export const usePaymentStore = defineStore("payment", () => {
         }
     }
 
-
     // =================================================
-    // Fetch My Payments
+    // FETCH MY PAYMENTS
     // =================================================
 
     async function getMyPayments(): Promise<Payment[]> {
-
         paymentsLoading.value = true;
         clearError();
 
         try {
             const result = await fetchMyPayments();
-
             payments.value = result;
-
             return result;
         } catch (err) {
             setError(err);
@@ -146,23 +126,19 @@ export const usePaymentStore = defineStore("payment", () => {
         }
     }
 
-
     // =================================================
-    // Fetch Payments by Invoice ID
+    // FETCH PAYMENTS BY INVOICE
     // =================================================
 
     async function getPaymentsByInvoiceId(
         invoiceId: string,
     ): Promise<Payment[]> {
-
         paymentsLoading.value = true;
         clearError();
 
         try {
             const result = await fetchPaymentsByInvoiceId(invoiceId);
-
             payments.value = result;
-
             return result;
         } catch (err) {
             setError(err);
@@ -172,23 +148,19 @@ export const usePaymentStore = defineStore("payment", () => {
         }
     }
 
-
     // =================================================
-    // Fetch Payments by Course ID
+    // FETCH PAYMENTS BY COURSE
     // =================================================
 
     async function getPaymentsByCourseId(
         courseId: string,
     ): Promise<Payment[]> {
-
         paymentsLoading.value = true;
         clearError();
 
         try {
             const result = await fetchPaymentsByCourseId(courseId);
-
             payments.value = result;
-
             return result;
         } catch (err) {
             setError(err);
@@ -198,24 +170,20 @@ export const usePaymentStore = defineStore("payment", () => {
         }
     }
 
-
     // =================================================
-    // Fetch Organization Payment Account
+    // FETCH PAYMENT ACCOUNT
     // =================================================
 
     async function getPaymentAccountByInvoiceId(
         invoiceId: string,
     ): Promise<OrganizationBankAccount | null> {
-
         paymentAccountLoading.value = true;
         clearError();
         clearPaymentAccount();
 
         try {
             const result = await fetchPaymentAccountByInvoiceId(invoiceId);
-
             paymentAccount.value = result;
-
             return result;
         } catch (err) {
             setError(err);
@@ -225,22 +193,33 @@ export const usePaymentStore = defineStore("payment", () => {
         }
     }
 
+    // =================================================
+    // GET PAYMENT PROOF SIGNED URL
+    // =================================================
+
+    async function getPaymentProofUrl(
+        proofPath: string,
+    ): Promise<string> {
+        try {
+            return await createPaymentProofSignedUrl(proofPath);
+        } catch (err) {
+            setError(err);
+            throw err;
+        }
+    }
 
     // =================================================
-    // Submit Payment
+    // CREATE PAYMENT
     // =================================================
 
     async function createPayment(
         payload: PaymentPayload,
     ): Promise<string> {
-
         submitting.value = true;
         clearError();
 
         try {
-            const result = await submitPayment(payload);
-
-            return result;
+            return await submitPayment(payload);
         } catch (err) {
             setError(err);
             throw err;
@@ -249,22 +228,18 @@ export const usePaymentStore = defineStore("payment", () => {
         }
     }
 
-
     // =================================================
-    // Verify Payment
+    // APPROVE PAYMENT
     // =================================================
 
     async function approvePayment(
         paymentId: string,
     ): Promise<string> {
-
         verifying.value = true;
         clearError();
 
         try {
-            const result = await verifyPayment(paymentId);
-
-            return result;
+            return await verifyPayment(paymentId);
         } catch (err) {
             setError(err);
             throw err;
@@ -273,23 +248,19 @@ export const usePaymentStore = defineStore("payment", () => {
         }
     }
 
-
     // =================================================
-    // Reject Payment
+    // DECLINE PAYMENT
     // =================================================
 
     async function declinePayment(
         paymentId: string,
         reason: string,
     ): Promise<string> {
-
         rejecting.value = true;
         clearError();
 
         try {
-            const result = await rejectPayment(paymentId, reason);
-
-            return result;
+            return await rejectPayment(paymentId, reason);
         } catch (err) {
             setError(err);
             throw err;
@@ -298,9 +269,8 @@ export const usePaymentStore = defineStore("payment", () => {
         }
     }
 
-
     // =================================================
-    // Return
+    // RETURN
     // =================================================
 
     return {
@@ -320,14 +290,15 @@ export const usePaymentStore = defineStore("payment", () => {
         // Error
         error,
 
-        // Fetch Actions
+        // Fetch
         getPaymentById,
         getMyPayments,
         getPaymentsByInvoiceId,
         getPaymentsByCourseId,
         getPaymentAccountByInvoiceId,
+        getPaymentProofUrl,
 
-        // Mutation Actions
+        // Mutations
         createPayment,
         approvePayment,
         declinePayment,

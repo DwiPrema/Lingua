@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, type Component } from 'vue'
+import { computed, ref, watch, type Component } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-
 import { useEnrollmentStores } from '@/stores/enrollments_stores'
 import { useCourseStores } from '@/stores/course_stores'
 import { useCourseProgramStore } from '@/stores/course_program_stores'
 import { useInvoiceStore } from '@/stores/invoice_stores'
+import { usePaymentStore } from '@/stores/payment_stores'
 
 import {
     BadgeCheck,
@@ -23,6 +23,7 @@ import {
 
 import { formatCurrency } from '@/constant/format_currency'
 import type { Invoice } from '@/types/invoice_type'
+import type { Payment } from '@/types/payment_type'
 import type { Course } from '@/types/course_type'
 import type { Programs } from '@/types/program_type'
 import { Enrollment, StatusEnrollments, StatusEnrollmentType } from '@/types/enrollment_type'
@@ -34,9 +35,14 @@ const enrollmentStore = useEnrollmentStores()
 const courseStore = useCourseStores()
 const courseProgramStore = useCourseProgramStore()
 const invoiceStore = useInvoiceStore()
+const paymentStore = usePaymentStore()
 
 const invoice = ref<Invoice | null>(null)
 const invoiceError = ref<string>('')
+const invoiceLoading = ref<boolean>(false)
+const paymentAttempts = ref<Payment[]>([])
+const paymentAttemptsLoading = ref<boolean>(false)
+const paymentError = ref<string>('')
 
 const enrollment = ref<Enrollment | null>(null)
 const course = ref<Course | null>(null)
@@ -46,6 +52,7 @@ const loadingPage = ref<boolean>(true)
 const pageError = ref<string>('')
 const cancelling = ref<boolean>(false)
 const showCancelConfirmation = ref<boolean>(false)
+let detailLoadSequence = 0
 
 interface StatusInfo {
     title: string
@@ -110,6 +117,54 @@ const statusInfo = computed<StatusInfo>(() => {
     }
 })
 
+const latestPayment = computed<Payment | null>(() => {
+    return [...paymentAttempts.value].sort((left, right) => {
+        const leftTimestamp = Date.parse(left.created_at)
+        const rightTimestamp = Date.parse(right.created_at)
+
+        return (Number.isNaN(rightTimestamp) ? 0 : rightTimestamp) -
+            (Number.isNaN(leftTimestamp) ? 0 : leftTimestamp)
+    })[0] ?? null
+})
+
+const paymentNotice = computed(() => {
+    if (!invoice.value) return null
+
+    if (
+        invoice.value.status === 'pending_verification' ||
+        latestPayment.value?.status === 'pending_verification'
+    ) {
+        return 'pending'
+    }
+
+    if (
+        invoice.value.status === 'paid' &&
+        latestPayment.value?.status === 'verified'
+    ) {
+        return 'verified'
+    }
+
+    if (invoice.value.status === 'paid') {
+        return 'invoice-paid'
+    }
+
+    if (
+        invoice.value.status === 'unpaid' &&
+        latestPayment.value?.status === 'rejected'
+    ) {
+        return 'rejected'
+    }
+
+    return null
+})
+
+const canStartPayment = computed(() => {
+    return invoice.value?.status === 'unpaid' &&
+        !paymentAttemptsLoading.value &&
+        !paymentError.value &&
+        (!latestPayment.value || latestPayment.value.status === 'rejected')
+})
+
 function formatDate(value: string | null | undefined): string {
     if (!value) return 'Not available'
 
@@ -132,13 +187,30 @@ function getErrorMessage(
     return error instanceof Error ? error.message : fallback
 }
 
-onMounted(() => {
-    void loadEnrollmentDetail()
-})
+watch(
+    () => route.params.enrollmentId,
+    () => {
+        void loadEnrollmentDetail()
+    },
+    { immediate: true },
+)
 
 async function loadEnrollmentDetail(): Promise<void> {
+    const requestSequence = ++detailLoadSequence
+
     loadingPage.value = true
     pageError.value = ''
+    invoice.value = null
+    invoiceError.value = ''
+    invoiceLoading.value = false
+    paymentAttempts.value = []
+    paymentAttemptsLoading.value = false
+    paymentError.value = ''
+    paymentStore.clearPayments()
+    paymentStore.clearError()
+    enrollment.value = null
+    course.value = null
+    program.value = null
 
     try {
         const routeParam = route.params.enrollmentId
@@ -154,50 +226,106 @@ async function loadEnrollmentDetail(): Promise<void> {
         const result =
             await enrollmentStore.fetchEnrollmentById(enrollmentId)
 
+        if (requestSequence !== detailLoadSequence) return
+
         if (!result) {
             throw new Error('Enrollment not found.')
         }
 
         enrollment.value = result
 
-        // Fetch initial invoice
-        try {
-            invoice.value =
-                await invoiceStore.getInvoiceByEnrollmentId(result.id)
+        void loadInvoiceAndPayments(
+            result.id,
+            requestSequence,
+        )
 
-            invoiceError.value = ''
-        } catch (error: unknown) {
+        const [loadedCourse, programs] = await Promise.all([
+            courseStore.fetchCourseById(result.course_id),
+            courseProgramStore.getAllCourseProgram(result.course_id),
+        ])
+
+        if (requestSequence !== detailLoadSequence) return
+
+        course.value = loadedCourse
+        program.value = programs.find(
+            (item) => String(item.id) === String(result.program_id),
+        ) ?? null
+
+    } catch (error: unknown) {
+        if (requestSequence === detailLoadSequence) {
+            pageError.value = getErrorMessage(
+                error,
+                'Unable to load enrollment details.',
+            )
+        }
+    } finally {
+        if (requestSequence === detailLoadSequence) {
+            loadingPage.value = false
+        }
+    }
+}
+
+async function loadInvoiceAndPayments(
+    enrollmentId: string,
+    requestSequence: number,
+): Promise<void> {
+    invoiceLoading.value = true
+    invoiceError.value = ''
+
+    let loadedInvoice: Invoice | null = null
+
+    try {
+        loadedInvoice =
+            await invoiceStore.getInvoiceByEnrollmentId(enrollmentId)
+
+        if (requestSequence !== detailLoadSequence) return
+
+        invoice.value = loadedInvoice
+    } catch (error: unknown) {
+        if (requestSequence === detailLoadSequence) {
             invoice.value = null
-
             invoiceError.value = getErrorMessage(
                 error,
                 'Unable to load invoice.',
             )
         }
-
-        // Fetch course
-        course.value = await courseStore.fetchCourseById(
-            result.course_id,
-        )
-
-        // Fetch program
-        const programs =
-            await courseProgramStore.getAllCourseProgram(
-                result.course_id,
-            )
-
-        program.value =
-            programs.find(
-                (item) => String(item.id) === String(result.program_id),
-            ) ?? null
-
-    } catch (error: unknown) {
-        pageError.value = getErrorMessage(
-            error,
-            'Unable to load enrollment details.',
-        )
+        return
     } finally {
-        loadingPage.value = false
+        if (requestSequence === detailLoadSequence) {
+            invoiceLoading.value = false
+        }
+    }
+
+    if (loadedInvoice && requestSequence === detailLoadSequence) {
+        await loadPaymentAttempts(loadedInvoice.id, requestSequence)
+    }
+}
+
+async function loadPaymentAttempts(
+    invoiceId: string,
+    requestSequence: number,
+): Promise<void> {
+    paymentAttemptsLoading.value = true
+    paymentError.value = ''
+    paymentAttempts.value = []
+
+    try {
+        const result = await paymentStore.getPaymentsByInvoiceId(invoiceId)
+
+        if (requestSequence === detailLoadSequence) {
+            paymentAttempts.value = result
+        }
+    } catch (error: unknown) {
+        if (requestSequence === detailLoadSequence) {
+            paymentError.value = getErrorMessage(
+                error,
+                'Unable to load payment attempts.',
+            )
+        }
+    } finally {
+        if (requestSequence === detailLoadSequence) {
+            paymentAttemptsLoading.value = false
+        }
     }
 }
 
@@ -327,7 +455,7 @@ function viewMyCourse(): void {
                             'bg-emerald-100 text-emerald-800': invoice.status === 'paid',
                             'bg-slate-100 text-slate-700': invoice.status === 'cancelled',
                         }">
-                            {{ invoice.status.replaceAll('_', ' ') }}
+                            Invoice: {{ invoice.status.replaceAll('_', ' ') }}
                         </span>
                     </div>
 
@@ -335,6 +463,11 @@ function viewMyCourse(): void {
                     <div v-if="invoiceError"
                         class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
                         {{ invoiceError }}
+                    </div>
+
+                    <div v-else-if="invoiceLoading"
+                        class="mt-4 rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-600">
+                        Loading invoice...
                     </div>
 
                     <div v-else-if="!invoice" class="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
@@ -398,7 +531,7 @@ function viewMyCourse(): void {
                         </div>
 
                         <div class="border-t border-slate-100 bg-slate-50 p-4 flex flex-col gap-4">
-                            <p class="mb-3 text-sm text-slate-600">
+                            <p class="text-sm text-slate-600">
                                 {{
                                     invoice.status === 'unpaid'
                                         ? 'Your enrollment has been approved. Complete your payment to activate your enrollment.'
@@ -410,6 +543,56 @@ function viewMyCourse(): void {
                                 }}
                             </p>
 
+                            <p v-if="paymentAttemptsLoading" class="text-sm text-slate-600" role="status">
+                                Loading payment attempts...
+                            </p>
+
+                            <div v-else-if="paymentError"
+                                class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                                <p role="alert">{{ paymentError }}</p>
+                                <button type="button"
+                                    class="mt-3 font-semibold underline"
+                                    @click="loadPaymentAttempts(invoice.id, detailLoadSequence)">
+                                    Retry loading payment status
+                                </button>
+                            </div>
+
+                            <section v-else-if="paymentNotice === 'rejected'" role="alert"
+                                class="rounded-xl border border-red-300 bg-red-50 p-4 text-red-900">
+                                <h3 class="font-bold">Payment Rejected</h3>
+                                <p class="mt-1 text-sm leading-6">
+                                    The previous payment could not be verified. Please review the reason and submit a new payment attempt.
+                                </p>
+                                <p v-if="latestPayment?.rejection_reason"
+                                    class="mt-2 wrap-break-word text-sm font-medium">
+                                    Reason: {{ latestPayment.rejection_reason }}
+                                </p>
+                            </section>
+
+                            <section v-else-if="paymentNotice === 'pending'" role="status"
+                                class="rounded-xl border border-blue-200 bg-blue-50 p-4 text-blue-900">
+                                <h3 class="font-bold">Payment Verification Pending</h3>
+                                <p class="mt-1 text-sm leading-6">
+                                    Your latest payment attempt is waiting for administrator verification. Please wait before submitting another payment.
+                                </p>
+                            </section>
+
+                            <section v-else-if="paymentNotice === 'verified'" role="status"
+                                class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-900">
+                                <h3 class="font-bold">Payment Successful</h3>
+                                <p class="mt-1 text-sm leading-6">
+                                    Your latest payment attempt has been verified and the invoice is paid.
+                                </p>
+                            </section>
+
+                            <section v-else-if="paymentNotice === 'invoice-paid'" role="status"
+                                class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-900">
+                                <h3 class="font-bold">Invoice Paid</h3>
+                                <p class="mt-1 text-sm leading-6">
+                                    This invoice has been paid.
+                                </p>
+                            </section>
+
                             <button type="button"
                                 class="flex w-full items-center justify-center gap-2 rounded-xl  px-5 py-3 font-semibold text-black transition hover:opacity-90 border border-black"
                                 @click="router.push({
@@ -419,14 +602,14 @@ function viewMyCourse(): void {
                                 <ReceiptText :size="17" />
                                 View Invoice Details
                             </button>
-                            <button type="button" v-if="invoice.status === 'unpaid'"
+                            <button type="button" v-if="canStartPayment"
                                 class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 font-semibold text-white transition hover:opacity-90"
                                 @click="router.push({
                                     name: 'student.payment',
                                     params: { invoiceId: invoice.id }
                                 })">
                                 <ReceiptText :size="17" />
-                                Pay Now
+                                {{ latestPayment?.status === 'rejected' ? 'Try Again' : 'Pay Now' }}
                             </button>
                         </div>
                     </div>

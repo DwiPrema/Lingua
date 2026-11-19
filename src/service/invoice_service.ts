@@ -72,7 +72,7 @@ export async function fetchMyInvoices(): Promise<Invoice[]> {
 // Fetch invoices belonging to a course
 // =====================================================
 
-export async function fetchInvoicesByCourseId(
+export async function fetchInvoicesByCourseAndEnrollmentId(
     courseId: string,
 ): Promise<Invoice[]> {
     if (!courseId) {
@@ -107,7 +107,7 @@ export async function fetchInvoicesByCourseId(
 }
 
 // Fetch invoice by enrollment ID
-export async function fetchInvoiceByEnrollmentId(
+export async function fetchInvoiceByEnrollmentIdAndType(
     enrollmentId: string
 ): Promise<Invoice | null> {
     if (!enrollmentId) {

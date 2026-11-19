@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from "vue";
+import { computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
 import { StatusEnrollmentsExtension } from "@/types/enrollment_type";
 import { useEnrollmentStores } from "@/stores/enrollments_stores";
 import { useUserDataStores } from "@/stores/user_data_stores";
+import { useInvoiceStore } from "@/stores/invoice_stores";
+import { usePaymentStore } from "@/stores/payment_stores.js";
+import { Payment } from "@/types/payment_type.js";
+import PaymentOverviewSection from "../payment/PaymentOverviewSection.vue";
 
 // =====================================================
 // ROUTER & STORE
@@ -12,7 +16,9 @@ import { useUserDataStores } from "@/stores/user_data_stores";
 
 const route = useRoute();
 const enrollmentStore = useEnrollmentStores();
-const userStore = useUserDataStores()
+const userStore = useUserDataStores();
+const invoiceStore = useInvoiceStore();
+const paymentStore = usePaymentStore();
 
 const {
     activeEnrollment,
@@ -22,34 +28,86 @@ const {
 
 const enrollment = activeEnrollment;
 
+const {
+    invoices
+} = storeToRefs(invoiceStore);
+
 // =====================================================
 // FETCH ENROLLMENT
 // =====================================================
 
 async function loadEnrollment(): Promise<void> {
     const enrollmentId = route.params.enrollmentId;
+    const courseId = route.params.courseId;
 
     if (typeof enrollmentId !== "string" || !enrollmentId) {
         return;
     }
 
+    if (typeof courseId !== "string" || !courseId) {
+        return;
+    }
+
     try {
-        const enrollmentData = await enrollmentStore.fetchEnrollmentById(enrollmentId);
-        await userStore.getUserDataById(enrollmentData.student_id)
-            
+        const enrollmentData =
+            await enrollmentStore.fetchEnrollmentById(enrollmentId);
+
+        await userStore.getUserDataById(enrollmentData.student_id);
+
+        await Promise.all([
+            invoiceStore.getInvoicesByCourseAndEnrollmentId(courseId),
+            paymentStore.getPaymentsByCourseId(courseId),
+        ]);
     } catch (err) {
         console.error("Failed to load enrollment:", err);
     }
 }
 
-onMounted(loadEnrollment)
+async function handleVerifyPayment(
+    payment: Payment,
+): Promise<void> {
+    const confirmed = window.confirm(
+        "Are you sure you want to verify this payment?",
+    );
+
+    if (!confirmed) return;
+
+    try {
+        await paymentStore.approvePayment(payment.id);
+
+        await loadEnrollment();
+    } catch (err) {
+        console.error("Failed to verify payment:", err);
+    }
+}
+
+async function handleRejectPayment(
+    payment: Payment,
+    reason: string,
+): Promise<void> {
+    try {
+        await paymentStore.declinePayment(
+            payment.id,
+            reason,
+        );
+
+        await loadEnrollment();
+    } catch (err) {
+        console.error("Failed to reject payment:", err);
+    }
+}
+
+// onMounted(loadEnrollment)
 
 watch(
-    () => route.params.enrollmentId,
+    () => [
+        route.params.enrollmentId,
+        route.params.courseId,
+    ],
     () => {
         loadEnrollment();
     },
-    { immediate: true }
+    { immediate: true },
 );
 
 // =====================================================
@@ -128,10 +186,6 @@ const approvedDate = computed(() =>
 const enrolledDate = computed(() =>
     formatDate(enrollment.value?.enrolled_at)
 );
-
-const updatedDate = computed(() =>
-    formatDate(enrollment.value?.updated_at)
-);
 </script>
 
 
@@ -181,11 +235,6 @@ const updatedDate = computed(() =>
         <!-- ================================================= -->
 
         <template v-else>
-
-            <!-- ================================================= -->
-            <!-- PAGE HEADER -->
-            <!-- ================================================= -->
-
             <section class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <p class="text-sm text-gray-500">
@@ -206,10 +255,6 @@ const updatedDate = computed(() =>
                     {{ enrollmentStatus }}
                 </span>
             </section>
-
-            <!-- ================================================= -->
-            <!-- STUDENT PROFILE -->
-            <!-- ================================================= -->
 
             <section class="overflow-hidden rounded-2xl border border-gray-200 bg-white">
 
@@ -285,10 +330,6 @@ const updatedDate = computed(() =>
                 </div>
             </section>
 
-            <!-- ================================================= -->
-            <!-- ENROLLMENT INFORMATION -->
-            <!-- ================================================= -->
-
             <section class="rounded-2xl border border-gray-200 bg-white p-6">
 
                 <div class="mb-5">
@@ -346,10 +387,6 @@ const updatedDate = computed(() =>
                 </div>
             </section>
 
-            <!-- ================================================= -->
-            <!-- EDUCATION INFORMATION -->
-            <!-- ================================================= -->
-
             <section class="rounded-2xl border border-gray-200 bg-white p-6">
 
                 <div class="mb-5">
@@ -386,10 +423,6 @@ const updatedDate = computed(() =>
 
                 </div>
             </section>
-
-            <!-- ================================================= -->
-            <!-- ENROLLMENT STATUS -->
-            <!-- ================================================= -->
 
             <section class="rounded-2xl border border-gray-200 bg-white p-6">
 
@@ -467,35 +500,9 @@ const updatedDate = computed(() =>
                 </div>
             </section>
 
-            <!-- ================================================= -->
-            <!-- PAYMENT OVERVIEW PLACEHOLDER -->
-            <!-- ================================================= -->
-
-            <section class="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-8 text-center">
-
-                <div
-                    class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-gray-400 shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor" stroke-width="1.7">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M3 10h18M7 15h2m4 0h2m-9 5h12a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                </div>
-
-                <h2 class="mt-4 text-lg font-bold text-gray-900">
-                    Payment Overview
-                </h2>
-
-                <p class="mx-auto mt-2 max-w-md text-sm text-gray-500">
-                    Payment history, invoice information, and payment verification
-                    will be available here.
-                </p>
-
-                <span class="mt-4 inline-flex rounded-full bg-gray-200 px-3 py-1 text-xs font-semibold text-gray-600">
-                    Coming Soon
-                </span>
-
-            </section>
+            <PaymentOverviewSection :invoices="invoices" :loading="loading || paymentStore.paymentsLoading"
+                :error="error || paymentStore.error" @verify="handleVerifyPayment" @reject="handleRejectPayment"
+                @retry="loadEnrollment" />
 
         </template>
 

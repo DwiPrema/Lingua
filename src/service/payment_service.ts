@@ -1,16 +1,15 @@
 
 import { DatabaseTableName } from "@/constant/database_table_name";
 import { supabase } from "@/lib/supabase";
-import { OrganizationBankAccount } from "@/types/organization_type";
 
+import type { OrganizationBankAccount } from "@/types/organization_type";
 import type {
     Payment,
     PaymentPayload,
-    SubmitPaymentPayload,
 } from "@/types/payment_type";
 
 // =====================================================
-// Constants
+// CONSTANTS
 // =====================================================
 
 const PAYMENT_PROOF_BUCKET = "payment-proofs";
@@ -25,7 +24,7 @@ const ALLOWED_FILE_TYPES = [
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 // =====================================================
-// Upload payment proof
+// UPLOAD PAYMENT PROOF
 // =====================================================
 
 async function uploadPaymentProof(
@@ -33,16 +32,20 @@ async function uploadPaymentProof(
     paymentId: string,
     file: File,
 ): Promise<string> {
+    if (!file) {
+        throw new Error("Payment proof file is required.");
+    }
+
     if (!ALLOWED_FILE_TYPES.includes(file.type)) {
         throw new Error("Unsupported payment proof file type.");
     }
 
-    if (file.size > MAX_FILE_SIZE) {
-        throw new Error("Payment proof must not exceed 5 MB.");
-    }
-
     if (file.size === 0) {
         throw new Error("Payment proof file is empty.");
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+        throw new Error("Payment proof must not exceed 5 MB.");
     }
 
     const extension = file.name.split(".").pop()?.toLowerCase();
@@ -68,7 +71,33 @@ async function uploadPaymentProof(
 }
 
 // =====================================================
-// Submit payment
+// CREATE SIGNED URL
+// =====================================================
+
+export async function createPaymentProofSignedUrl(
+    proofPath: string,
+): Promise<string> {
+    if (!proofPath?.trim()) {
+        throw new Error("Payment proof path is required.");
+    }
+
+    const { data, error } = await supabase.storage
+        .from(PAYMENT_PROOF_BUCKET)
+        .createSignedUrl(proofPath, 300);
+
+    if (error) {
+        throw error;
+    }
+
+    if (!data?.signedUrl) {
+        throw new Error("Failed to generate payment proof URL.");
+    }
+
+    return data.signedUrl;
+}
+
+// =====================================================
+// SUBMIT PAYMENT
 // =====================================================
 
 export async function submitPayment(
@@ -94,14 +123,12 @@ export async function submitPayment(
         error: authError,
     } = await supabase.auth.getUser();
 
-    if (authError) {
-        throw authError;
-    }
+    if (authError) throw authError;
 
     if (!user) {
         throw new Error("User is not authenticated.");
     }
-    
+
     const paymentId = crypto.randomUUID();
 
     const proofPath = await uploadPaymentProof(
@@ -110,23 +137,37 @@ export async function submitPayment(
         proof_file,
     );
 
-    const { data, error } = await supabase.rpc("submit_payment", {
-        p_payment_id: paymentId,
-        p_invoice_id: invoice_id,
-        p_payment_method: payment_method,
-        p_amount: amount,
-        p_proof_path: proofPath,
-    });
+    try {
+        const { data, error } = await supabase.rpc("submit_payment", {
+            p_payment_id: paymentId,
+            p_invoice_id: invoice_id,
+            p_payment_method: payment_method,
+            p_amount: amount,
+            p_proof_path: proofPath,
+        });
 
-    if (error) {
-        throw error;
+        if (error) throw error;
+
+        return data as string;
+    } catch (err) {
+        // Remove uploaded proof if RPC submission fails.
+        const { error: cleanupError } = await supabase.storage
+            .from(PAYMENT_PROOF_BUCKET)
+            .remove([proofPath]);
+
+        if (cleanupError) {
+            console.error(
+                "Failed to cleanup payment proof:",
+                cleanupError,
+            );
+        }
+
+        throw err;
     }
-
-    return data as string;
 }
 
 // =====================================================
-// Fetch payment by ID
+// FETCH PAYMENT BY ID
 // =====================================================
 
 export async function fetchPaymentById(
@@ -142,15 +183,13 @@ export async function fetchPaymentById(
         .eq("id", paymentId)
         .maybeSingle();
 
-    if (error) {
-        throw error;
-    }
+    if (error) throw error;
 
     return data as Payment | null;
 }
 
 // =====================================================
-// Fetch payments belonging to current student
+// FETCH MY PAYMENTS
 // =====================================================
 
 export async function fetchMyPayments(): Promise<Payment[]> {
@@ -159,16 +198,13 @@ export async function fetchMyPayments(): Promise<Payment[]> {
         .select()
         .order("created_at", { ascending: false });
 
-    if (error) {
-        throw error;
-    }
+    if (error) throw error;
 
-    // RLS ensures students only receive their own payments.
     return (data ?? []) as Payment[];
 }
 
 // =====================================================
-// Fetch payments by invoice ID
+// FETCH PAYMENTS BY INVOICE ID
 // =====================================================
 
 export async function fetchPaymentsByInvoiceId(
@@ -184,15 +220,13 @@ export async function fetchPaymentsByInvoiceId(
         .eq("invoice_id", invoiceId)
         .order("created_at", { ascending: false });
 
-    if (error) {
-        throw error;
-    }
+    if (error) throw error;
 
     return (data ?? []) as Payment[];
 }
 
 // =====================================================
-// Fetch payments belonging to a course
+// FETCH PAYMENTS BY COURSE ID
 // =====================================================
 
 export async function fetchPaymentsByCourseId(
@@ -202,60 +236,47 @@ export async function fetchPaymentsByCourseId(
         throw new Error("Course ID is required.");
     }
 
-    // Get enrollment IDs.
     const { data: enrollments, error: enrollmentError } =
         await supabase
             .from(DatabaseTableName.enrollmentsCollection)
             .select("id")
             .eq("course_id", courseId);
 
-    if (enrollmentError) {
-        throw enrollmentError;
-    }
+    if (enrollmentError) throw enrollmentError;
 
-    if (!enrollments || enrollments.length === 0) {
-        return [];
-    }
+    if (!enrollments?.length) return [];
 
     const enrollmentIds = enrollments.map(
         (enrollment) => enrollment.id,
     );
 
-    // Get invoice IDs.
     const { data: invoices, error: invoiceError } =
         await supabase
             .from(DatabaseTableName.invoicesCollection)
             .select("id")
             .in("enrollment_id", enrollmentIds);
 
-    if (invoiceError) {
-        throw invoiceError;
-    }
+    if (invoiceError) throw invoiceError;
 
-    if (!invoices || invoices.length === 0) {
-        return [];
-    }
+    if (!invoices?.length) return [];
 
     const invoiceIds = invoices.map(
         (invoice) => invoice.id,
     );
 
-    // Get payments.
     const { data, error } = await supabase
         .from(DatabaseTableName.paymentsCollection)
         .select()
         .in("invoice_id", invoiceIds)
         .order("created_at", { ascending: false });
 
-    if (error) {
-        throw error;
-    }
+    if (error) throw error;
 
     return (data ?? []) as Payment[];
 }
 
 // =====================================================
-// Verify payment
+// VERIFY PAYMENT
 // =====================================================
 
 export async function verifyPayment(
@@ -269,15 +290,13 @@ export async function verifyPayment(
         p_payment_id: paymentId,
     });
 
-    if (error) {
-        throw error;
-    }
+    if (error) throw error;
 
     return data as string;
 }
 
 // =====================================================
-// Reject payment
+// REJECT PAYMENT
 // =====================================================
 
 export async function rejectPayment(
@@ -297,44 +316,34 @@ export async function rejectPayment(
         p_reason: reason.trim(),
     });
 
-    if (error) {
-        throw error;
-    }
+    if (error) throw error;
 
     return data as string;
 }
 
-
 // =====================================================
-// Fetch organization payment account by invoice ID
+// FETCH ORGANIZATION PAYMENT ACCOUNT
 // =====================================================
 
 export async function fetchPaymentAccountByInvoiceId(
     invoiceId: string,
 ): Promise<OrganizationBankAccount | null> {
-
-    // Validate invoice ID
     if (!invoiceId) {
         throw new Error("Invoice ID is required.");
     }
 
-    // Fetch payment account through RPC
     const { data, error } = await supabase
         .rpc("get_payment_account_by_invoice_id", {
             p_invoice_id: invoiceId,
         })
         .maybeSingle();
 
-    // Handle Supabase error
     if (error) {
         console.error("Failed to fetch payment account:", error);
         throw error;
     }
 
-    // No accessible payment account found
-    if (!data) {
-        return null;
-    }
+    if (!data) return null;
 
     return data as OrganizationBankAccount;
 }
