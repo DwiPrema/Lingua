@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import * as userDataService from "@/service/user_data_service";
 import { useAuthStore } from "./auth_stores";
-import type { UpdateUserPayload, User } from "@/types/user_type";
+import type { LandingStatistics, UpdateUserPayload, User } from "@/types/user_type";
 
 export const useUserDataStores = defineStore("users", () => {
   const userData = ref<User | null>(null);
@@ -11,6 +11,8 @@ export const useUserDataStores = defineStore("users", () => {
 
   const loading = ref(false);
   const error = ref<string | null>(null);
+
+  const statisticData = ref<LandingStatistics | null>(null)
 
   // =====================================================
   // Get current authenticated user
@@ -160,6 +162,21 @@ export const useUserDataStores = defineStore("users", () => {
     }
   }
 
+  async function fetchLandingStatistics() {
+    loading.value = true
+    error.value = null
+
+    try {
+      statisticData.value = await userDataService.fetchLandingStatistics();
+      return statisticData.value;
+    } catch (err) {
+      const e = err as {message: string}
+      error.value = e.message;
+    } finally {
+      loading.value = false
+    }
+  }
+
   // =====================================================
   // Clear user data
   // =====================================================
@@ -174,6 +191,7 @@ export const useUserDataStores = defineStore("users", () => {
   return {
     userData,
     userDataById,
+    statisticData,
     loading,
     error,
 
@@ -182,5 +200,6 @@ export const useUserDataStores = defineStore("users", () => {
     updateUserData,
     updateAvatar,
     clearUserData,
+    fetchLandingStatistics,
   };
 });
