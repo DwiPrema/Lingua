@@ -6,6 +6,7 @@ import { Menu, X } from '@lucide/vue';
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import CustomButton from './CustomButton.vue';
 
 const store = useHeaderStore()
 const userDataStore = useUserDataStores();
@@ -28,7 +29,7 @@ onMounted(async () => {
                 Lingua<span class="text-primary">.</span>
             </div>
 
-            <ul class="flex gap-8">
+            <ul class="md:flex hidden gap-8">
                 <li v-for="menu in store.menuItems" :key="menu.name"><button @click="store.scrollToSection(menu.href)"
                         class="text-text-primary text-[16px] font-semibold hover:text-primary-hover transition-all duration-300 ease-in-out">{{
                             menu.name }}</button></li>
@@ -38,17 +39,13 @@ onMounted(async () => {
 
                 <div class="flex flex-row items-center gap-2"
                     v-if="userData && userData.role == 'instructor' && authStore.currentUser != null">
-                    <a href="/dashboard"
-                        class="text-surface border-2 border-text-primary text-[14px] text-nowrap text-center bg-primary p-2 min-w-25 rounded-lg cursor-pointer hover:bg-primary-hover duration-300 transition-all ease-in-out">Dashboard</a>
+                    <CustomButton @click="router.push('/dashboard')">Dashboard</CustomButton>
                 </div>
 
                 <div class="flex flex-row items-center gap-2" v-else>
-                    <a href="auth/login"
-                        class="text-surface border-2 border-text-primary text-[14px] text-nowrap text-center bg-primary p-2 min-w-25 rounded-lg cursor-pointer hover:bg-primary-hover duration-300 transition-all ease-in-out">Login</a>
+                    <CustomButton @click="router.push('/auth/login')">Login</CustomButton>
 
-                    <a href="auth/signup"
-                        class="text-surface border-2 border-text-primary text-[14px] text-nowrap text-center bg-primary p-2 min-w-25 rounded-lg cursor-pointer hover:bg-primary-hover duration-300 transition-all ease-in-out">Sign
-                        Up</a>
+                    <CustomButton @click="router.push('/auth/signup')">Sign Up</CustomButton>
                 </div>
             </nav>
 
@@ -74,14 +71,11 @@ onMounted(async () => {
                     </li>
 
                     <li>
-                        <button @click="router.push('/auth/login')"
-                            class="text-surface border-2 border-text-primary text-nowrap bg-primary p-2 w-full rounded-lg cursor-pointer hover:bg-primary-hover duration-300 transition-all ease-in-out">Login</button>
+                            <CustomButton @click="router.push('/auth/login')" block="true">Login</CustomButton>
                     </li>
 
                     <li>
-                        <button @click="router.push('/auth/signup')"
-                            class="text-surface border-2 border-text-primary text-nowrap bg-primary p-2 w-full rounded-lg cursor-pointer hover:bg-primary-hover duration-300 transition-all ease-in-out">Sign
-                            Up</button>
+                            <CustomButton @click="router.push('/auth/signup')" block="true">Sign Up</CustomButton>
                     </li>
                 </ul>
             </div>

@@ -50,10 +50,10 @@ const buttonClasses = computed(() => {
 
   const variants: Record<ButtonVariant, string> = {
     primary:
-      "bg-primary text-white hover:bg-primary/90 focus-visible:ring-primary",
+      "bg-primary text-white hover:bg-primary-hover focus-visible:ring-primary",
 
     secondary:
-      "bg-gray-100 text-gray-800 hover:bg-gray-200 focus-visible:ring-gray-400",
+      "bg-secondary/90 text-gray-800 hover:bg-secondary focus-visible:ring-gray-400",
 
     outline:
       "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50 focus-visible:ring-gray-400",

@@ -1,8 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import CoursesData from '@/views/course/CoursesData.vue';
 import Header from '@/components/Header.vue';
-import { BookOpenCheck, PackagePlus } from '@lucide/vue';
+import { ArrowUpRight, BookOpenCheck, CircleArrowOutUpLeft, PackagePlus } from '@lucide/vue';
 import { useRouter } from 'vue-router';
+import { useUserDataStores } from '@/stores/user_data_stores';
+import { computed, onMounted, watch } from 'vue';
+import { useCourseStores } from '@/stores/course_stores';
+import StatsCard from '@/components/StatsCard.vue';
+import CustomButton from '@/components/CustomButton.vue';
 
 const aboutData = [
     {
@@ -27,6 +32,18 @@ const aboutData2 = [
 ]
 
 const router = useRouter()
+const userStore = useUserDataStores()
+const courseStore = useCourseStores()
+
+const coursesOwner = computed(() => userStore.statisticData?.total_course_owners)
+const students = computed(() => userStore.statisticData?.total_students);
+// const statisticData = computed(() => )
+const courses = computed(() => courseStore.courses.length);
+
+onMounted(async () => {
+    await userStore.fetchLandingStatistics();
+    await courseStore.fetchAllCourseData();
+})
 
 </script>
 
@@ -46,55 +63,77 @@ const router = useRouter()
             <div class="h-20 w-3/4 bg-linear-to-r from-accent opacity-40 blur-2xl"></div>
         </div>
 
-        <div class="w-full relative px-5 sm:px-8 md:px-12 lg:px-8 max-w-5xl lg:max-w-7xl mx-auto">
-            <div
-                class="grid lg:grid-cols-2 gap-20 xl:gap-14 relative pt-24 lg:max-w-none max-w-2xl md:max-w-3xl mx-auto items-center">
-                <div class="lg:py-6">
+
+        <div class="w-full relative px-5 sm:px-8 md:px-12 lg:px-8 mx-auto">
+            <div class="flex flex-col w-full lg:flex-row gap-10 xl:gap-14 relative items-center justify-between">
+                <!-- LEFT: CONTENT -->
+                <div class="w-full lg:w-1/2 flex flex-col justify-center">
                     <div class="text-center lg:text-left">
-                        <h1 class="text-light-text font-black text-5xl">Welcome to <span
-                                class="text-primary font-black text-5xl">Lingua
-                            </span>👋</h1>
+                        <h1 class="text-text-primary font-extrabold text-4xl sm:text-5xl xl:text-6xl leading-tight">
+                            Take the next step in your
+
+                            <span class="inline-block p-1 bg-primary/15 rounded-md text-primary">
+                                learning journey.
+                            </span>
+                        </h1>
                     </div>
-                    <p class="text-muted-text pt-8 text-center lg:text-left m-auto lg:m-0 max-w-xl">
-                        Take the next step in your learning journey. Discover expert-led courses to expand your
-                        knowledge, gain practical skills, and share your unique insights with others along the way.
+
+                    <p class="text-text-primary text-[18px] pt-8 text-center lg:text-left mx-auto lg:mx-0 max-w-xl">
+                        Discover expert-led courses to expand your
+                        knowledge, gain practical skills, and share your unique
+                        insights with others along the way.
                     </p>
+
+                    <!-- BUTTONS -->
                     <div class="flex pt-8 gap-3 flex-col sm:flex-row">
-                        <a href="/explore-courses"
-                            class="bg-primary rounded-full sm:w-max m-auto lg:m-0 relative w-full sm:min-w-50 p-4 hover:bg-success hover:scale-103 transition-all ease-in-out duration-300">
-                            <div class="flex flex-row gap-4 justify-center items-center relative">
+                        <!-- <a href="/explore-courses"
+                            class="bg-primary rounded-full w-full sm:w-max sm:min-w-50 p-4 hover:bg-success hover:scale-103 transition-all duration-300">
+                            <div class="flex justify-center items-center">
                                 <p class="text-light-text">Explore Course</p>
                             </div>
-                        </a>
-                        <button @click="router.push('/dashboard')"
-                            class="border border-primary rounded-full sm:w-max m-auto lg:m-0 relative w-full sm:min-w-50 p-4 hover:scale-103 transition-all ease-in-out duration-300">
-                            <div class="flex flex-row gap-4 justify-center items-center relative">
+                        </a> -->
+                        <CustomButton @click="router.push('/explore-courses')">Find Courses</CustomButton>
+
+                        <!-- <button @click="router.push('/dashboard')"
+                            class="border border-primary rounded-full w-full sm:w-max sm:min-w-50 p-4 hover:scale-103 transition-all duration-300">
+                            <div class="flex justify-center items-center">
                                 <p class="text-primary">Become Creator</p>
                             </div>
-                        </button>
+                        </button> -->
+                        <CustomButton variant="outline" @click="router.push('/dashboard')">Become Creator
+                            <ArrowUpRight />
+                        </CustomButton>
                     </div>
                 </div>
 
-                <!-- IMAGE -->
-                <div class="lg:h-full md:flex">
-                    <div
-                        class="flex w-full h-96 min-h-96 lg:min-h-[none] lg:w-full lg:h-full items-center relative justify-center">
-                        <div class="absolute h-full z-10">
-                            <img src="../assets/ilustration_1.png" alt="" class="w-full h-full object-cover bg-center"
-                                width="500" height="auto">
-                        </div>
+                <!-- RIGHT: IMAGE -->
+                <div class="w-full lg:w-1/2 flex justify-center items-center">
+                    <div class="w-full max-w-xl">
+                        <img src="../assets/hero-section.png" alt="Learning illustration"
+                            class="block w-full h-auto object-contain" width="600" />
                     </div>
                 </div>
             </div>
+
+            <div class="flex gap-3 max-w-2xl">
+
+                <StatsCard label="Course Owner" :value="coursesOwner ?? '-'" variant="default" />
+
+                <StatsCard label="Total Courses" :value="courses" variant="primary" />
+
+                <StatsCard label="Total Learners" :value="students ?? '-'" variant="accent" />
+
+            </div>
         </div>
+
     </section>
 
 
     <!-- ABOUT  -->
     <section class="pb-25 pt-25 relative w-full" id="about">
-        <div class="w-full relative px-5 sm:px-8 md:px-12 lg:px-8 max-w-5xl lg:max-w-7xl mx-auto flex flex-col gap-20">
+        <div class="w-full relative px-5 sm:px-8 md:px-12 lg:px-8 mx-auto flex flex-col gap-20">
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 relative items-center justify-between">
+            <!-- <div class="grid grid-cols-1 md:grid-cols-2 gap-16 relative items-center justify-between">
                 <div class="lg:h-full md:flex" data-aos="zoom-in">
                     <div
                         class="flex flex-col w-full lg:w-full lg:h-full items-center md:items-start relative justify-between gap-8">
@@ -124,11 +163,28 @@ const router = useRouter()
                         </div>
                     </div>
                 </div>
+            </div> -->
+
+            <div class="w-full flex flex-row justify-between items-end border-b border-text-primary">
+                <p class="text-[20px] font-semibold text-primary">About Lingua.</p>
+                <p class="text-[20px] font-semibold text-accent">Discover. Learn. Grow.</p>
+            </div>
+
+            <div class="w-full flex justify-start px-20">
+                <p class="text-[69px] w-[55%] font-black text-primary">
+                    Learn from others.
+                    Share what you know.</p>
+            </div>
+
+            <div class="w-full flex justify-center px-20">
+                <p class="text-[30px] w-[25%%] font-bold text-accent">
+                    Learn from others.
+                    Share what you know.</p>
             </div>
         </div>
     </section>
 
-    <section class="pb-25 pt-25 relative w-full">
+    <!-- <section class="pb-25 pt-25 relative w-full">
         <div class="w-full relative px-5 sm:px-8 md:px-12 lg:px-8 max-w-5xl lg:max-w-7xl mx-auto flex flex-col gap-20">
 
             <div class="flex flex-col gap-16 relative">
@@ -156,7 +212,7 @@ const router = useRouter()
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
 
     <!-- Courses Section  -->
@@ -168,7 +224,9 @@ const router = useRouter()
             </div>
             <CoursesData />
             <div class="w-full flex justify-end">
-                <a href="/explore-courses" class="text-light-text font-medium text-center lg:text-right cursor-pointer hover:text-accent transition-all duration-300 ease-in-out">Explore More Courses →</a>
+                <a href="/explore-courses"
+                    class="text-light-text font-medium text-center lg:text-right cursor-pointer hover:text-accent transition-all duration-300 ease-in-out">Explore
+                    More Courses →</a>
             </div>
         </div>
     </section>
