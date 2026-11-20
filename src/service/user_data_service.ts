@@ -1,6 +1,6 @@
 import { DatabaseTableName } from "@/constant/database_table_name";
 import { supabase } from "@/lib/supabase";
-import { UpdateUserPayload } from "@/types/user_type";
+import { LandingStatistics, UpdateUserPayload } from "@/types/user_type";
 
 export async function getDataUser(uid: string) {
   const { data, error } = await supabase
@@ -19,28 +19,50 @@ export async function getDataUser(uid: string) {
 }
 
 export async function updateDataUser(uid: string, payload: UpdateUserPayload) {
-    const { data, error } = await supabase
-        .from(DatabaseTableName.usersCollection)
-        .update({
-            fullname: payload.fullname,
-            nickname: payload.nickname,
-            phone: payload.phone,
-            avatar_url: payload.avatar_url
-        })
-        .eq('id', uid)
-        .select()
-        .single()
+  const { data, error } = await supabase
+    .from(DatabaseTableName.usersCollection)
+    .update({
+      fullname: payload.fullname,
+      nickname: payload.nickname,
+      phone: payload.phone,
+      avatar_url: payload.avatar_url
+    })
+    .eq('id', uid)
+    .select()
+    .single()
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
+export async function fetchLandingStatistics(): Promise<LandingStatistics> {
+    const { data, error } = await supabase.rpc(
+        "get_landing_statistics"
+    );
 
     if (error) {
-        throw error
+        throw error;
     }
 
-    return data
+    return data as LandingStatistics;
 }
+
+// export async function getStudents() {
+//   const { data, error } = await supabase.from(DatabaseTableName.usersCollection).select().eq('role', 'student')
+
+//   if (error) {
+//     throw error
+//   }
+
+//   return data
+// }
 
 export const avatarService = {
   async replaceAvatar(userId: string, file: File, oldAvatarUrl?: string | null) {
-    
+
     if (oldAvatarUrl) {
       await this.deleteAvatarByUrl(oldAvatarUrl)
     }
