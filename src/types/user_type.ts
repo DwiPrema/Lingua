@@ -18,3 +18,9 @@ export interface UpdateUserPayload {
     phone?: string
     avatar_url?: string
 }
+
+export interface LandingStatistics {
+    total_students: number;
+    total_course_owners: number;
+    total_users: number;
+}
