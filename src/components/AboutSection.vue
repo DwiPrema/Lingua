@@ -20,8 +20,8 @@ const INTRO_SCROLL_DISTANCE = 1500;
 const HERO_TEXT_SCROLL_DISTANCE = 1000;
 const EXPLORE_REVEAL_SCROLL_DISTANCE = 500;
 const COURSE_CARDS_REVEAL_SCROLL_DISTANCE = 200;
-const HORIZONTAL_SCROLL_MULTIPLIER = 1.3;
-const HORIZONTAL_END_DELAY = 800;
+const HORIZONTAL_SCROLL_MULTIPLIER = 1.2;
+const HORIZONTAL_END_DELAY = 500;
 
 const introParagraphs = [
     "Lingua is a learning marketplace designed to connect curious minds with course providers and learning opportunities.",
@@ -382,7 +382,7 @@ onBeforeUnmount(() => {
 
 <template>
     <section ref="introRef" id="about"
-        class="about-intro relative mb-24 w-full bg-light-background px-6 py-16 text-text-primary md:px-[5%] md:py-24">
+        class="about-intro relative mb-24 w-full px-6 py-16 text-text-primary md:px-[5%] md:py-24">
 
         <header class="flex items-center justify-between border-b border-text-primary pb-2">
             <a href="#about" class="text-[20px] font-semibold text-primary">
@@ -442,7 +442,7 @@ onBeforeUnmount(() => {
         </div>
     </section>
 
-    <section ref="heroRef" class="relative w-full bg-light-background text-text-primary md:h-[80vh]">
+    <section ref="heroRef" class="relative w-full text-text-primary md:h-[80vh]">
 
         <div class="mx-auto flex w-full flex-col py-6 md:h-full md:min-h-0">
 
@@ -483,7 +483,7 @@ onBeforeUnmount(() => {
                     </div>
 
                     <article v-for="course in courseStore.courses" :key="course.id"
-                        class="course-card group flex min-h-80 w-[min(82vw,420px)] shrink-0 flex-col justify-between rounded-2xl border border-gray-100 bg-surface p-5 shadow-sm transition-all duration-300 hover:border-primary-hover/30 hover:shadow-md">
+                        class="course-card group flex min-h-50 w-[min(82vw,420px)] shrink-0 flex-col justify-between rounded-2xl border border-gray-100 bg-surface p-5 shadow-sm transition-all duration-300 hover:border-primary-hover/30 hover:shadow-md">
 
                         <div>
                             <div class="mb-3 flex flex-col gap-2.5 sm:flex-row sm:items-start sm:justify-between">
@@ -520,13 +520,13 @@ onBeforeUnmount(() => {
                     </article>
 
                     <button @click="router.push('/explore-courses')"
-                        class="course-card group flex min-h-80 w-auto shrink-0 rounded-2xl border border-gray-100 bg-secondary p-5 shadow-sm transition-all duration-300 hover:border-primary-hover/30 hover:shadow-md">
+                        class="course-card group flex min-h-50 w-auto shrink-0 rounded-2xl border border-gray-100 bg-secondary p-5 shadow-sm transition-all duration-300 hover:border-primary-hover/30 hover:shadow-md cursor-pointer">
                         <div class="w-full flex flex-col justify-evenly items-center">
                             <p
-                                class="text-text-primary w-min font-black text-xl text-center cursor-pointer hover:text-accent transition-all duration-300 ease-in-out">
+                                class="text-surface w-min font-black text-xl text-center cursor-pointer group-hover:text-accent transition-all duration-300 ease-in-out">
                                 Explore
                                 More Courses</p>
-                            <ChevronRight :size="80" />
+                            <ChevronRight :size="50" class="text-surface group-hover:text-accent transition-all duration-300 ease-in-out"/>
                         </div>
 
                     </button>
