@@ -29,11 +29,11 @@ onMounted(async () => {
                 Lingua<span class="text-primary">.</span>
             </div>
 
-            <ul class="md:flex hidden gap-8">
+            <!-- <ul class="md:flex hidden gap-8">
                 <li v-for="menu in store.menuItems" :key="menu.name"><button @click="store.scrollToSection(menu.href)"
                         class="text-text-primary text-[16px] font-semibold hover:text-primary-hover transition-all duration-300 ease-in-out">{{
                             menu.name }}</button></li>
-            </ul>
+            </ul> -->
 
             <nav class="hidden md:flex items-center gap-10">
 
@@ -65,10 +65,10 @@ onMounted(async () => {
                 </button>
 
                 <ul class="flex flex-col gap-6">
-                    <li v-for="menu in store.menuItems" :key="menu.name">
+                    <!-- <li v-for="menu in store.menuItems" :key="menu.name">
                         <button @click="store.scrollToSection(menu.href)" class="text-text-primary">{{ menu.name
                             }}</button>
-                    </li>
+                    </li> -->
 
                     <li>
                             <CustomButton @click="router.push('/auth/login')" block="true">Login</CustomButton>

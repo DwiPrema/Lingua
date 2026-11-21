@@ -32,19 +32,19 @@ onMounted(() => {
     </div>
 
     <!-- Success state  -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div v-else class="flex flex-row overflow-x-scroll gap-4">
         <div v-for="course in courseStore.courses" :key="course.id"
-            class="group relative flex flex-col justify-between p-5 rounded-2xl bg-light-text border border-gray-100 shadow-sm hover:shadow-md hover:border-accent/30 transition-all duration-300">
+            class="group relative flex flex-col justify-between p-5 rounded-2xl bg-light-text border bg-light-background border-gray-100 shadow-sm hover:shadow-md hover:border-primary-hover/30 transition-all duration-300">
             <div>
                 <!-- Header & Badge Lokasi -->
                 <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2.5 sm:gap-3 mb-3">
                     <h3
-                        class="text-xl sm:text-2xl font-black text-dark-background group-hover:text-accent transition-colors duration-200 line-clamp-2 min-w-0">
+                        class="text-xl sm:text-2xl font-black text-dark-background group-hover:text-primary-hover transition-colors duration-200 line-clamp-2 min-w-0">
                         {{ course.name }}
                     </h3>
 
                     <div
-                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/10 text-accent text-xs font-semibold shrink-0 self-start max-w-full sm:max-w-[50%] min-w-0">
+                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primatext-primary/10 text-primary text-xs font-semibold shrink-0 self-start max-w-full sm:max-w-[50%] min-w-0">
                         <MapPin :size="14" class="shrink-0" />
                         <span class="line-clamp-2 wrap-break-word leading-tight">{{ course.address }}</span>
                     </div>
@@ -58,7 +58,7 @@ onMounted(() => {
 
             <!-- Footer Actions -->
             <div class="flex items-center justify-between pt-4 border-t border-gray-300">
-                <button class="cursor-pointer text-xs font-semibold text-gray-500 hover:text-accent transition-colors"
+                <button class="cursor-pointer text-xs font-semibold text-gray-500 hover:text-primary-hover transition-colors"
                     @click="router.push({ name: 'guest.course-detail', params: {id: course.id}})">
                     See Details →
                 </button>
