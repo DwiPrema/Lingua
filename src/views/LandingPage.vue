@@ -22,7 +22,12 @@ const courses = computed(() => courseStore.courses.length);
 useLenis();
 
 onMounted(async () => {
-    Aos.init();
+    Aos.init({
+        duration: 700,
+        once: true,
+        offset: 80,
+        easing: "ease-out-cubic",
+    });
     await userStore.fetchLandingStatistics();
     await courseStore.fetchAllCourseData();
 })
@@ -60,7 +65,7 @@ onMounted(async () => {
                         </p>
 
                         <!-- BUTTONS -->
-                        <div class="flex pt-8 gap-3 flex-col sm:flex-row">
+                        <div class="flex pt-8 gap-3 flex-col sm:flex-row justify-center lg:justify-start">
                             <CustomButton @click="router.push('/explore-courses')" class="cursor-pointer"
                                 data-aos="fade-left">Find Courses
                             </CustomButton>
@@ -75,7 +80,7 @@ onMounted(async () => {
                     </div>
 
                     <!-- RIGHT: IMAGE -->
-                    <div class="w-full lg:w-1/2 flex justify-center items-center" data-aos="fade-up-left">
+                    <div class="w-full lg:w-1/2 flex justify-center items-center" data-aos="fade-up">
                         <div class="w-full max-w-xl">
                             <img src="../assets/book_animation.svg" alt="Learning illustration"
                                 class="block w-full h-auto object-contain" width="600" />
@@ -83,7 +88,7 @@ onMounted(async () => {
                     </div>
                 </div>
 
-                <div class="flex gap-3 max-w-2xl">
+                <div class="flex gap-3 max-w-2xl lg:mt-0 lg:m-0 mt-14 m-auto">
                     <StatsCard label="Course Owner" data-aos="fade-up" :value="coursesOwner ?? '-'" variant="default" />
                     <StatsCard label="Total Courses" data-aos="fade-up" data-aos-delay="300" :value="courses"
                         variant="primary" />

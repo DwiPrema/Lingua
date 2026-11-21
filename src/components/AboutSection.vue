@@ -12,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger, Flip);
 const router = useRouter();
 const courseStore = useCourseStores();
 
-const MOBILE_QUERY = "(max-width: 767px)";
+const MOBILE_QUERY = "(max-width: 1023px)";
 const FLIP_PROPS = "fontSize,letterSpacing";
 const RESIZE_DEBOUNCE_MS = 300;
 
@@ -48,12 +48,12 @@ const roles = [
 const cardClass = {
     collapsed: "flex h-22.75 items-center justify-between gap-5 p-4 md:px-5.5",
     expanded:
-        "grid h-auto grid-cols-1 items-stretch gap-5 p-5 sm:h-40.5 sm:grid-cols-2 md:gap-8 md:p-6",
+        "grid h-auto grid-cols-1 items-stretch gap-5 p-5 sm:grid-cols-2 sm:gap-6 lg:h-40.5 lg:gap-8 lg:p-6",
 };
 
 const cardTitleClass = {
     collapsed: "mb-3 text-lg",
-    expanded: "mb-4 text-[clamp(26px,2.5vw,34px)] md:mb-6",
+    expanded: "mb-3 text-[clamp(26px,2.5vw,34px)] lg:mb-6",
 };
 
 const cardDescClass = {
@@ -63,7 +63,7 @@ const cardDescClass = {
 
 const cardFeaturesClass = {
     collapsed: "invisible absolute right-0 top-0 opacity-0",
-    expanded: "static gap-3 border-l pl-4 md:pl-10",
+    expanded: "static gap-3 border-l pl-4 sm:pl-6 lg:pl-10",
 };
 
 const introGridClass = {
@@ -73,17 +73,18 @@ const introGridClass = {
 
 const introCopyClass = {
     collapsed: "relative",
-    expanded: "relative md:pointer-events-none md:absolute md:left-0 md:top-0",
+    expanded: "relative lg:pointer-events-none lg:absolute lg:left-0 lg:top-0",
 };
 
 const heroEyebrowClass = {
     collapsed: "text-[clamp(40px,4.8vw,69px)]",
-    expanded: "text-[clamp(18px,1.9vw,28px)]",
+    expanded: "text-xl sm:text-2xl lg:text-[clamp(18px,1.9vw,28px)]",
 };
 
 const heroTitleClass = {
     collapsed: "ml-[30%] mt-12 text-[clamp(14px,1.45vw,21px)]",
-    expanded: "ml-0 mt-4 text-[clamp(32px,3.6vw,52px)]",
+    expanded:
+        "ml-0 mt-4 text-[26px] sm:text-4xl lg:text-[clamp(32px,3.6vw,52px)]",
 };
 
 const heroRef = ref<HTMLElement | null>(null);
@@ -382,26 +383,26 @@ onBeforeUnmount(() => {
 
 <template>
     <section ref="introRef" id="about"
-        class="about-intro relative mb-24 w-full px-6 py-16 text-text-primary md:px-[5%] md:py-24">
+        class="about-intro relative mb-24 w-full px-6 py-16 text-text-primary sm:px-10 lg:px-[5%] lg:py-24">
 
-        <header class="flex items-center justify-between border-b border-text-primary pb-2">
-            <a href="#about" class="text-[20px] font-semibold text-primary">
+        <header class="flex items-center justify-between gap-3 border-b border-text-primary pb-2">
+            <a href="#about" class="text-lg font-semibold text-primary sm:text-[20px]">
                 About Lingua.
             </a>
 
-            <span class="text-[16px] font-semibold text-accent md:text-[20px]">
+            <span class="text-sm font-semibold text-accent sm:text-[16px] lg:text-[20px]">
                 Discover. Learn. Grow.
             </span>
         </header>
 
-        <div class="relative mt-10 grid items-center gap-10 md:mt-12 md:gap-12"
+        <div class="relative mt-8 grid items-center gap-8 sm:mt-10 sm:gap-10 lg:mt-12 lg:gap-12"
             :class="isIntroExpanded ? introGridClass.expanded : introGridClass.collapsed">
 
-            <div class="about-copy flex w-full max-w-152 flex-col gap-6 md:gap-9"
+            <div class="about-copy flex w-full max-w-152 flex-col gap-5 sm:gap-6 lg:gap-9"
                 :class="isIntroExpanded ? introCopyClass.expanded : introCopyClass.collapsed">
 
                 <p v-for="paragraph in introParagraphs" :key="paragraph"
-                    class="m-0 text-[24px] font-bold leading-[1.3] md:text-[30px]">
+                    class="m-0 text-[20px] font-bold leading-[1.3] sm:text-[26px] lg:text-[30px]">
                     {{ paragraph }}
                 </p>
 
@@ -442,32 +443,34 @@ onBeforeUnmount(() => {
         </div>
     </section>
 
-    <section ref="heroRef" class="relative w-full text-text-primary md:h-[80vh]">
+    <section ref="heroRef" class="relative w-full text-text-primary lg:h-[80vh]">
 
-        <div class="mx-auto flex w-full flex-col py-6 md:h-full md:min-h-0">
+        <div class="mx-auto flex w-full flex-col py-6 lg:h-full lg:min-h-0">
 
-            <div class="relative h-px w-[90%] m-auto shrink-0 bg-text-primary">
-                <span class="about-caption absolute right-0 text-[16px] font-semibold text-primary md:text-[20px]">
+            <div class="relative mb-8 h-px w-[90%] m-auto shrink-0 bg-text-primary lg:mb-auto">
+                <span
+                    class="about-caption absolute right-0 top-2 text-sm font-semibold text-primary sm:text-[16px] lg:top-auto lg:text-[20px]">
                     One Place. Two Possibilities.
                 </span>
             </div>
 
-            <div ref="viewportRef" class="relative min-h-0 w-full flex-1 overflow-x-auto md:overflow-hidden">
+            <div ref="viewportRef" class="relative min-h-0 w-full flex-1 overflow-visible lg:overflow-hidden">
 
                 <div ref="trackRef"
-                    class="flex h-full min-h-[70svh] w-max flex-row items-stretch gap-4 md:min-h-0 md:items-center md:pr-32">
+                    class="grid h-auto w-full grid-cols-1 gap-4 px-6 sm:grid-cols-2 sm:px-10 lg:flex lg:h-full lg:min-h-0 lg:w-max lg:flex-row lg:items-center lg:px-0 lg:pr-32">
 
-                    <div class="w-screen justify-around flex flex-row">
+                    <div
+                        class="col-span-full flex w-full flex-col gap-8 lg:col-auto lg:w-screen lg:flex-row lg:justify-around lg:gap-0">
                         <div
-                            class="about-hero flex w-auto shrink-0 flex-col justify-center gap-8 px-2 py-12 md:h-full md:gap-10">
+                            class="about-hero flex w-full shrink-0 flex-col justify-center gap-6 px-0 py-6 sm:py-10 lg:h-full lg:w-auto lg:gap-10 lg:px-2 lg:py-12">
 
-                            <p class="about-eyebrow m-0 whitespace-nowrap font-bold leading-[1.12] tracking-[-0.02em] text-primary"
+                            <p class="about-eyebrow m-0 whitespace-normal font-bold leading-[1.12] tracking-[-0.02em] text-primary lg:whitespace-nowrap"
                                 :class="isHeroExpanded ? heroEyebrowClass.expanded : heroEyebrowClass.collapsed">
                                 Learn from others.<br />
                                 Share what you know.
                             </p>
 
-                            <h2 class="about-title m-0 whitespace-nowrap font-bold leading-[1.15] tracking-[-0.02em] text-accent"
+                            <h2 class="about-title m-0 whitespace-normal font-bold leading-[1.15] tracking-[-0.02em] text-accent lg:whitespace-nowrap"
                                 :class="isHeroExpanded ? heroTitleClass.expanded : heroTitleClass.collapsed">
                                 Learning Opportunities<br />
                                 Should Be Easier to<br />
@@ -477,13 +480,13 @@ onBeforeUnmount(() => {
                         </div>
 
                         <h1
-                            class="text-explore-course m-0 shrink-0 self-center w-md text-[46px] font-bold leading-[1.05] text-text-primary md:text-[69px]">
+                            class="text-explore-course m-0 w-full shrink-0 text-[34px] font-bold leading-[1.05] text-text-primary sm:text-[46px] lg:w-md lg:self-center lg:text-[69px]">
                             Let's Explore Courses
                         </h1>
                     </div>
 
                     <article v-for="course in courseStore.courses" :key="course.id"
-                        class="course-card group flex min-h-50 w-[min(82vw,420px)] shrink-0 flex-col justify-between rounded-2xl border border-gray-100 bg-surface p-5 shadow-sm transition-all duration-300 hover:border-primary-hover/30 hover:shadow-md">
+                        class="course-card group flex min-h-50 w-full shrink-0 flex-col justify-between rounded-2xl border border-gray-100 bg-surface p-5 shadow-sm transition-all duration-300 hover:border-primary-hover/30 hover:shadow-md lg:w-[min(82vw,420px)]">
 
                         <div>
                             <div class="mb-3 flex flex-col gap-2.5 sm:flex-row sm:items-start sm:justify-between">
@@ -520,13 +523,14 @@ onBeforeUnmount(() => {
                     </article>
 
                     <button @click="router.push('/explore-courses')"
-                        class="course-card group flex min-h-50 w-auto shrink-0 rounded-2xl border border-gray-100 bg-secondary p-5 shadow-sm transition-all duration-300 hover:border-primary-hover/30 hover:shadow-md cursor-pointer">
-                        <div class="w-full flex flex-col justify-evenly items-center">
+                        class="course-card group flex min-h-32 w-full shrink-0 rounded-2xl border border-gray-100 bg-secondary p-5 shadow-sm transition-all duration-300 hover:border-primary-hover/30 hover:shadow-md cursor-pointer sm:col-span-2 lg:col-auto lg:min-h-50 lg:w-auto">
+                        <div class="flex w-full flex-col items-center justify-evenly gap-2">
                             <p
-                                class="text-surface w-min font-black text-xl text-center cursor-pointer group-hover:text-accent transition-all duration-300 ease-in-out">
+                                class="w-auto cursor-pointer text-center text-xl font-black text-surface transition-all duration-300 ease-in-out group-hover:text-accent lg:w-min">
                                 Explore
                                 More Courses</p>
-                            <ChevronRight :size="50" class="text-surface group-hover:text-accent transition-all duration-300 ease-in-out"/>
+                            <ChevronRight :size="50"
+                                class="text-surface group-hover:text-accent transition-all duration-300 ease-in-out" />
                         </div>
 
                     </button>
