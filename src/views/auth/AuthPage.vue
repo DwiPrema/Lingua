@@ -91,32 +91,31 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <main class="min-h-screen bg-black p-6 flex items-center justify-center">
-        <div
-            class="mx-auto flex min-h-[80vh] max-w-6xl min-w-[80%] overflow-hidden rounded-3xl bg-light-text shadow-xl">
+    <main class="min-h-screen bg-light-background p-6 flex items-center justify-center">
+        <div class="mx-auto flex min-h-[80vh] max-w-6xl min-w-[80%] overflow-hidden rounded-3xl bg-surface shadow-xl">
 
             <section
                 class="relative hidden w-1/2 overflow-hidden bg-primary p-12 lg:flex lg:flex-col lg:justify-between">
 
                 <div class="flex flex-col items-start gap-4">
-                    <h1 class='text-light-text text-3xl font-black cursor-pointer text-left'>
+                    <h1 class='text-accent text-3xl font-black cursor-pointer text-left'>
                         Lingua.
                     </h1>
 
-                    <p class="mb-4 text-sm font-medium uppercase tracking-widest text-light-text text-left">
+                    <p class="mb-4 text-sm font-medium uppercase tracking-widest text-light-background text-left">
                         Learn & Create
                     </p>
                 </div>
 
                 <div class="relative z-10 max-w-md">
 
-                    <h2 class="text-5xl font-black leading-tight text-dark-background">
+                    <h2 class="text-5xl font-black leading-tight text-accent">
                         Learn today,
                         <br />
                         create tomorrow.
                     </h2>
 
-                    <p class="mt-6 max-w-sm text-dark-background/80">
+                    <p class="mt-6 max-w-sm text-light-background">
                         Learn new languages, join courses,
                         share your knowledge, and grow together
                         with the Lingua community.
@@ -127,11 +126,11 @@ onUnmounted(() => {
 
             <section class="flex w-full flex-col justify-center px-6 py-10 sm:px-12 lg:w-1/2 lg:px-16">
 
-                <div class="mx-auto w-full max-w-md">
+                <div class="mx-auto w-full">
 
 
                     <button type="button" @click="authStore.router.push('/')"
-                        class="mb-6 inline-flex items-center gap-2 rounded-lg text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-dark-background">
+                        class="mb-6 inline-flex items-center gap-2 rounded-lg text-sm font-medium text-gray-500 transition hover:text-primary">
                         <ArrowLeft :size="24" />
                         Back
                     </button>
@@ -151,11 +150,11 @@ onUnmounted(() => {
                     <template v-if="authStore.authMode === 'auth-verify'">
 
                         <div class="mb-8">
-                            <h2 class="text-3xl font-bold text-dark-background">
+                            <h2 class="text-3xl font-bold text-text-primary">
                                 Verify your email
                             </h2>
 
-                            <p class="mt-2 leading-relaxed text-gray-500">
+                            <p class="mt-2 leading-relaxed text-text-secondary">
                                 We've sent a 6-digit verification code to
                                 <span class="font-medium text-dark-background">
                                     {{ authStore.email }}
@@ -169,7 +168,7 @@ onUnmounted(() => {
                             <!-- OTP INPUT -->
 
                             <div>
-                                <label for="otp" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="otp" class="mb-2 block text-sm font-medium text-text-secondary">
                                     Verification code
                                 </label>
 
@@ -186,7 +185,7 @@ onUnmounted(() => {
                             <!-- VERIFY BUTTON -->
 
                             <button type="submit"
-                                class="w-full rounded-xl bg-dark-background px-4 py-3.5 font-medium text-white transition hover:bg-gray-800 active:scale-[0.99]">
+                                class="w-full rounded-xl bg-primary px-4 py-3.5 font-medium text-white transition hover:bg-primary-hover active:scale-[0.99]">
                                 Verify email
                             </button>
 
@@ -217,13 +216,13 @@ onUnmounted(() => {
                             </button>
 
                             <!-- Success notification -->
-                            <p v-if="resendSuccess" class="mt-3 rounded-lg bg-green-50 px-3 py-2 text-sm text-green-700"
+                            <p v-if="resendSuccess" class="mt-3 rounded-lg bg-green-50 px-3 py-2 text-sm text-success"
                                 role="status" aria-live="polite">
                                 {{ resendSuccess }}
                             </p>
 
                             <!-- Error notification -->
-                            <p v-if="resendError" class="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700"
+                            <p v-if="resendError" class="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-alert"
                                 role="alert">
                                 {{ resendError }}
                             </p>
@@ -249,11 +248,11 @@ onUnmounted(() => {
 
                     <template v-if="authStore.authMode === 'auth-login'">
                         <div class="mb-8">
-                            <h2 class="text-3xl font-bold text-dark-background">
+                            <h2 class="text-3xl font-black text-primary">
                                 Welcome back
                             </h2>
 
-                            <p class="mt-2 text-gray-500">
+                            <p class="mt-2 text-gray-500 text-[16px]">
                                 Log in to continue learning with Lingua.
                             </p>
                         </div>
@@ -261,14 +260,14 @@ onUnmounted(() => {
                         <!-- Login method selector -->
                         <div class="mb-6 grid grid-cols-2 gap-2 rounded-xl bg-gray-100 p-1">
                             <button type="button" @click="authStore.loginMethod = 'password'" :class="authStore.loginMethod === 'password'
-                                ? 'bg-white text-dark-background shadow-sm'
+                                ? 'bg-primary text-light-background shadow-sm'
                                 : 'text-gray-500 hover:text-dark-background'"
                                 class="rounded-lg px-3 py-2.5 text-sm font-semibold transition">
                                 Password
                             </button>
 
                             <button type="button" @click="authStore.loginMethod = 'otp'" :class="authStore.loginMethod === 'otp'
-                                ? 'bg-white text-dark-background shadow-sm'
+                                ? 'bg-accent text-text-primary shadow-sm'
                                 : 'text-gray-500 hover:text-dark-background'"
                                 class="rounded-lg px-3 py-2.5 text-sm font-semibold transition">
                                 Email OTP
@@ -305,7 +304,7 @@ onUnmounted(() => {
                             </div>
 
                             <button type="submit" :disabled="authStore.loading"
-                                class="flex w-full items-center justify-center rounded-xl bg-dark-background px-4 py-3.5 font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60">
+                                class="flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3.5 font-medium text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60">
                                 {{ authStore.loading ? 'Signing in...' : 'Sign in with password' }}
                             </button>
                         </form>
@@ -326,7 +325,7 @@ onUnmounted(() => {
                             </p>
 
                             <button type="submit" :disabled="authStore.loading"
-                                class="flex w-full items-center justify-center rounded-xl bg-dark-background px-4 py-3.5 font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-60">
+                                class="flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3.5 font-medium text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60">
                                 {{ authStore.loading ? 'Sending code...' : 'Send login code' }}
                             </button>
                         </form>
@@ -376,7 +375,7 @@ onUnmounted(() => {
                                 <div class="grid grid-cols-2 gap-3">
 
                                     <button type="button" class="rounded-2xl border p-4 text-left transition" :class="authStore.role === 'student'
-                                        ? 'border-dark-background bg-gray-50 ring-1 ring-accent'
+                                        ? 'border-dark-background bg-gray-50 ring-1 ring-primary'
                                         : 'border-gray-200 hover:border-gray-400'
                                         " @click="authStore.role = 'student'">
 
@@ -384,7 +383,7 @@ onUnmounted(() => {
 
                                             <div class="flex flex-row gap-2 items-center">
                                                 <div
-                                                    class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/30">
+                                                    class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/30">
                                                     🎓
                                                 </div>
                                                 <p class="font-semibold text-dark-background">
@@ -393,7 +392,7 @@ onUnmounted(() => {
                                             </div>
 
                                             <div class="h-4 w-4 rounded-full border" :class="authStore.role === 'student'
-                                                ? 'border-accent bg-accent'
+                                                ? 'border-primary bg-primary'
                                                 : 'border-gray-300'
                                                 "></div>
 
@@ -406,7 +405,7 @@ onUnmounted(() => {
                                     </button>
 
                                     <button type="button" class="rounded-2xl border p-4 text-left transition" :class="authStore.role === 'instructor'
-                                        ? 'border-dark-background bg-gray-50 ring-1 ring-accent'
+                                        ? 'border-dark-background bg-gray-50 ring-1 ring-primary'
                                         : 'border-gray-200 hover:border-gray-400'
                                         " @click="authStore.role = 'instructor'">
 
@@ -414,7 +413,7 @@ onUnmounted(() => {
 
                                             <div class="flex flex-row gap-2 items-center">
                                                 <div
-                                                    class="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/30">
+                                                    class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/30">
                                                     ✨
                                                 </div>
 
@@ -424,7 +423,7 @@ onUnmounted(() => {
                                             </div>
 
                                             <div class="h-4 w-4 rounded-full border" :class="authStore.role === 'instructor'
-                                                ? 'border-accent bg-accent'
+                                                ? 'border-primary bg-primary'
                                                 : 'border-gray-300'
                                                 "></div>
 
@@ -520,7 +519,7 @@ onUnmounted(() => {
                             </div>
 
                             <button type="submit" v-else
-                                class="w-full rounded-xl bg-dark-background px-4 py-2 font-medium text-white transition hover:bg-gray-800 active:scale-[0.99]">
+                                class="w-full rounded-xl bg-primary px-4 py-2 font-medium text-white transition hover:bg-primary-hover active:scale-[0.99]">
                                 Continue with email
                             </button>
 
@@ -529,7 +528,7 @@ onUnmounted(() => {
                         <p class="mt-8 text-center text-sm text-gray-500">
                             Already have an account?
 
-                            <button type="button" class="ml-1 font-semibold text-dark-background hover:underline"
+                            <button type="button" class="ml-1 font-semibold hover:underline"
                                 @click="authStore.router.push('login')">
                                 Log in
                             </button>
