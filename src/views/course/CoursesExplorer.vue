@@ -100,31 +100,31 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <main class="min-h-screen bg-slate-50">
+    <main class="min-h-screen">
         <button type="button" class="mb-5 text-sm font-medium text-slate-500 hover:text-primary"
             @click="router.push('/')">
             &larr; Back
         </button>
         <!-- Header -->
-        <section class="border-b border-slate-200 bg-white">
-            <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <section class="border-b border-primary">
+            <div class="mx-auto px-4 py-10 sm:px-6 lg:px-8">
 
-                <p class="text-sm font-semibold uppercase tracking-wider text-indigo-600">
+                <p class="text-sm font-semibold uppercase tracking-wider text-accent">
                     Find Your Next Opportunity
                 </p>
 
-                <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+                <h1 class="mt-2 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
                     Explore Courses
                 </h1>
 
-                <p class="mt-3 max-w-2xl text-base leading-7 text-slate-500">
+                <p class="mt-3 max-w-2xl text-base leading-7 text-text-secondary">
                     Discover new skills and find a learning program that
                     matches your goals.
                 </p>
             </div>
         </section>
 
-        <section class="mx-auto max-w-7xl py-8">
+        <section class="mx-auto py-8">
             <!-- Search and Sorting -->
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div class="relative w-full sm:max-w-md">
@@ -134,7 +134,7 @@ onBeforeUnmount(() => {
                                 bg-white py-3 pl-11 pr-4 text-sm
                                 outline-none transition
                                 placeholder:text-slate-400
-                                focus:border-indigo-500
+                                focus:border-primary
                                 focus:ring-4 focus:ring-indigo-100" />
                 </div>
 
@@ -146,7 +146,7 @@ onBeforeUnmount(() => {
                     <select id="course-sort" v-model="sortBy" class="w-full rounded-xl border border-slate-200
                                 bg-white px-4 py-3 text-sm font-medium
                                 text-slate-700 outline-none
-                                focus:border-indigo-500
+                                focus:border-primary
                                 focus:ring-4 focus:ring-indigo-100
                                 sm:w-44">
                         <option value="newest">Newest</option>
@@ -158,18 +158,18 @@ onBeforeUnmount(() => {
             <!-- Results Heading -->
             <div class="mt-8 flex items-center justify-between gap-3">
                 <div>
-                    <h2 class="text-lg font-bold text-slate-900">
+                    <h2 class="text-lg font-bold text-text-primary">
                         Available Courses
                     </h2>
 
-                    <p class="mt-1 text-sm text-slate-500">
+                    <p class="mt-1 text-sm text-text-secondary">
                         Explore programs and find your next learning experience.
                     </p>
                 </div>
 
-                <span class="shrink-0 rounded-full bg-white px-3 py-1.5
-                            text-sm font-medium text-slate-600
-                            ring-1 ring-slate-200">
+                <span class="shrink-0 rounded-full bg-accent px-3 py-1.5
+                            text-sm font-medium text-text-primary
+                            ring-1 ring-text-primary">
                     {{ courses.length }}
                     {{ courses.length === 1 ? 'course' : 'courses' }}
                 </span>
@@ -233,9 +233,9 @@ onBeforeUnmount(() => {
             <!-- Course Grid -->
             <div v-else class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 <article v-for="course in courses" :key="course.id" class="group flex flex-col overflow-hidden rounded-2xl
-                            border border-slate-200 bg-white transition
+                            border border-slate-200 bg-surface transition
                             duration-200 hover:-translate-y-1
-                            hover:border-indigo-200 hover:shadow-lg">
+                            hover:border-secondary hover:shadow-lg">
 
                     <!-- Course Information -->
                     <div class="flex flex-1 flex-col p-5">
@@ -274,9 +274,9 @@ onBeforeUnmount(() => {
 
                         <button type="button" class="mt-5 flex w-full items-center
                                     justify-center gap-2 rounded-xl
-                                    bg-indigo-600 px-4 py-3 text-sm
+                                    bg-primary px-4 py-3 text-sm
                                     font-semibold text-white transition
-                                    hover:bg-indigo-700
+                                    hover:bg-primary-hover
                                     focus:outline-none focus:ring-4
                                     focus:ring-indigo-100" @click="openCourse(course.id)">
                             View Course Details
