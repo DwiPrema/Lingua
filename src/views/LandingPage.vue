@@ -10,6 +10,7 @@ import CustomButton from '@/components/CustomButton.vue';
 import AboutSection from '@/components/AboutSection.vue';
 import { useLenis } from '@/composables/useLenis';
 import Aos from 'aos';
+import '@/assets/grid.css';
 
 const router = useRouter()
 const userStore = useUserDataStores()
@@ -276,38 +277,3 @@ onMounted(async () => {
         </section>
     </section>
 </template>
-
-<style scoped>
-.hero-grid {
-    position: relative;
-    isolation: isolate;
-    background-color: #ffffff;
-
-    background-image:
-        linear-gradient(to right,
-            rgba(120, 120, 120, 0.15) 1px,
-            transparent 1px),
-        linear-gradient(to bottom,
-            rgba(120, 120, 120, 0.15) 1px,
-            transparent 1px);
-
-    background-size: 44px 44px;
-    background-position: center top;
-    background-repeat: repeat;
-
-    background-attachment: fixed;
-}
-
-.hero-grid::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-
-    background: radial-gradient(ellipse at center,
-            transparent 15%,
-            rgba(255, 255, 255, 0.65) 70%,
-            #ffffff 100%);
-}
-</style>

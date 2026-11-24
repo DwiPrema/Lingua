@@ -9,7 +9,7 @@ export const useOrganizationStore = defineStore('organization', () => {
   // State
   const organization = ref<Organization | null>(null)
   const loading = ref(false)
-  const error = ref(null)
+  const error = ref<string | null>(null)
 
   // Getters
   const hasOrganization = computed(() => !!organization.value)

@@ -20,6 +20,38 @@ let searchTimer: ReturnType<typeof setTimeout> | null = null
 
 const courses = computed<Course[]>(() => courseStore.courses)
 
+const filteredCourses = computed(() => {
+    let result = [...courses.value]
+
+    // Search
+    const keyword = searchQuery.value
+        .trim()
+        .toLowerCase()
+
+    if (keyword) {
+        result = result.filter(course =>
+            course.name.toLowerCase().includes(keyword)
+        )
+    }
+
+    // Sorting
+    if (sortBy.value === 'newest') {
+        result.sort((a, b) =>
+            new Date(b.created_at ?? 0).getTime() -
+            new Date(a.created_at ?? 0).getTime()
+        )
+    }
+
+    if (sortBy.value === 'name') {
+        result.sort((a, b) =>
+            a.name.localeCompare(b.name)
+        )
+    }
+
+    return result
+})
+
+
 const formatDate = (date: string | Date | null | undefined): string | null => {
     if (!date) return null
 
@@ -106,7 +138,7 @@ onBeforeUnmount(() => {
             &larr; Back
         </button>
         <!-- Header -->
-        <section class="border-b border-primary">
+        <section class="border-b border-accent">
             <div class="mx-auto px-4 py-10 sm:px-6 lg:px-8">
 
                 <p class="text-sm font-semibold uppercase tracking-wider text-accent">
@@ -232,8 +264,8 @@ onBeforeUnmount(() => {
 
             <!-- Course Grid -->
             <div v-else class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                <article v-for="course in courses" :key="course.id" class="group flex flex-col overflow-hidden rounded-2xl
-                            border border-slate-200 bg-surface transition
+                <article v-for="course in filteredCourses" :key="course.id" class="group flex flex-col overflow-hidden rounded-2xl
+                            border border-text-primary bg-surface transition
                             duration-200 hover:-translate-y-1
                             hover:border-secondary hover:shadow-lg">
 

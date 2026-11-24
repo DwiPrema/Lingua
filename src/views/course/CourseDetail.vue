@@ -6,6 +6,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useCourseStores } from '@/stores/course_stores'
 import { useCourseProgramStore } from '@/stores/course_program_stores'
 import { Course } from '@/types/course_type';
+import "@/assets/grid.css";
 
 const route = useRoute()
 const router = useRouter()
@@ -52,7 +53,7 @@ const loadCourseDetail = async () => {
 
         await courseProgramStore.getAllCourseProgram(courseId)
     } catch (error: unknown) {
-        const err = error as {message?: string}
+        const err = error as { message?: string }
         pageError.value =
             err?.message || 'Something went wrong while loading the course.'
     } finally {
@@ -92,39 +93,31 @@ watch(
         }
     },
 )
-
-const backLink = computed(() => {
-    if (!authStore.session) {
-        return { name: 'guest.explore-courses' }
-    }
-
-    return { name: 'student.explore' }
-})
 </script>
 
 <template>
-    <main class="min-h-screen bg-slate-50 pb-16">
+    <main class="min-h-screen hero-grid pb-16">
         <!-- Header -->
-        <header class="border-b border-slate-200 bg-white">
-            <div class="mx-auto flex max-w-7xl items-center justify-between
+        <header class="border-b border-slate-200 bg-light-background top-0 sticky">
+            <div class="mx-auto flex items-center justify-between
                        px-4 py-4 sm:px-6 lg:px-8">
-                <RouterLink :to="backLink" class="inline-flex items-center gap-2 text-sm font-medium
-                           text-slate-600 transition hover:text-indigo-600">
+                <button @click="router.back()" class="inline-flex items-center gap-2 text-sm font-medium
+                           text-slate-600 transition hover:text-primary-hover">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6" />
                     </svg>
 
-                    Explore Courses
-                </RouterLink>
+                    Back
+                </button>
 
-                <span class="text-lg font-bold tracking-tight text-indigo-600">
+                <span class="text-lg font-bold tracking-tight text-secondary">
                     Lingua
                 </span>
             </div>
         </header>
 
         <!-- Loading State -->
-        <section v-if="pageLoading" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <section v-if="pageLoading" class="mx-auto px-4 py-16 sm:px-6 lg:px-8">
             <div class="animate-pulse space-y-6">
                 <div class="h-8 w-2/3 rounded-lg bg-slate-200" />
                 <div class="h-4 w-full max-w-2xl rounded bg-slate-200" />
@@ -144,7 +137,7 @@ const backLink = computed(() => {
         <!-- Error State -->
         <section v-else-if="pageError" class="mx-auto max-w-2xl px-4 py-20 text-center">
             <div class="mx-auto flex h-14 w-14 items-center justify-center
-                       rounded-full bg-red-100 text-red-600">
+                       rounded-full bg-red-100 text-alert">
                 <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="12" cy="12" r="10" />
                     <path stroke-linecap="round" d="M12 8v4m0 4h.01" />
@@ -159,20 +152,19 @@ const backLink = computed(() => {
                 {{ pageError }}
             </p>
 
-            <button type="button" class="mt-6 rounded-xl bg-indigo-600 px-5 py-3 text-sm
-                       font-semibold text-white transition hover:bg-indigo-700" @click="loadCourseDetail">
+            <button type="button" class="mt-6 rounded-xl bg-primary px-5 py-3 text-sm
+                       font-semibold text-white transition hover:bg-primary-hover" @click="loadCourseDetail">
                 Try Again
             </button>
         </section>
 
         <!-- Course Details -->
         <template v-else-if="course">
-            <section class="bg-white">
-                <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+            <section>
+                <div class="mx-auto px-4 py-10 sm:px-6 lg:px-8">
                     <div class="max-w-3xl">
-                        <div class="inline-flex items-center rounded-full
-                                   bg-indigo-50 px-3 py-1 text-xs font-semibold
-                                   text-indigo-700">
+                        <div class="inline-flex items-center text-xs font-semibold
+                                   text-secondary">
                             Course Details
                         </div>
 
@@ -182,14 +174,14 @@ const backLink = computed(() => {
                         </h1>
 
                         <p class="mt-4 whitespace-pre-line text-base leading-7
-                                   text-slate-600">
+                                   text-text-secondary">
                             {{
                                 course.description ||
                                 'No course description is available yet.'
                             }}
                         </p>
 
-                        <div v-if="course.address" class="mt-5 flex items-start gap-2 text-sm text-slate-500">
+                        <div v-if="course.address" class="mt-5 flex items-start gap-2 text-sm text-text-secondary">
                             <svg class="mt-0.5 h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -203,12 +195,12 @@ const backLink = computed(() => {
                 </div>
             </section>
 
-            <div class="mx-auto grid max-w-7xl gap-8 px-4 py-8
+            <div class="mx-auto grid gap-8 px-4 py-8
                        sm:px-6 lg:grid-cols-3 lg:px-8">
                 <!-- Main Content -->
                 <div class="space-y-8 lg:col-span-2">
                     <!-- About Course -->
-                    <section class="rounded-2xl border border-slate-200 bg-white p-6
+                    <section class="rounded-2xl border border-text-primary bg-accent/80 p-6
                                sm:p-8">
                         <h2 class="text-xl font-bold text-slate-900">
                             About This Course
@@ -222,7 +214,7 @@ const backLink = computed(() => {
                             }}
                         </p>
 
-                        <div v-if="course.address" class="mt-6 border-t border-slate-100 pt-5">
+                        <div v-if="course.address" class="mt-6 border-t border-text-primary pt-5">
                             <h3 class="text-sm font-semibold text-slate-900">
                                 Course Location
                             </h3>
@@ -234,12 +226,12 @@ const backLink = computed(() => {
                     </section>
 
                     <!-- Available Programs -->
-                    <section class="rounded-2xl border border-slate-200 bg-white p-6
+                    <section class="rounded-2xl border border-text-primary bg-surface p-6
                                sm:p-8">
                         <div class="flex flex-col gap-2 sm:flex-row
                                    sm:items-center sm:justify-between">
                             <div>
-                                <h2 class="text-xl font-bold text-slate-900">
+                                <h2 class="text-xl font-bold text-text-primary">
                                     Available Programs
                                 </h2>
 
@@ -262,7 +254,7 @@ const backLink = computed(() => {
 
                         <!-- Program Error -->
                         <div v-else-if="courseProgramStore.error"
-                            class="mt-6 rounded-xl bg-red-50 p-4 text-sm text-red-700">
+                            class="mt-6 rounded-xl bg-red-50 p-4 text-sm text-alert">
                             Unable to load course programs. Please try again later.
                         </div>
 
@@ -282,7 +274,7 @@ const backLink = computed(() => {
                         <div v-else class="mt-6 space-y-4">
                             <button v-for="program in programs" :key="program.id" type="button" class="w-full rounded-xl border p-5 text-left
                                        transition" :class="selectedProgramId === program.id
-                                        ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-100'
+                                        ? 'border-primary bg-indigo-50 ring-2 ring-indigo-100'
                                         : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50'
                                         " :aria-pressed="selectedProgramId === program.id"
                                 @click="selectProgram(program.id)">
@@ -303,7 +295,7 @@ const backLink = computed(() => {
 
                                     <div class="flex h-5 w-5 shrink-0 items-center
                                                justify-center rounded-full border" :class="selectedProgramId === program.id
-                                                ? 'border-indigo-600 bg-indigo-600 text-white'
+                                                ? 'border-primary bg-primary text-white'
                                                 : 'border-slate-300 bg-white'
                                                 ">
                                         <svg v-if="selectedProgramId === program.id" class="h-3 w-3" viewBox="0 0 24 24"
@@ -355,8 +347,8 @@ const backLink = computed(() => {
 
                 <!-- Enrollment Sidebar -->
                 <aside class="space-y-5">
-                    <section class="sticky top-6 rounded-2xl border border-slate-200
-                               bg-white p-6 shadow-sm">
+                    <section class="sticky top-20 rounded-2xl border border-text-primary
+                               bg-surface p-6 shadow-sm">
                         <h2 class="text-lg font-bold text-slate-900">
                             Join This Course
                         </h2>
@@ -367,7 +359,7 @@ const backLink = computed(() => {
 
                         <!-- Selected Program Summary -->
                         <div v-if="selectedProgram" class="mt-6 rounded-xl bg-indigo-50 p-4">
-                            <p class="text-xs font-medium text-indigo-700">
+                            <p class="text-xs font-medium text-primary">
                                 Selected Program
                             </p>
 
@@ -414,7 +406,7 @@ const backLink = computed(() => {
 
                         <button type="button" class="mt-6 w-full rounded-xl px-5 py-3 text-sm
                                    font-semibold transition" :class="selectedProgram
-                                    ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                                    ? 'bg-secondary text-white hover:bg-primary'
                                     : 'cursor-not-allowed bg-slate-100 text-slate-400'
                                     " :disabled="!selectedProgram" @click="continueToEnrollment">
                             Continue to Enrollment
