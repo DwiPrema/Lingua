@@ -21,6 +21,7 @@ import {
 import type { Enrollment, StatusEnrollmentType } from '@/types/enrollment_type'
 import type { Course } from '@/types/course_type'
 import type { Programs } from '@/types/program_type'
+import CustomButton from '@/components/CustomButton.vue'
 
 // =====================================================
 // TYPES
@@ -125,10 +126,10 @@ const summary = computed(() => ({
 type DisplayStatus = StatusEnrollmentType | 'cancelled'
 
 const statusStyles: Record<DisplayStatus, string> = {
-    pending: 'bg-amber-100 text-amber-800',
-    approved: 'bg-emerald-100 text-emerald-800',
-    active: 'bg-indigo-100 text-indigo-800',
-    rejected: 'bg-red-100 text-red-800',
+    pending: 'bg-accent/15 text-accent',
+    approved: 'bg-success/15 text-success',
+    active: 'bg-primary/15 text-primary',
+    rejected: 'bg-alert/15 text-alert',
     cancelled: 'bg-slate-100 text-slate-700',
 }
 
@@ -204,10 +205,10 @@ watch(studentId, (newId, oldId) => {
 
 
 <template>
-    <main class="min-h-screen bg-slate-50 py-8 sm:py-10">
+    <main class="min-h-screen py-8 sm:py-10">
         <div class="mx-auto">
             <!-- Page header -->
-            <header class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+            <header class="sticky top-0 flex flex-col justify-between gap-5 sm:flex-row sm:items-end bg-surface py-5 border-b border-text-primary m-0">
                 <div>
                     <button type="button" class="mb-5 text-sm font-medium text-slate-500 hover:text-primary"
                         @click="router.push('/')">
@@ -227,67 +228,63 @@ watch(studentId, (newId, oldId) => {
                         status in one place.
                     </p>
                 </div>
-
-                <button type="button"
-                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-accent/90 px-5 py-3 font-semibold text-white transition hover:bg-accent"
-                    @click="exploreCourses">
-                    Explore Courses
-                </button>
+                
+                <CustomButton @click="exploreCourses">Explore Courses</CustomButton>
             </header>
 
             <!-- Summary cards -->
             <section class="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-5">
-                <article class="rounded-2xl border border-slate-200 bg-white p-5">
+                <article class="rounded-2xl border border-text-secondary bg-surface p-5">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-sm font-medium text-slate-500">
+                        <p class="text-sm font-medium text-text-secondary">
                             Total Enrollments
                         </p>
-                        <Layers color="#64748b" :size="18"/>
+                        <Layers class="text-text-secondary" :size="18"/>
                     </div>
-                    <p class="mt-3 text-3xl font-extrabold text-slate-900">
+                    <p class="mt-3 text-3xl font-extrabold text-text-primary">
                         {{ summary.total }}
                     </p>
                 </article>
 
-                <article class="rounded-2xl border border-amber-200 bg-white p-5">
+                <article class="rounded-2xl border border-accent bg-surface p-5">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-sm font-medium text-slate-500">
+                        <p class="text-sm font-medium text-text-secondary">
                             Pending
                         </p>
-                        <Clock3 color="#b45309" :size="18"/>
+                        <Clock3 class="text-warning" :size="18"/>
                     </div>
-                    <p class="mt-3 text-3xl font-extrabold text-amber-700">
+                    <p class="mt-3 text-3xl font-extrabold text-warning">
                         {{ summary.pending }}
                     </p>
                 </article>
 
-                <article class="rounded-2xl border border-emerald-200 bg-white p-5">
+                <article class="rounded-2xl border border-success bg-surface p-5">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-sm font-medium text-slate-500">
+                        <p class="text-sm font-medium text-text-secondary">
                             Approved
                         </p>
-                        <CheckCircle2 color="#047857" :size="18"/>
+                        <CheckCircle2 class="text-success" :size="18"/>
                     </div>
-                    <p class="mt-3 text-3xl font-extrabold text-emerald-700">
+                    <p class="mt-3 text-3xl font-extrabold text-success">
                         {{ summary.approved }}
                     </p>
                 </article>
 
-                <article class="rounded-2xl border border-indigo-200 bg-white p-5">
+                <article class="rounded-2xl border border-secondary bg-surface p-5">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-sm font-medium text-slate-500">
+                        <p class="text-sm font-medium text-text-secondary">
                             Active
                         </p>
                         <GraduationCap color="#4338ca" :size="18"/>
                     </div>
-                    <p class="mt-3 text-3xl font-extrabold text-indigo-700">
+                    <p class="mt-3 text-3xl font-extrabold text-primary">
                         {{ summary.active }}
                     </p>
                 </article>
 
-                <article class="rounded-2xl border border-alert/20 bg-white p-5">
+                <article class="rounded-2xl border border-alert bg-surface p-5">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-sm font-medium text-slate-500">
+                        <p class="text-sm font-medium text-text-secondary">
                             Rejected
                         </p>
                         <AlertCircle class="text-alert" :size="18"/>
@@ -299,16 +296,16 @@ watch(studentId, (newId, oldId) => {
             </section>
 
             <!-- Search and filter -->
-            <section class="mt-8 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
+            <section class="mt-8 rounded-2xl border border-text-primary bg-surface p-4 sm:p-5">
                 <div class="flex flex-col gap-4 md:flex-row">
                     <div class="relative flex-1">
                         <input v-model="searchQuery" type="search"
                             placeholder="Search by course, program, or enrollment ID..."
-                            class="w-full rounded-xl border border-slate-300 py-3 pl-4 pr-4 text-sm outline-none transition focus:border-accent/90 focus:ring-2 focus:ring-rose-100" />
+                            class="w-full rounded-xl border border-text-primary py-3 pl-4 pr-4 text-sm outline-none transition focus:border-secondary/90 focus:ring-2 focus:ring-rose-100" />
                     </div>
 
                     <select v-model="selectedStatus" aria-label="Filter enrollments by status"
-                        class="rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-accent/90 focus:ring-2 focus:ring-rose-100 md:w-56">
+                        class="rounded-xl border border-text-primary bg-surface px-4 py-3 text-sm outline-none focus:border-secondary/90 focus:ring-2 focus:ring-rose-100 md:w-56">
                         <option v-for="option in statusOptions" :key="option.value" :value="option.value">
                             {{ option.label }}
                         </option>
@@ -325,7 +322,7 @@ watch(studentId, (newId, oldId) => {
                     </p>
 
                     <button v-if="searchQuery || selectedStatus !== 'all'" type="button"
-                        class="font-semibold text-accent/90 hover:text-accent"
+                        class="font-semibold text-primary/90 hover:text-primary-hover"
                         @click="searchQuery = ''; selectedStatus = 'all'">
                         Clear filters
                     </button>
@@ -399,19 +396,19 @@ watch(studentId, (newId, oldId) => {
             <!-- Enrollment list -->
             <section v-else class="mt-6 grid gap-5 md:grid-cols-2">
                 <article v-for="enrollment in filteredEnrollments" :key="enrollment.id"
-                    class="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-accent/50 hover:shadow-md sm:p-6">
+                    class="flex flex-col rounded-2xl border border-text-primary bg-surface p-5 shadow-sm transition hover:border-secondary/60 hover:shadow-md sm:p-6">
                     <div class="flex items-start justify-between gap-3">
                         <div class="flex min-w-0 items-start gap-3">
                             <div
-                                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent">
+                                class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-secondary/15 text-primary">
                                 <BookOpen />
                             </div>
 
                             <div class="min-w-0">
-                                <h2 class="wrap-break-word- text-lg font-bold text-slate-900">
+                                <h2 class="wrap-break-word- text-lg font-bold text-text-primary">
                                     {{ enrollment.course?.name ?? 'Course details unavailable' }}
                                 </h2>
-                                <p class="mt-1 text-sm text-slate-500">
+                                <p class="mt-1 text-sm text-text-secondary">
                                     {{ enrollment.program?.name ?? 'Program details unavailable' }}
                                 </p>
                             </div>
@@ -451,7 +448,7 @@ watch(studentId, (newId, oldId) => {
                     </div>
 
                     <button type="button"
-                        class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-accent/50 hover:bg-accent/15 hover:text-accent"
+                        class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-text-secondary px-4 py-3 text-sm font-semibold text-text-primary transition hover:border-secondary/50 hover:bg-secondary/15 hover:text-primary"
                         @click="openEnrollment(enrollment)">
                         View Enrollment Details
                         <ArrowUpRight :size="14"/>

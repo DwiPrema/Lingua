@@ -96,7 +96,7 @@ watch(
 </script>
 
 <template>
-    <main class="min-h-screen hero-grid pb-16">
+    <main class="min-h-screen pb-16">
         <!-- Header -->
         <header class="border-b border-slate-200 bg-light-background top-0 sticky">
             <div class="mx-auto flex items-center justify-between

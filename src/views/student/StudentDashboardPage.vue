@@ -1,39 +1,39 @@
 <script setup>
-import { RouterView } from 'vue-router';
+import CustomButton from '@/components/CustomButton.vue';
+import { RouterView, useRouter } from 'vue-router';
+import '@/assets/grid.css';
+import { useLenis } from '@/composables/useLenis';
+
+const router = useRouter();
+
+useLenis();
 
 </script>
 
 <template>
-    <div class="min-h-screen bg-slate-50">
-        <main class="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
+    <div class="min-h-screen hero-grid">
+        <main class="mx-auto space-y-8 py-8 px-4 sm:px-6 lg:px-8">
             <!-- Header -->
             <header class="flex items-center justify-between gap-4">
                 <div>
-                    <p class="text-sm font-medium text-violet-600">
+                    <p class="text-[14px] font-bold text-primary">
                         STUDENT SPACE
                     </p>
 
-                    <h1 class="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                    <h1 class="mt-2 text-[30px] font-black tracking-tight text-text-primary sm:text-[36px]">
                         Discover your next course.
                     </h1>
 
-                    <p class="mt-2 text-sm text-slate-500">
+                    <p class="mt-2 text-[14px] text-text-secondary">
                         Find the right course for your learning journey.
                     </p>
                 </div>
 
                 <div class="flex flex-row items-center gap-2">
-                    <RouterLink to="/student/enrollments" class="hidden rounded-xl border border-slate-200 bg-white
-                 px-4 py-2.5 text-sm font-medium text-slate-700
-                 transition hover:bg-slate-100 sm:inline-flex">
-                        My enrollments
-                    </RouterLink>
+                    <CustomButton variant="outline" @click="router.push('/student/enrollments')">My enrollments
+                    </CustomButton>
 
-                    <RouterLink to="/student/profile" class="hidden rounded-xl border border-slate-200 bg-white
-                 px-4 py-2.5 text-sm font-medium text-slate-700
-                 transition hover:bg-slate-100 sm:inline-flex">
-                        My Profile
-                    </RouterLink>
+                    <CustomButton variant="secondary" @click="router.push('/student/profile')">Profile</CustomButton>
                 </div>
             </header>
             <RouterView />

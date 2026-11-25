@@ -132,24 +132,24 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <main class="min-h-screen">
-        <button type="button" class="mb-5 text-sm font-medium text-slate-500 hover:text-primary"
+    <main class="min-h-screen py-8 sm:py-10">
+        <button type="button" class="text-sm font-medium text-slate-500 hover:text-primary"
             @click="router.push('/')">
             &larr; Back
         </button>
         <!-- Header -->
         <section class="border-b border-accent">
-            <div class="mx-auto px-4 py-10 sm:px-6 lg:px-8">
+            <div class="mx-auto py-5">
 
                 <p class="text-sm font-semibold uppercase tracking-wider text-accent">
                     Find Your Next Opportunity
                 </p>
 
-                <h1 class="mt-2 text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
+                <h1 class="mt-2 text-[30px] font-black tracking-tight text-text-primary sm:text-[36px]">
                     Explore Courses
                 </h1>
 
-                <p class="mt-3 max-w-2xl text-base leading-7 text-text-secondary">
+                <p class="max-w-2xl text-base text-text-secondary">
                     Discover new skills and find a learning program that
                     matches your goals.
                 </p>
