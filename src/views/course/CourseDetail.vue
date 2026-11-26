@@ -173,7 +173,7 @@ watch(
                             {{ course.name }}
                         </h1>
 
-                        <p class="mt-4 whitespace-pre-line text-base leading-7
+                        <p class="mt-2 whitespace-pre-line text-base leading-7
                                    text-text-secondary">
                             {{
                                 course.description ||

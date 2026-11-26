@@ -227,7 +227,7 @@ async function confirmLogout(): Promise<void> {
                     </button>
 
                     <button type="button" :disabled="loggingOut"
-                        class="rounded-xl bg-alert px-5 py-3 text-sm font-semibold text-surface transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        class="rounded-xl bg-alert px-5 py-3 text-sm font-semibold text-surface transition hover:bg-alert disabled:cursor-not-allowed disabled:opacity-50"
                         @click="confirmLogout">
                         {{ loggingOut ? 'Logging out...' : 'Yes, log out' }}
                     </button>

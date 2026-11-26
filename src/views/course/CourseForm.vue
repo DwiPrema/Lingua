@@ -211,7 +211,7 @@ function handleCancel() {
       <template v-else>
         <!-- Feedback -->
         <div v-if="validationMessage || error" role="alert" class="mb-6 rounded-xl border border-red-200 bg-red-50
-                 p-4 text-sm text-red-700">
+                 p-4 text-sm text-alert">
           {{ validationMessage || error }}
         </div>
 
@@ -219,7 +219,7 @@ function handleCancel() {
           <!-- Course Name -->
           <div>
             <label for="course-name" class="mb-2 block text-sm font-medium text-gray-700">
-              Course Name <span class="text-red-600">*</span>
+              Course Name <span class="text-alert/85">*</span>
             </label>
 
             <input id="course-name" v-model="form.name" type="text" required maxlength="150"
@@ -257,7 +257,7 @@ function handleCancel() {
           <!-- Address -->
           <div>
             <label for="course-address" class="mb-2 block text-sm font-medium text-gray-700">
-              Address <span class="text-red-600">*</span>
+              Address <span class="text-alert/85">*</span>
             </label>
 
             <div class="relative">
@@ -311,7 +311,7 @@ function handleCancel() {
     </section>
 
     <p class="text-center text-xs text-gray-500">
-      Fields marked <span class="text-red-600">*</span> are required.
+      Fields marked <span class="text-alert/85">*</span> are required.
     </p>
   </div>
 </template>

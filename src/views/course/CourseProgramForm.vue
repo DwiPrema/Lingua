@@ -299,7 +299,7 @@ function handleCancel() {
             <template v-else>
                 <!-- ERROR MESSAGE -->
                 <div v-if="validationMessage || error" role="alert"
-                    class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                    class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-alert">
                     {{ validationMessage || error }}
                 </div>
 

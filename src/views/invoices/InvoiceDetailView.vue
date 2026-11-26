@@ -45,28 +45,28 @@ const invoiceStatus = computed(() => {
             label: "Unpaid",
             description: "Please complete your payment to activate your enrollment.",
             icon: Clock3,
-            classes: "bg-amber-50 text-amber-700 border-amber-200",
-            badge: "bg-amber-100 text-amber-800",
+            classes: "bg-warning/15 text-warning border-warning/60",
+            badge: "bg-warning/30 text-warning",
         },
         pending_verification: {
             label: "Pending Verification",
             description: "Your payment has been submitted and is waiting for verification.",
             icon: Clock3,
-            classes: "bg-blue-50 text-blue-700 border-blue-200",
-            badge: "bg-blue-100 text-blue-800",
+            classes: "bg-secondary/15 text-secondary border-secondary/60",
+            badge: "bg-secondary/30 text-secondary",
         },
         paid: {
             label: "Paid",
             description: "Your payment has been successfully verified.",
             icon: CheckCircle2,
-            classes: "bg-emerald-50 text-emerald-700 border-emerald-200",
-            badge: "bg-emerald-100 text-emerald-800",
+            classes: "bg-success/15 text-success border-success/60",
+            badge: "bg-success/30 text-success",
         },
         cancelled: {
             label: "Cancelled",
             description: "This invoice is no longer available for payment.",
             icon: TriangleAlert,
-            classes: "bg-slate-50 text-slate-600 border-slate-200",
+            classes: "bg-slate-50 text-slate-600 border-text-primary",
             badge: "bg-slate-100 text-slate-700",
         },
     };
@@ -142,15 +142,13 @@ async function loadInvoiceDetail() {
 </script>
 
 <template>
-    <main class="min-h-screen bg-slate-50 py-8 sm:py-10">
+    <main class="min-h-screen py-8 sm:py-10">
         <div class="mx-auto">
 
             <!-- Back Button -->
-            <button
-                type="button"
-                class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-slate-950"
-                @click="router.back()"
-            >
+            <button type="button"
+                class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-text-secondary transition hover:text-text-primary"
+                @click="router.back()">
                 <ArrowLeft :size="17" />
                 Back
             </button>
@@ -163,23 +161,17 @@ async function loadInvoiceDetail() {
             </div>
 
             <!-- Error -->
-            <section
-                v-else-if="pageError"
-                class="rounded-2xl border border-red-200 bg-white p-8 text-center"
-            >
+            <section v-else-if="pageError" class="rounded-2xl border border-red-200 bg-white p-8 text-center">
                 <h1 class="text-xl font-bold text-text-primary">
                     Unable to Load Invoice
                 </h1>
 
-                <p class="mt-2 text-sm text-red-600">
+                <p class="mt-2 text-sm text-alert/85">
                     {{ pageError }}
                 </p>
 
-                <button
-                    type="button"
-                    class="mt-5 rounded-xl bg-text-primary px-5 py-3 text-sm font-semibold text-white"
-                    @click="loadInvoiceDetail"
-                >
+                <button type="button" class="mt-5 rounded-xl bg-text-primary px-5 py-3 text-sm font-semibold text-white"
+                    @click="loadInvoiceDetail">
                     Try Again
                 </button>
             </section>
@@ -187,15 +179,9 @@ async function loadInvoiceDetail() {
             <template v-else-if="invoice">
 
                 <!-- Invoice Header -->
-                <section
-                    class="rounded-2xl border p-6 shadow-sm sm:p-8"
-                    :class="invoiceStatus.classes"
-                >
+                <section class="rounded-2xl border p-6 shadow-sm sm:p-8" :class="invoiceStatus.classes">
                     <div class="flex items-center gap-3">
-                        <component
-                            :is="invoiceStatus.icon"
-                            :size="30"
-                        />
+                        <component :is="invoiceStatus.icon" :size="30" />
 
                         <div>
                             <h1 class="text-2xl font-extrabold">
@@ -208,19 +194,17 @@ async function loadInvoiceDetail() {
                         </div>
                     </div>
 
-                    <span
-                        class="mt-5 inline-flex rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider"
-                        :class="invoiceStatus.badge"
-                    >
+                    <span class="mt-5 inline-flex rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider"
+                        :class="invoiceStatus.badge">
                         {{ invoiceStatus.label }}
                     </span>
                 </section>
 
                 <!-- Invoice Information -->
-                <section class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+                <section class="mt-6 rounded-2xl border border-text-primary bg-accent/80 p-6 sm:p-8">
                     <div class="flex items-start justify-between gap-4">
                         <div>
-                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-text-secondary">
                                 Invoice Number
                             </p>
 
@@ -229,22 +213,22 @@ async function loadInvoiceDetail() {
                             </h2>
                         </div>
 
-                        <div class="rounded-xl bg-accent/15 p-3 text-accent">
+                        <div class="rounded-xl bg-surface p-3 text-accent">
                             <ReceiptText :size="25" />
                         </div>
                     </div>
 
                     <div class="mt-6 grid gap-5 border-t border-slate-100 pt-5 sm:grid-cols-2">
                         <div>
-                            <p class="text-xs text-slate-500">Invoice Date</p>
-                            <p class="mt-1 font-semibold text-slate-800">
+                            <p class="text-xs text-text-secondary">Invoice Date</p>
+                            <p class="mt-1 font-semibold text-text-primary">
                                 {{ formatDate(invoice.created_at) }}
                             </p>
                         </div>
 
                         <div>
-                            <p class="text-xs text-slate-500">Due Date</p>
-                            <p class="mt-1 font-semibold text-slate-800">
+                            <p class="text-xs text-text-secondary">Due Date</p>
+                            <p class="mt-1 font-semibold text-text-primary">
                                 {{ formatDate(invoice.due_at) }}
                             </p>
                         </div>
@@ -252,23 +236,24 @@ async function loadInvoiceDetail() {
                 </section>
 
                 <!-- Course Information -->
-                <section class="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
+                <section class="mt-6 rounded-2xl border border-text-primary bg-white p-6">
                     <h2 class="text-lg font-bold text-text-primary">
                         Course Information
                     </h2>
 
                     <div class="mt-4 flex items-center gap-4">
-                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent">
+                        <div
+                            class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent">
                             <GraduationCap :size="25" />
                         </div>
 
                         <div class="min-w-0">
-                            <p class="text-xs text-slate-500">Course</p>
+                            <p class="text-xs text-text-secondary">Course</p>
                             <p class="font-bold text-text-primary">
                                 {{ course?.name ?? "Course unavailable" }}
                             </p>
 
-                            <p class="mt-1 text-sm text-slate-500">
+                            <p class="mt-1 text-sm text-text-secondary">
                                 Program:
                                 <span class="font-semibold text-slate-700">
                                     {{ program?.name ?? "Program unavailable" }}
@@ -279,7 +264,7 @@ async function loadInvoiceDetail() {
                 </section>
 
                 <!-- Payment Breakdown -->
-                <section class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
+                <section class="mt-6 rounded-2xl border border-text-primary bg-white p-6 sm:p-8">
                     <h2 class="text-lg font-bold text-text-primary">
                         Payment Breakdown
                     </h2>
@@ -287,10 +272,10 @@ async function loadInvoiceDetail() {
                     <div class="mt-5 space-y-4">
                         <div class="flex justify-between gap-4">
                             <div>
-                                <p class="font-medium text-slate-800">
+                                <p class="font-medium text-text-primary">
                                     Registration Fee
                                 </p>
-                                <p class="text-xs text-slate-500">
+                                <p class="text-xs text-text-secondary">
                                     One-time registration fee
                                 </p>
                             </div>
@@ -302,10 +287,10 @@ async function loadInvoiceDetail() {
 
                         <div class="flex justify-between gap-4">
                             <div>
-                                <p class="font-medium text-slate-800">
+                                <p class="font-medium text-text-primary">
                                     Monthly Fee
                                 </p>
-                                <p class="text-xs text-slate-500">
+                                <p class="text-xs text-text-secondary">
                                     First month payment
                                 </p>
                             </div>
@@ -315,10 +300,8 @@ async function loadInvoiceDetail() {
                             </p>
                         </div>
 
-                        <div
-                            v-if="invoice.invoice_type === 'monthly'"
-                            class="flex items-center gap-2 text-sm text-slate-500"
-                        >
+                        <div v-if="invoice.invoice_type === 'monthly'"
+                            class="flex items-center gap-2 text-sm text-text-secondary">
                             <CalendarDays :size="16" />
                             Billing period:
                             {{ formatDate(invoice.billing_period_start) }}
@@ -341,15 +324,10 @@ async function loadInvoiceDetail() {
                 </section>
 
                 <!-- Payment Notice -->
-                <section
-                    v-if="invoice.status === 'unpaid'"
-                    class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5"
-                >
+                <section v-if="invoice.status === 'unpaid'"
+                    class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
                     <div class="flex items-start gap-3">
-                        <Clock3
-                            class="shrink-0 text-amber-700"
-                            :size="20"
-                        />
+                        <Clock3 class="shrink-0 text-amber-700" :size="20" />
 
                         <div>
                             <h3 class="font-bold text-amber-900">
@@ -364,10 +342,8 @@ async function loadInvoiceDetail() {
                     </div>
                 </section>
 
-                <section
-                    v-else-if="invoice.status === 'pending_verification'"
-                    class="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-5"
-                >
+                <section v-else-if="invoice.status === 'pending_verification'"
+                    class="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-5">
                     <h3 class="font-bold text-blue-900">
                         Payment Under Review
                     </h3>
@@ -378,10 +354,8 @@ async function loadInvoiceDetail() {
                     </p>
                 </section>
 
-                <section
-                    v-else-if="invoice.status === 'paid'"
-                    class="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5"
-                >
+                <section v-else-if="invoice.status === 'paid'"
+                    class="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
                     <h3 class="font-bold text-emerald-900">
                         Payment Completed
                     </h3>

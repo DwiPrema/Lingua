@@ -196,7 +196,7 @@ watch(courseId, async () => {
             <section v-else-if="pageError && !course"
                 class="rounded-3xl border border-red-200 bg-white px-6 py-12 text-center">
                 <div class="mx-auto flex h-14 w-14 items-center justify-center
-                 rounded-2xl bg-red-50 text-red-600">
+                 rounded-2xl bg-red-50 text-alert/85">
                     <BookOpen class="h-7 w-7" />
                 </div>
 
@@ -375,7 +375,7 @@ watch(courseId, async () => {
                sm:justify-between">
                         <div class="flex items-start gap-3">
                             <div class="flex h-9 w-9 shrink-0 items-center justify-center
-                       rounded-xl bg-white text-red-600">
+                       rounded-xl bg-white text-alert/85">
                                 <RefreshCw class="h-4 w-4" />
                             </div>
 
@@ -383,14 +383,14 @@ watch(courseId, async () => {
                                 <p class="text-sm font-semibold text-red-800">
                                     Unable to load or update programs
                                 </p>
-                                <p class="mt-1 text-sm text-red-700">
+                                <p class="mt-1 text-sm text-alert">
                                     {{ error }}
                                 </p>
                             </div>
                         </div>
 
                         <button type="button" class="shrink-0 rounded-lg px-3 py-2 text-sm
-                   font-semibold text-red-700 transition
+                   font-semibold text-alert transition
                    hover:bg-red-100" @click="refreshProgram">
                             Try again
                         </button>
@@ -505,7 +505,7 @@ watch(courseId, async () => {
                                     class="inline-flex h-10 w-10 shrink-0
                        items-center justify-center rounded-xl
                        text-slate-400 transition
-                       hover:bg-red-50 hover:text-red-600" @click="removeProgram(program)">
+                       hover:bg-red-50 hover:text-alert/85" @click="removeProgram(program)">
                                     <Trash class="h-4 w-4" />
                                 </button>
                             </div>

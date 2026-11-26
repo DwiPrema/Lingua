@@ -138,7 +138,7 @@ async function handleSave() {
         <!-- Settings Form -->
         <form v-else class="space-y-6" @submit.prevent="handleSave">
             <!-- Feedback -->
-            <div v-if="error" role="alert" class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            <div v-if="error" role="alert" class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-alert">
                 {{ error }}
             </div>
 

@@ -237,7 +237,7 @@ function paymentStatusClass(status: PaymentStatus): string {
     const classes: Record<PaymentStatus, string> = {
         pending_verification: "bg-blue-100 text-blue-700",
         verified: "bg-green-100 text-green-700",
-        rejected: "bg-red-100 text-red-700",
+        rejected: "bg-red-100 text-alert",
     };
 
     return classes[status];
@@ -289,18 +289,18 @@ function invoiceTypeLabel(
             v-else-if="error"
             class="rounded-xl border border-red-200 bg-red-50 p-5"
         >
-            <p class="font-semibold text-red-700">
+            <p class="font-semibold text-alert">
                 Failed to load payment information
             </p>
 
-            <p class="mt-1 text-sm text-red-600">
+            <p class="mt-1 text-sm text-alert/85">
                 {{ error }}
             </p>
 
             <button
                 type="button"
                 @click="emit('retry')"
-                class="mt-3 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white"
+                class="mt-3 rounded-lg bg-alert/85 px-4 py-2 text-sm font-medium text-white"
             >
                 Try Again
             </button>
@@ -547,7 +547,7 @@ function invoiceTypeLabel(
 
                                     <div
                                         v-else-if="proofErrors[payment.id]"
-                                        class="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-600"
+                                        class="mt-3 rounded-lg bg-red-50 p-3 text-sm text-alert/85"
                                     >
                                         {{ proofErrors[payment.id] }}
                                     </div>
@@ -584,11 +584,11 @@ function invoiceTypeLabel(
                                     v-if="payment.status === 'rejected' && payment.rejection_reason"
                                     class="mt-4 rounded-lg border border-red-200 bg-red-50 p-3"
                                 >
-                                    <p class="text-sm font-semibold text-red-700">
+                                    <p class="text-sm font-semibold text-alert">
                                         Rejection Reason
                                     </p>
 
-                                    <p class="mt-1 text-sm text-red-600">
+                                    <p class="mt-1 text-sm text-alert/85">
                                         {{ payment.rejection_reason }}
                                     </p>
                                 </div>
@@ -601,7 +601,7 @@ function invoiceTypeLabel(
                                     <button
                                         type="button"
                                         @click="openRejectForm(payment)"
-                                        class="rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50"
+                                        class="rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-alert/85 hover:bg-red-50"
                                     >
                                         Reject Payment
                                     </button>
@@ -655,7 +655,7 @@ function invoiceTypeLabel(
 
                     <div
                         v-else-if="proofErrors[selectedProof.id]"
-                        class="py-12 text-center text-sm text-red-600"
+                        class="py-12 text-center text-sm text-alert/85"
                     >
                         {{ proofErrors[selectedProof.id] }}
                     </div>
@@ -719,7 +719,7 @@ function invoiceTypeLabel(
                         type="button"
                         @click="submitRejection"
                         :disabled="!rejectionReason.trim()"
-                        class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                        class="rounded-lg bg-alert/85 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         Reject Payment
                     </button>

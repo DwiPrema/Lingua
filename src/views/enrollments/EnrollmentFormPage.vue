@@ -175,11 +175,11 @@ async function submitEnrollment(): Promise<void> {
 </script>
 
 <template>
-    <main class="min-h-screen bg-slate-50 py-10">
+    <main class="min-h-screen py-10">
         <div class="mx-auto">
             <button
                 type="button"
-                class="mb-6 text-sm font-medium text-slate-600 hover:text-slate-950"
+                class="mb-6 text-sm font-medium text-text-secondary hover:text-slate-950"
                 @click="router.back()"
             >
                 ← Back
@@ -219,15 +219,15 @@ async function submitEnrollment(): Promise<void> {
                         Your Enrollment
                     </h1>
 
-                    <p class="mt-3 text-slate-600">
+                    <p class="mt-3 text-text-secondary">
                         Review your selected course and program, then provide
                         your information to get started.
                     </p>
                 </header>
 
                 <!-- Course and program summary -->
-                <section class="rounded-2xl border border-accent/10 bg-white p-6 shadow-sm">
-                    <p class="text-xs font-bold uppercase tracking-widest text-accent">
+                <section class="rounded-2xl border border-text-primary bg-white p-6 shadow-sm">
+                    <p class="text-xs font-bold uppercase tracking-widest text-secondary">
                         Selected course
                     </p>
 
@@ -235,12 +235,12 @@ async function submitEnrollment(): Promise<void> {
                         {{ course?.name }}
                     </h2>
 
-                    <p class="mt-2 text-sm leading-6 text-slate-600">
+                    <p class="mt-2 text-sm leading-6 text-text-secondary">
                         {{ course?.description || 'No course description available.' }}
                     </p>
 
-                    <div class="mt-5 rounded-xl bg-accent/25 p-4">
-                        <p class="text-xs font-semibold text-accent">
+                    <div class="mt-5 rounded-xl bg-secondary/25 p-4">
+                        <p class="text-xs font-semibold text-secondary">
                             Selected program
                         </p>
                         <p class="mt-1 font-bold text-text-primary">
@@ -249,7 +249,7 @@ async function submitEnrollment(): Promise<void> {
                     </div>
 
                     <div class="mt-4 grid gap-4 sm:grid-cols-2">
-                        <div class="rounded-xl border border-slate-200 p-4">
+                        <div class="rounded-xl border border-text-primary p-4">
                             <p class="text-sm text-slate-500">
                                 Registration fee
                             </p>
@@ -258,7 +258,7 @@ async function submitEnrollment(): Promise<void> {
                             </p>
                         </div>
 
-                        <div class="rounded-xl border border-slate-200 p-4">
+                        <div class="rounded-xl border border-text-primary p-4">
                             <p class="text-sm text-slate-500">
                                 Monthly fee
                             </p>
@@ -271,7 +271,7 @@ async function submitEnrollment(): Promise<void> {
 
                 <!-- Student form -->
                 <form
-                    class="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8"
+                    class="mt-8 rounded-2xl border border-text-primary bg-surface p-6 shadow-sm sm:p-8"
                     @submit.prevent="reviewEnrollment"
                 >
                     <div class="mb-7">
@@ -375,7 +375,7 @@ async function submitEnrollment(): Promise<void> {
                     <p
                         v-if="formError"
                         role="alert"
-                        class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+                        class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-alert"
                     >
                         {{ formError }}
                     </p>
@@ -416,7 +416,7 @@ async function submitEnrollment(): Promise<void> {
                     Confirm Enrollment
                 </h2>
 
-                <p class="mt-2 text-sm leading-6 text-slate-600">
+                <p class="mt-2 text-sm leading-6 text-text-secondary">
                     Please make sure your information is correct before
                     submitting.
                 </p>

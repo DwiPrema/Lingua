@@ -208,7 +208,7 @@ watch(studentId, (newId, oldId) => {
     <main class="min-h-screen py-8 sm:py-10">
         <div class="mx-auto">
             <!-- Page header -->
-            <header class="sticky top-0 flex flex-col justify-between gap-5 sm:flex-row sm:items-end bg-surface py-5 border-b border-text-primary m-0">
+            <header class="sticky top-0 z-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end bg-surface py-5 border-b border-text-primary m-0">
                 <div>
                     <button type="button" class="mb-5 text-sm font-medium text-slate-500 hover:text-primary"
                         @click="router.push('/')">
@@ -457,7 +457,7 @@ watch(studentId, (newId, oldId) => {
             </section>
 
             <p v-if="error && enrollments.length > 0" role="alert"
-                class="mt-5 rounded-xl border border-accent/20 bg-red-50 p-4 text-sm text-red-700">
+                class="mt-5 rounded-xl border border-accent/20 bg-red-50 p-4 text-sm text-alert">
                 {{ error }}
             </p>
         </div>

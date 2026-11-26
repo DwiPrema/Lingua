@@ -177,7 +177,7 @@ onUnmounted(() => {
                                     class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-center text-2xl font-semibold tracking-[0.5em] outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
                             </div>
 
-                            <p v-if="authStore.error" class="mt-2 text-sm text-red-600" role="alert" aria-live="polite">
+                            <p v-if="authStore.error" class="mt-2 text-sm text-alert/85" role="alert" aria-live="polite">
                                 {{ authStore.error }}
                             </p>
 

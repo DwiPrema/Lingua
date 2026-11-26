@@ -355,7 +355,7 @@ onMounted(() => {
                 </div>
 
                 <button type="button" @click="proofFile = null; if (fileInput) fileInput.value = ''"
-                    class="text-sm text-red-500 hover:text-red-600">
+                    class="text-sm text-red-500 hover:text-alert/85">
                     Remove
                 </button>
             </div>
@@ -378,7 +378,7 @@ onMounted(() => {
         </section>
 
         <!-- Error Message -->
-        <div v-if="errorMessage" role="alert" class="rounded-lg bg-red-50 p-3 text-sm text-red-600">
+        <div v-if="errorMessage" role="alert" class="rounded-lg bg-red-50 p-3 text-sm text-alert/85">
             {{ errorMessage }}
         </div>
 

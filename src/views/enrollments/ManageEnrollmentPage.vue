@@ -273,7 +273,7 @@ watch(courseId, (newId, oldId) => {
 
                 <!-- Action error -->
                 <div v-if="actionError" role="alert" class="flex items-start gap-2 rounded-xl border
-                           border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                           border-red-200 bg-red-50 p-4 text-sm text-alert">
                     <CircleAlert class="mt-0.5 size-5 shrink-0" />
                     <p class="flex-1">{{ actionError }}</p>
 
@@ -399,7 +399,7 @@ watch(courseId, (newId, oldId) => {
                             <div v-if="rejectingEnrollmentId === enrollment.id" class="space-y-3 rounded-xl border border-red-200
                                        bg-red-50/50 p-4">
                                 <div class="flex items-center gap-2">
-                                    <MessageSquareWarning class="size-5 text-red-600" />
+                                    <MessageSquareWarning class="size-5 text-alert/85" />
 
                                     <h4 class="font-semibold text-text-primary">
                                         Rejection reason
@@ -429,9 +429,9 @@ watch(courseId, (newId, oldId) => {
                                     <button type="button" :disabled="processingId === enrollment.id ||
                                         !rejectionReason.trim()
                                         " class="inline-flex items-center gap-2
-                                               rounded-xl bg-red-600 px-3 py-2
+                                               rounded-xl bg-alert/85 px-3 py-2
                                                text-sm font-semibold text-white
-                                               hover:bg-red-700
+                                               hover:bg-alert
                                                disabled:cursor-not-allowed
                                                disabled:opacity-50" @click="rejectEnrollment(enrollment)">
                                         <RefreshCw v-if="processingId === enrollment.id" class="size-4 animate-spin" />
@@ -447,7 +447,7 @@ watch(courseId, (newId, oldId) => {
                                 <button type="button" :disabled="processingId === enrollment.id" class="inline-flex items-center gap-2
                                            rounded-xl border border-red-200
                                            bg-white px-4 py-2.5 text-sm
-                                           font-semibold text-red-600
+                                           font-semibold text-alert/85
                                            transition hover:bg-red-50
                                            disabled:cursor-not-allowed
                                            disabled:opacity-50" @click="openRejectForm(enrollment)">

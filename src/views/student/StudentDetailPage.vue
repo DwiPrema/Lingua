@@ -139,7 +139,7 @@ const statusClass = computed(() => {
             return "bg-blue-100 text-blue-700";
 
         case "rejected":
-            return "bg-red-100 text-red-700";
+            return "bg-red-100 text-alert";
 
         case "pending":
         default:
@@ -207,15 +207,15 @@ const enrolledDate = computed(() =>
         <!-- ================================================= -->
 
         <div v-else-if="error" class="rounded-xl border border-red-200 bg-red-50 p-6">
-            <h2 class="font-semibold text-red-700">
+            <h2 class="font-semibold text-alert">
                 Failed to Load Student
             </h2>
 
-            <p class="mt-2 text-sm text-red-600">
+            <p class="mt-2 text-sm text-alert/85">
                 {{ error }}
             </p>
 
-            <button @click="loadEnrollment" class="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm text-white">
+            <button @click="loadEnrollment" class="mt-4 rounded-lg bg-alert/85 px-4 py-2 text-sm text-white">
                 Try Again
             </button>
         </div>
@@ -454,11 +454,11 @@ const enrolledDate = computed(() =>
 
                     <div v-if="enrollment.status === 'rejected' && enrollment.rejection_reason"
                         class="mt-4 rounded-lg border border-red-200 bg-red-50 p-4">
-                        <p class="text-sm font-semibold text-red-700">
+                        <p class="text-sm font-semibold text-alert">
                             Rejection Reason
                         </p>
 
-                        <p class="mt-1 text-sm text-red-600">
+                        <p class="mt-1 text-sm text-alert/85">
                             {{ enrollment.rejection_reason }}
                         </p>
                     </div>

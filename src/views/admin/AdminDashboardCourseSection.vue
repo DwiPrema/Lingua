@@ -103,7 +103,7 @@ async function refreshDashboard() {
                 {{ error }}
             </p>
 
-            <button type="button" class="mt-5 rounded-xl bg-red-600 px-4 py-2.5
+            <button type="button" class="mt-5 rounded-xl bg-alert/85 px-4 py-2.5
                    text-sm font-semibold text-white
                    hover:bg-alert" @click="refreshDashboard">
                 Try Again
@@ -177,7 +177,7 @@ async function refreshDashboard() {
         </div>
 
         <!-- ERROR WHEN STALE DATA EXISTS -->
-        <p v-if="error && courses.length > 0" class="mt-4 text-sm text-red-600" role="alert">
+        <p v-if="error && courses.length > 0" class="mt-4 text-sm text-alert/85" role="alert">
             Update data failed: {{ error }}
         </p>
     </section>
