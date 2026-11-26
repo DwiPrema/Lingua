@@ -195,14 +195,14 @@ async function submitEnrollment(): Promise<void> {
                 v-else-if="pageError"
                 class="rounded-2xl border border-red-200 bg-white p-8 text-center"
             >
-                <h1 class="text-xl font-bold text-slate-900">
+                <h1 class="text-xl font-bold text-text-primary">
                     Unable to load enrollment
                 </h1>
                 <p class="mt-2 text-sm text-alert">{{ pageError }}</p>
 
                 <button
                     type="button"
-                    class="mt-5 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white"
+                    class="mt-5 rounded-xl bg-text-primary px-5 py-3 text-sm font-semibold text-white"
                     @click="loadEnrollmentData"
                 >
                     Try Again
@@ -215,7 +215,7 @@ async function submitEnrollment(): Promise<void> {
                         Student enrollment
                     </p>
 
-                    <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                    <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-text-primary sm:text-4xl">
                         Your Enrollment
                     </h1>
 
@@ -231,7 +231,7 @@ async function submitEnrollment(): Promise<void> {
                         Selected course
                     </p>
 
-                    <h2 class="mt-2 text-2xl font-bold text-slate-900">
+                    <h2 class="mt-2 text-2xl font-bold text-text-primary">
                         {{ course?.name }}
                     </h2>
 
@@ -243,7 +243,7 @@ async function submitEnrollment(): Promise<void> {
                         <p class="text-xs font-semibold text-accent">
                             Selected program
                         </p>
-                        <p class="mt-1 font-bold text-slate-900">
+                        <p class="mt-1 font-bold text-text-primary">
                             {{ program?.name }}
                         </p>
                     </div>
@@ -253,7 +253,7 @@ async function submitEnrollment(): Promise<void> {
                             <p class="text-sm text-slate-500">
                                 Registration fee
                             </p>
-                            <p class="mt-2 text-lg font-bold text-slate-900">
+                            <p class="mt-2 text-lg font-bold text-text-primary">
                                 {{ formatCurrency(registrationFee) }}
                             </p>
                         </div>
@@ -262,7 +262,7 @@ async function submitEnrollment(): Promise<void> {
                             <p class="text-sm text-slate-500">
                                 Monthly fee
                             </p>
-                            <p class="mt-2 text-lg font-bold text-slate-900">
+                            <p class="mt-2 text-lg font-bold text-text-primary">
                                 {{ formatCurrency(monthlyFee) }}
                             </p>
                         </div>
@@ -275,7 +275,7 @@ async function submitEnrollment(): Promise<void> {
                     @submit.prevent="reviewEnrollment"
                 >
                     <div class="mb-7">
-                        <h2 class="text-xl font-bold text-slate-900">
+                        <h2 class="text-xl font-bold text-text-primary">
                             Personal Information
                         </h2>
                         <p class="mt-2 text-sm text-slate-500">
@@ -412,7 +412,7 @@ async function submitEnrollment(): Promise<void> {
             >
                 <div class="mx-auto mb-5 h-1.5 w-12 rounded-full bg-slate-200 sm:hidden" />
 
-                <h2 id="confirmation-title" class="text-2xl font-bold text-slate-900">
+                <h2 id="confirmation-title" class="text-2xl font-bold text-text-primary">
                     Confirm Enrollment
                 </h2>
 
@@ -424,31 +424,31 @@ async function submitEnrollment(): Promise<void> {
                 <dl class="mt-6 divide-y divide-slate-100">
                     <div class="flex justify-between gap-4 py-3">
                         <dt class="text-sm text-slate-500">Full name</dt>
-                        <dd class="text-right text-sm font-semibold text-slate-900">
+                        <dd class="text-right text-sm font-semibold text-text-primary">
                             {{ form.fullname }}
                         </dd>
                     </div>
                     <div class="flex justify-between gap-4 py-3">
                         <dt class="text-sm text-slate-500">Course</dt>
-                        <dd class="text-right text-sm font-semibold text-slate-900">
+                        <dd class="text-right text-sm font-semibold text-text-primary">
                             {{ course?.name }}
                         </dd>
                     </div>
                     <div class="flex justify-between gap-4 py-3">
                         <dt class="text-sm text-slate-500">Program</dt>
-                        <dd class="text-right text-sm font-semibold text-slate-900">
+                        <dd class="text-right text-sm font-semibold text-text-primary">
                             {{ program?.name }}
                         </dd>
                     </div>
                     <div class="flex justify-between gap-4 py-3">
                         <dt class="text-sm text-slate-500">Registration fee</dt>
-                        <dd class="text-right text-sm font-semibold text-slate-900">
+                        <dd class="text-right text-sm font-semibold text-text-primary">
                             {{ formatCurrency(registrationFee) }}
                         </dd>
                     </div>
                     <div class="flex justify-between gap-4 py-3">
                         <dt class="text-sm text-slate-500">Monthly fee</dt>
-                        <dd class="text-right text-sm font-semibold text-slate-900">
+                        <dd class="text-right text-sm font-semibold text-text-primary">
                             {{ formatCurrency(monthlyFee) }}
                         </dd>
                     </div>

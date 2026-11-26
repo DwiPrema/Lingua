@@ -167,7 +167,7 @@ async function loadInvoiceDetail() {
                 v-else-if="pageError"
                 class="rounded-2xl border border-red-200 bg-white p-8 text-center"
             >
-                <h1 class="text-xl font-bold text-slate-900">
+                <h1 class="text-xl font-bold text-text-primary">
                     Unable to Load Invoice
                 </h1>
 
@@ -177,7 +177,7 @@ async function loadInvoiceDetail() {
 
                 <button
                     type="button"
-                    class="mt-5 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white"
+                    class="mt-5 rounded-xl bg-text-primary px-5 py-3 text-sm font-semibold text-white"
                     @click="loadInvoiceDetail"
                 >
                     Try Again
@@ -224,7 +224,7 @@ async function loadInvoiceDetail() {
                                 Invoice Number
                             </p>
 
-                            <h2 class="mt-2 break-all text-lg font-bold text-slate-900">
+                            <h2 class="mt-2 break-all text-lg font-bold text-text-primary">
                                 {{ invoice.invoice_number }}
                             </h2>
                         </div>
@@ -253,7 +253,7 @@ async function loadInvoiceDetail() {
 
                 <!-- Course Information -->
                 <section class="mt-6 rounded-2xl border border-slate-200 bg-white p-6">
-                    <h2 class="text-lg font-bold text-slate-900">
+                    <h2 class="text-lg font-bold text-text-primary">
                         Course Information
                     </h2>
 
@@ -264,7 +264,7 @@ async function loadInvoiceDetail() {
 
                         <div class="min-w-0">
                             <p class="text-xs text-slate-500">Course</p>
-                            <p class="font-bold text-slate-900">
+                            <p class="font-bold text-text-primary">
                                 {{ course?.name ?? "Course unavailable" }}
                             </p>
 
@@ -280,7 +280,7 @@ async function loadInvoiceDetail() {
 
                 <!-- Payment Breakdown -->
                 <section class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 sm:p-8">
-                    <h2 class="text-lg font-bold text-slate-900">
+                    <h2 class="text-lg font-bold text-text-primary">
                         Payment Breakdown
                     </h2>
 
@@ -295,7 +295,7 @@ async function loadInvoiceDetail() {
                                 </p>
                             </div>
 
-                            <p class="font-semibold text-slate-900">
+                            <p class="font-semibold text-text-primary">
                                 {{ formatCurrency(invoice.registration_fee) }}
                             </p>
                         </div>
@@ -310,7 +310,7 @@ async function loadInvoiceDetail() {
                                 </p>
                             </div>
 
-                            <p class="font-semibold text-slate-900">
+                            <p class="font-semibold text-text-primary">
                                 {{ formatCurrency(invoice.monthly_fee) }}
                             </p>
                         </div>
@@ -328,11 +328,11 @@ async function loadInvoiceDetail() {
 
                         <div class="border-t border-dashed border-slate-300 pt-5">
                             <div class="flex items-center justify-between gap-4">
-                                <p class="font-bold text-slate-900">
+                                <p class="font-bold text-text-primary">
                                     Total Amount
                                 </p>
 
-                                <p class="text-2xl font-extrabold text-slate-900">
+                                <p class="text-2xl font-extrabold text-text-primary">
                                     {{ formatCurrency(invoice.total_amount) }}
                                 </p>
                             </div>

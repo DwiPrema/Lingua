@@ -73,8 +73,8 @@ const statuses: Record<StatusEnrollmentType, StatusInfo> = {
         description:
             'Your enrollment has been submitted and is waiting for the course administrator to review.',
         icon: Clock3,
-        classes: 'bg-amber-50 text-amber-700 border-amber-200',
-        badge: 'bg-amber-100 text-amber-800',
+        classes: 'bg-accent/15 text-accent border-accent/70',
+        badge: 'bg-accent/15 text-accent',
     },
 
     [StatusEnrollments.APPROVED]: {
@@ -82,8 +82,8 @@ const statuses: Record<StatusEnrollmentType, StatusInfo> = {
         description:
             'Your enrollment has been approved by the course administrator. To activate your enrollment, please finish the payment below!',
         icon: CheckCircle2,
-        classes: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        badge: 'bg-emerald-100 text-emerald-800',
+        classes: 'bg-success/15 text-success border-success/70',
+        badge: 'bg-success/15 text-success',
     },
 
     [StatusEnrollments.REJECTED]: {
@@ -91,8 +91,8 @@ const statuses: Record<StatusEnrollmentType, StatusInfo> = {
         description:
             'Unfortunately, your enrollment was rejected by the course administrator.',
         icon: CircleX,
-        classes: 'bg-red-50 text-red-700 border-red-200',
-        badge: 'bg-red-100 text-red-800',
+        classes: 'bg-alert/15 text-alert border-alert/70',
+        badge: 'bg-alert/15 text-alert',
     },
 
     [StatusEnrollments.ACTIVE]: {
@@ -100,8 +100,8 @@ const statuses: Record<StatusEnrollmentType, StatusInfo> = {
         description:
             'You are now an active student in this course.',
         icon: BadgeCheck,
-        classes: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-        badge: 'bg-indigo-100 text-indigo-800',
+        classes: 'bg-primary/15 text-primary border-primary/70',
+        badge: 'bg-primary/15 text-primary',
     },
 }
 
@@ -329,10 +329,6 @@ async function loadPaymentAttempts(
     }
 }
 
-// =====================================================
-// CANCEL ENROLLMENT
-// =====================================================
-
 async function cancelEnrollment(): Promise<void> {
     const currentEnrollment = enrollment.value
 
@@ -386,10 +382,10 @@ function viewMyCourse(): void {
 
 
 <template>
-    <main class="min-h-screen bg-slate-50 py-8 sm:py-10">
+    <main class="min-h-screen py-8 sm:py-10">
         <div class="mx-auto">
             <button type="button"
-                class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-slate-600 transition hover:text-slate-950"
+                class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-text-secondary transition hover:text-text-primary"
                 @click="router.back()">
                 <span aria-hidden="true">←</span>
                 Back
@@ -404,14 +400,14 @@ function viewMyCourse(): void {
 
             <!-- Error -->
             <section v-else-if="pageError && !enrollment"
-                class="rounded-2xl border border-red-200 bg-white p-8 text-center">
-                <h1 class="text-xl font-bold text-slate-900">
+                class="rounded-2xl border border-red-200 bg-surface p-8 text-center">
+                <h1 class="text-xl font-bold text-text-primary">
                     Unable to Load Enrollment
                 </h1>
                 <p class="mt-2 text-sm text-alert">{{ pageError }}</p>
 
                 <button type="button"
-                    class="mt-5 rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800"
+                    class="mt-5 rounded-xl bg-text-primary px-5 py-3 text-sm font-semibold text-surface hover:bg-text-primary"
                     @click="loadEnrollmentDetail">
                     Try Again
                 </button>
@@ -420,7 +416,7 @@ function viewMyCourse(): void {
             <template v-else-if="enrollment">
                 <!-- Status summary -->
                 <section class="rounded-2xl border p-6 text-center shadow-sm sm:p-9" :class="statusInfo.classes">
-                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/80">
+                    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-surface/80">
                         <component :is="statusInfo.icon" :size="32" :stroke-width="2" aria-hidden="true" />
                     </div>
 
@@ -435,25 +431,20 @@ function viewMyCourse(): void {
                     <p class="mx-auto mt-3 max-w-xl text-sm leading-6 opacity-90" v-if="statusInfo.rejectionMessage">
                         Rejection reason: {{ statusInfo.rejectionMessage }}
                     </p>
-
-                    <span class="mt-5 inline-flex rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wider"
-                        :class="statusInfo.badge">
-                        {{ status }}
-                    </span>
                 </section>
 
                 <!-- INVOICE SUMMARY -->
                 <section v-if="status === 'approved' || status === 'active'" class="mt-8">
                     <div class="flex items-center justify-between gap-3">
-                        <h2 class="text-xl font-bold text-slate-900">
+                        <h2 class="text-xl font-bold text-text-primary">
                             Payment Information
                         </h2>
 
                         <span v-if="invoice" class="rounded-full px-3 py-1 text-xs font-bold uppercase" :class="{
-                            'bg-amber-100 text-amber-800': invoice.status === 'unpaid',
-                            'bg-blue-100 text-blue-800': invoice.status === 'pending_verification',
-                            'bg-emerald-100 text-emerald-800': invoice.status === 'paid',
-                            'bg-slate-100 text-slate-700': invoice.status === 'cancelled',
+                            'bg-warning/15 text-warning': invoice.status === 'unpaid',
+                            'bg-secondary/15 text-secondary': invoice.status === 'pending_verification',
+                            'bg-success/15 text-success': invoice.status === 'paid',
+                            'bg-slate-100 text-text-secondary': invoice.status === 'cancelled',
                         }">
                             Invoice: {{ invoice.status.replaceAll('_', ' ') }}
                         </span>
@@ -461,23 +452,23 @@ function viewMyCourse(): void {
 
                     <!-- Loading / Error / Empty -->
                     <div v-if="invoiceError"
-                        class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                        class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-alert">
                         {{ invoiceError }}
                     </div>
 
                     <div v-else-if="invoiceLoading"
-                        class="mt-4 rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-600">
+                        class="mt-4 rounded-2xl border border-slate-200 bg-surface p-5 text-sm text-text-secondary">
                         Loading invoice...
                     </div>
 
-                    <div v-else-if="!invoice" class="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+                    <div v-else-if="!invoice" class="mt-4 rounded-2xl border border-slate-200 bg-surface p-5">
                         <p class="text-sm text-slate-600">
                             No invoice is available for this enrollment yet.
                         </p>
                     </div>
 
                     <!-- Invoice Card -->
-                    <div v-else class="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div v-else class="mt-4 overflow-hidden rounded-2xl border border-text-primary bg-surface shadow-sm">
                         <div class="p-5 sm:p-6">
                             <div class="flex items-start justify-between gap-3">
                                 <div>
@@ -485,12 +476,12 @@ function viewMyCourse(): void {
                                         Invoice Number
                                     </p>
 
-                                    <p class="mt-1 break-all font-bold text-slate-900">
+                                    <p class="mt-1 break-all font-bold text-text-primary">
                                         {{ invoice.invoice_number }}
                                     </p>
                                 </div>
 
-                                <div class="rounded-xl bg-accent/15 p-3 text-accent">
+                                <div class="rounded-xl bg-primary/15 p-3 text-primary">
                                     <ReceiptText :size="22" />
                                 </div>
                             </div>
@@ -501,7 +492,7 @@ function viewMyCourse(): void {
                                         Registration Fee
                                     </span>
 
-                                    <span class="font-semibold text-slate-800">
+                                    <span class="font-semibold text-text-primary">
                                         {{ formatCurrency(invoice.registration_fee) }}
                                     </span>
                                 </div>
@@ -511,18 +502,18 @@ function viewMyCourse(): void {
                                         First Month Fee
                                     </span>
 
-                                    <span class="font-semibold text-slate-800">
+                                    <span class="font-semibold text-text-primary">
                                         {{ formatCurrency(invoice.monthly_fee) }}
                                     </span>
                                 </div>
 
                                 <div class="border-t border-slate-100 pt-4">
                                     <div class="flex items-center justify-between gap-3">
-                                        <span class="font-bold text-slate-900">
+                                        <span class="font-bold text-text-primary">
                                             Total Amount
                                         </span>
 
-                                        <span class="text-xl font-extrabold text-slate-900">
+                                        <span class="text-xl font-extrabold text-text-primary">
                                             {{ formatCurrency(invoice.total_amount) }}
                                         </span>
                                     </div>
@@ -548,7 +539,7 @@ function viewMyCourse(): void {
                             </p>
 
                             <div v-else-if="paymentError"
-                                class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                                class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-alert">
                                 <p role="alert">{{ paymentError }}</p>
                                 <button type="button"
                                     class="mt-3 font-semibold underline"
@@ -603,7 +594,7 @@ function viewMyCourse(): void {
                                 View Invoice Details
                             </button>
                             <button type="button" v-if="canStartPayment"
-                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 font-semibold text-white transition hover:opacity-90"
+                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3 font-semibold text-surface transition hover:opacity-90"
                                 @click="router.push({
                                     name: 'student.payment',
                                     params: { invoiceId: invoice.id }
@@ -617,11 +608,11 @@ function viewMyCourse(): void {
 
                 <!-- Course information -->
                 <section class="mt-8">
-                    <h2 class="text-xl font-bold text-slate-900">
+                    <h2 class="text-xl font-bold text-text-primary">
                         Course Information
                     </h2>
 
-                    <div class="mt-4 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+                    <div class="mt-4 rounded-2xl border border-text-primary bg-surface p-5 sm:p-6">
                         <div class="flex items-center gap-4">
                             <div
                                 class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent/25 text-accent">
@@ -632,7 +623,7 @@ function viewMyCourse(): void {
                                 <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">
                                     Course
                                 </p>
-                                <h3 class="mt-1 text-lg font-bold text-slate-900">
+                                <h3 class="mt-1 text-lg font-bold text-text-primary">
                                     {{ course?.name ?? 'Course unavailable' }}
                                 </h3>
 
@@ -649,27 +640,27 @@ function viewMyCourse(): void {
 
                 <!-- Fee information -->
                 <section class="mt-8">
-                    <h2 class="text-xl font-bold text-slate-900">
+                    <h2 class="text-xl font-bold text-text-primary">
                         Fee Information
                     </h2>
 
                     <div class="mt-4 grid gap-4 sm:grid-cols-2">
-                        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+                        <div class="rounded-2xl border border-text-primary bg-surface p-5">
                             <div class="flex items-center gap-2 text-sm text-slate-500">
                                 <ReceiptText :size="16" />
                                 Registration Fee
                             </div>
-                            <p class="mt-3 text-xl font-bold text-slate-900">
+                            <p class="mt-3 text-xl font-bold text-text-primary">
                                 {{ formatCurrency(program?.registration_fee) }}
                             </p>
                         </div>
 
-                        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+                        <div class="rounded-2xl border border-text-primary bg-surface p-5">
                             <div class="flex items-center gap-2 text-sm text-slate-500">
                                 <CalendarDays :size="16" />
                                 Monthly Fee
                             </div>
-                            <p class="mt-3 text-xl font-bold text-slate-900">
+                            <p class="mt-3 text-xl font-bold text-text-primary">
                                 {{ formatCurrency(program?.monthly_fee) }}
                             </p>
                         </div>
@@ -678,52 +669,52 @@ function viewMyCourse(): void {
 
                 <!-- Student information -->
                 <section class="mt-8">
-                    <h2 class="text-xl font-bold text-slate-900">
+                    <h2 class="text-xl font-bold text-text-primary">
                         Student Information
                     </h2>
 
                     <div class="mt-4 grid gap-4 sm:grid-cols-2">
-                        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+                        <div class="rounded-2xl border border-text-primary bg-surface p-5">
                             <p class="text-xs font-medium uppercase tracking-wider text-slate-500">
                                 Full Name
                             </p>
-                            <p class="mt-2 wrap-break-word font-semibold text-slate-900">
+                            <p class="mt-2 wrap-break-word font-semibold text-text-primary">
                                 {{ enrollment.fullname }}
                             </p>
                         </div>
 
-                        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+                        <div class="rounded-2xl border border-text-primary bg-surface p-5">
                             <p class="text-xs font-medium uppercase tracking-wider text-slate-500">
                                 Phone Number
                             </p>
-                            <p class="mt-2 wrap-break-word font-semibold text-slate-900">
+                            <p class="mt-2 wrap-break-word font-semibold text-text-primary">
                                 {{ enrollment.phone }}
                             </p>
                         </div>
 
-                        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+                        <div class="rounded-2xl border border-text-primary bg-surface p-5">
                             <p class="text-xs font-medium uppercase tracking-wider text-slate-500">
                                 Education Level
                             </p>
-                            <p class="mt-2 wrap-break-word font-semibold text-slate-900">
+                            <p class="mt-2 wrap-break-word font-semibold text-text-primary">
                                 {{ enrollment.education_level }}
                             </p>
                         </div>
 
-                        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+                        <div class="rounded-2xl border border-text-primary bg-surface p-5">
                             <p class="text-xs font-medium uppercase tracking-wider text-slate-500">
                                 School / Institution
                             </p>
-                            <p class="mt-2 wrap-break-word font-semibold text-slate-900">
+                            <p class="mt-2 wrap-break-word font-semibold text-text-primary">
                                 {{ enrollment.school_name }}
                             </p>
                         </div>
 
-                        <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:col-span-2">
+                        <div class="rounded-2xl border border-text-primary bg-surface p-5 sm:col-span-2">
                             <p class="text-xs font-medium uppercase tracking-wider text-slate-500">
                                 Address
                             </p>
-                            <p class="mt-2 whitespace-pre-line wrap-break-word font-semibold leading-6 text-slate-900">
+                            <p class="mt-2 surfacespace-pre-line wrap-break-word font-semibold leading-6 text-text-primary">
                                 {{ enrollment.address }}
                             </p>
                         </div>
@@ -732,11 +723,11 @@ function viewMyCourse(): void {
 
                 <!-- Enrollment metadata -->
                 <section class="mt-8">
-                    <h2 class="text-xl font-bold text-slate-900">
+                    <h2 class="text-xl font-bold text-text-primary">
                         Enrollment Information
                     </h2>
 
-                    <div class="mt-4 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+                    <div class="mt-4 rounded-2xl border border-text-primary bg-surface p-5 sm:p-6">
                         <div class="flex items-start gap-3">
                             <div class="rounded-xl bg-accent/25 p-3 text-accent">
                                 <Ticket />
@@ -746,7 +737,7 @@ function viewMyCourse(): void {
                                 <p class="text-xs font-medium uppercase tracking-wider text-slate-500">
                                     Enrollment ID
                                 </p>
-                                <p class="mt-1 break-all font-semibold text-slate-900">
+                                <p class="mt-1 break-all font-semibold text-text-primary">
                                     {{ enrollment.id }}
                                 </p>
                             </div>
@@ -755,14 +746,14 @@ function viewMyCourse(): void {
                         <div class="mt-5 grid gap-4 border-t border-slate-100 pt-5 sm:grid-cols-2">
                             <div>
                                 <p class="text-xs text-slate-500">Submitted</p>
-                                <p class="mt-1 text-sm font-medium text-slate-800">
+                                <p class="mt-1 text-sm font-medium text-text-primary">
                                     {{ formatDate(enrollment.created_at) }}
                                 </p>
                             </div>
 
                             <div>
                                 <p class="text-xs text-slate-500">Enrolled At</p>
-                                <p class="mt-1 text-sm font-medium text-slate-800">
+                                <p class="mt-1 text-sm font-medium text-text-primary">
                                     {{ formatDate(enrollment.enrolled_at) }}
                                 </p>
                             </div>
@@ -772,14 +763,14 @@ function viewMyCourse(): void {
 
                 <!-- Feedback if an action fails -->
                 <p v-if="pageError" role="alert"
-                    class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                    class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-alert">
                     {{ pageError }}
                 </p>
 
                 <!-- Status-specific actions -->
                 <section class="mt-8 space-y-4">
                     <button v-if="status === 'active'" type="button"
-                        class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3.5 font-semibold text-white transition hover:bg-accent/90"
+                        class="flex w-full items-center justify-center gap-2 rounded-xl bg-accent px-5 py-3.5 font-semibold text-surface transition hover:bg-accent/90"
                         @click="viewMyCourse">
                         <BookOpen :size="16" />
                         View My Course
@@ -797,13 +788,13 @@ function viewMyCourse(): void {
                     </div>
 
                     <button v-if="status === 'pending'" type="button"
-                        class="flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-white px-5 py-3.5 font-semibold text-red-700 transition hover:bg-red-50 disabled:opacity-60"
+                        class="flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-surface px-5 py-3.5 font-semibold text-alert transition hover:bg-red-50 disabled:opacity-60"
                         :disabled="cancelling" @click="showCancelConfirmation = true">
                         Cancel Enrollment
                     </button>
 
                     <button type="button"
-                        class="w-full rounded-xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-700 hover:bg-slate-50"
+                        class="w-full rounded-xl border border-slate-300 bg-surface px-5 py-3 font-semibold text-slate-700 hover:bg-slate-50"
                         @click="router.back()">
                         Back to Previous Page
                     </button>
@@ -816,12 +807,12 @@ function viewMyCourse(): void {
             class="fixed inset-0 z-50 flex items-end justify-center bg-slate-950/50 p-0 sm:items-center sm:p-4"
             @click.self="showCancelConfirmation = false">
             <section role="dialog" aria-modal="true" aria-labelledby="cancel-title"
-                class="w-full max-w-md rounded-t-3xl bg-white p-6 shadow-2xl sm:rounded-2xl">
+                class="w-full max-w-md rounded-t-3xl bg-surface p-6 shadow-2xl sm:rounded-2xl">
                 <div class="flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-alert">
                     <TriangleAlert />
                 </div>
 
-                <h2 id="cancel-title" class="mt-4 text-xl font-bold text-slate-900">
+                <h2 id="cancel-title" class="mt-4 text-xl font-bold text-text-primary">
                     Cancel Enrollment?
                 </h2>
 
@@ -839,7 +830,7 @@ function viewMyCourse(): void {
                     </button>
 
                     <button type="button"
-                        class="flex-1 rounded-xl bg-alert px-4 py-3 font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+                        class="flex-1 rounded-xl bg-alert px-4 py-3 font-semibold text-surface hover:bg-alert disabled:opacity-60"
                         :disabled="cancelling" @click="cancelEnrollment">
                         {{ cancelling ? 'Cancelling...' : 'Yes, Cancel' }}
                     </button>

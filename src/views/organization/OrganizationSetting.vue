@@ -100,7 +100,7 @@ async function handleSave() {
                 &larr; Back to Dashboard
             </button>
 
-            <h1 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            <h1 class="text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">
                 Organization Settings
             </h1>
 
@@ -120,7 +120,7 @@ async function handleSave() {
 
         <!-- Load Error -->
         <section v-else-if="error && !organization" class="rounded-2xl border border-red-200 bg-white p-8">
-            <h2 class="font-semibold text-slate-900">
+            <h2 class="font-semibold text-text-primary">
                 Unable to Load Organization
             </h2>
 
@@ -156,7 +156,7 @@ async function handleSave() {
                         </div>
 
                         <div>
-                            <h2 class="font-semibold text-slate-900">
+                            <h2 class="font-semibold text-text-primary">
                                 Organization Information
                             </h2>
                             <p class="mt-1 text-sm text-slate-500">
@@ -186,7 +186,7 @@ async function handleSave() {
                         </div>
 
                         <div>
-                            <h2 class="font-semibold text-slate-900">
+                            <h2 class="font-semibold text-text-primary">
                                 Payment Information
                             </h2>
                             <p class="mt-1 text-sm text-slate-500">
@@ -235,7 +235,7 @@ async function handleSave() {
                         </div>
 
                         <div>
-                            <h2 class="font-semibold text-slate-900">
+                            <h2 class="font-semibold text-text-primary">
                                 Additional Payment Details
                             </h2>
                             <p class="mt-1 text-sm text-slate-500">

@@ -171,7 +171,7 @@ watch(courseId, async () => {
             <header class="flex items-center justify-between gap-4">
                 <button type="button" class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm
                  font-semibold text-slate-600 transition hover:bg-white
-                 hover:text-slate-900" @click="goBack">
+                 hover:text-text-primary" @click="goBack">
                     <ArrowLeft class="h-4 w-4" />
                     Back to Dashboard
                 </button>
@@ -200,7 +200,7 @@ watch(courseId, async () => {
                     <BookOpen class="h-7 w-7" />
                 </div>
 
-                <h1 class="mt-4 text-xl font-bold text-slate-900">
+                <h1 class="mt-4 text-xl font-bold text-text-primary">
                     Unable to load course
                 </h1>
 
@@ -276,7 +276,7 @@ watch(courseId, async () => {
                 <!-- Overview -->
                 <section>
                     <div class="mb-4">
-                        <h2 class="text-xl font-bold tracking-tight text-slate-900">
+                        <h2 class="text-xl font-bold tracking-tight text-text-primary">
                             Overview
                         </h2>
                         <p class="mt-1 text-sm text-slate-500">
@@ -286,13 +286,13 @@ watch(courseId, async () => {
 
                     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                         <article v-for="item in overview" :key="item.label" class="rounded-2xl border border-slate-200/80 bg-white p-5
-                     shadow-sm shadow-slate-900/2">
+                     shadow-sm shadow-text-primary/2">
                             <div class="flex items-start justify-between">
                                 <div>
                                     <p class="text-sm font-medium text-slate-500">
                                         {{ item.label }}
                                     </p>
-                                    <p class="mt-3 text-3xl font-extrabold text-slate-900">
+                                    <p class="mt-3 text-3xl font-extrabold text-text-primary">
                                         {{ item.value }}
                                     </p>
                                     <p class="mt-1 text-xs text-slate-400">
@@ -324,7 +324,7 @@ watch(courseId, async () => {
 
                             <div>
                                 <div class="flex flex-wrap items-center gap-2">
-                                    <h2 class="text-xl font-bold tracking-tight text-slate-900">
+                                    <h2 class="text-xl font-bold tracking-tight text-text-primary">
                                         Course Programs
                                     </h2>
 
@@ -426,7 +426,7 @@ watch(courseId, async () => {
                             <BookOpen class="h-8 w-8" />
                         </div>
 
-                        <h3 class="mt-5 text-lg font-bold text-slate-900">
+                        <h3 class="mt-5 text-lg font-bold text-text-primary">
                             No programs yet
                         </h3>
 
@@ -453,10 +453,10 @@ watch(courseId, async () => {
                         <article v-for="program in programs" :key="program.id" class="flex min-w-0 flex-col rounded-2xl border
                border-slate-200 bg-white p-5
                transition hover:border-indigo-200
-               hover:shadow-md hover:shadow-slate-900/5">
+               hover:shadow-md hover:shadow-text-primary/5">
                             <!-- Program Header -->
                             <div class="min-w-0">
-                                <h3 class="wrap-break-word text-base font-semibold text-slate-900">
+                                <h3 class="wrap-break-word text-base font-semibold text-text-primary">
                                     {{ program.name }}
                                 </h3>
 
@@ -476,7 +476,7 @@ watch(courseId, async () => {
                                         Monthly Fee
                                     </span>
 
-                                    <span class="text-sm font-semibold text-slate-900">
+                                    <span class="text-sm font-semibold text-text-primary">
                                         {{ formatCurrency(program.monthly_fee) }}
                                     </span>
                                 </div>
@@ -488,7 +488,7 @@ watch(courseId, async () => {
                                         Registration Fee
                                     </span>
 
-                                    <span class="text-sm font-semibold text-slate-900">
+                                    <span class="text-sm font-semibold text-text-primary">
                                         {{ formatCurrency(program.registration_fee) }}
                                     </span>
                                 </div>
@@ -523,10 +523,10 @@ watch(courseId, async () => {
 
                 <!-- Classes -->
                 <section class="rounded-2xl border border-slate-200/80 bg-white p-5
-                 shadow-sm shadow-slate-900/2 sm:p-6">
+                 shadow-sm shadow-text-primary/2 sm:p-6">
                     <div class="flex flex-wrap items-center justify-between gap-4">
                         <div>
-                            <h2 class="text-xl font-bold text-slate-900">Classes</h2>
+                            <h2 class="text-xl font-bold text-text-primary">Classes</h2>
                             <p class="mt-1 text-sm text-slate-500">
                                 Manage class groups and their learning schedules.
                             </p>
@@ -547,7 +547,7 @@ watch(courseId, async () => {
                             <GraduationCap class="h-6 w-6" />
                         </div>
 
-                        <h3 class="mt-4 font-bold text-slate-900">No classes displayed</h3>
+                        <h3 class="mt-4 font-bold text-text-primary">No classes displayed</h3>
                         <p class="mt-2 max-w-md text-sm leading-6 text-slate-500">
                             Your classes and schedules will be displayed here when the
                             class-management feature is available.
@@ -558,7 +558,7 @@ watch(courseId, async () => {
                 <!-- Management -->
                 <section>
                     <div class="mb-4">
-                        <h2 class="text-xl font-bold text-slate-900">Management</h2>
+                        <h2 class="text-xl font-bold text-text-primary">Management</h2>
                         <p class="mt-1 text-sm text-slate-500">
                             Shortcuts to manage your course.
                         </p>
@@ -575,7 +575,7 @@ watch(courseId, async () => {
                             </div>
 
                             <div class="min-w-0 flex-1">
-                                <h3 class="font-bold text-slate-900">Manage Students</h3>
+                                <h3 class="font-bold text-text-primary">Manage Students</h3>
                                 <p class="mt-1 text-sm leading-5 text-slate-500">
                                     View and manage students enrolled in this course.
                                 </p>
@@ -599,7 +599,7 @@ watch(courseId, async () => {
                             </div>
 
                             <div class="min-w-0 flex-1">
-                                <h3 class="font-bold text-slate-900">Manage Enrollments</h3>
+                                <h3 class="font-bold text-text-primary">Manage Enrollments</h3>
                                 <p class="mt-1 text-sm leading-5 text-slate-500">
                                     Review and manage student enrollment requests.
                                 </p>
@@ -618,7 +618,7 @@ watch(courseId, async () => {
                             </div>
 
                             <div class="min-w-0 flex-1">
-                                <h3 class="font-bold text-slate-900">Course Information</h3>
+                                <h3 class="font-bold text-text-primary">Course Information</h3>
                                 <p class="mt-1 text-sm leading-5 text-slate-500">
                                     Update your course name, description, and address.
                                 </p>

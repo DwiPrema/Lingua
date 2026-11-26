@@ -144,7 +144,7 @@ watch(
                 </svg>
             </div>
 
-            <h1 class="mt-5 text-xl font-bold text-slate-900">
+            <h1 class="mt-5 text-xl font-bold text-text-primary">
                 Unable to Load Course
             </h1>
 
@@ -169,7 +169,7 @@ watch(
                         </div>
 
                         <h1 class="mt-4 text-3xl font-bold tracking-tight
-                                   text-slate-900 sm:text-4xl">
+                                   text-text-primary sm:text-4xl">
                             {{ course.name }}
                         </h1>
 
@@ -202,7 +202,7 @@ watch(
                     <!-- About Course -->
                     <section class="rounded-2xl border border-text-primary bg-accent/80 p-6
                                sm:p-8">
-                        <h2 class="text-xl font-bold text-slate-900">
+                        <h2 class="text-xl font-bold text-text-primary">
                             About This Course
                         </h2>
 
@@ -215,7 +215,7 @@ watch(
                         </p>
 
                         <div v-if="course.address" class="mt-6 border-t border-text-primary pt-5">
-                            <h3 class="text-sm font-semibold text-slate-900">
+                            <h3 class="text-sm font-semibold text-text-primary">
                                 Course Location
                             </h3>
 
@@ -280,7 +280,7 @@ watch(
                                 @click="selectProgram(program.id)">
                                 <div class="flex items-start justify-between gap-4">
                                     <div class="min-w-0">
-                                        <h3 class="font-semibold text-slate-900">
+                                        <h3 class="font-semibold text-text-primary">
                                             {{ program.name }}
                                         </h3>
 
@@ -312,7 +312,7 @@ watch(
                                             Registration Fee
                                         </p>
 
-                                        <p class="mt-1 font-semibold text-slate-900">
+                                        <p class="mt-1 font-semibold text-text-primary">
                                             {{
                                                 formatCurrency(
                                                     program.registration_fee,
@@ -326,7 +326,7 @@ watch(
                                             Monthly Fee
                                         </p>
 
-                                        <p class="mt-1 font-semibold text-slate-900">
+                                        <p class="mt-1 font-semibold text-text-primary">
                                             {{
                                                 formatCurrency(
                                                     program.monthly_fee,
@@ -349,7 +349,7 @@ watch(
                 <aside class="space-y-5">
                     <section class="sticky top-20 rounded-2xl border border-text-primary
                                bg-surface p-6 shadow-sm">
-                        <h2 class="text-lg font-bold text-slate-900">
+                        <h2 class="text-lg font-bold text-text-primary">
                             Join This Course
                         </h2>
 
@@ -363,7 +363,7 @@ watch(
                                 Selected Program
                             </p>
 
-                            <p class="mt-1 font-semibold text-slate-900">
+                            <p class="mt-1 font-semibold text-text-primary">
                                 {{ selectedProgram.name }}
                             </p>
 
@@ -373,7 +373,7 @@ watch(
                                         Registration Fee
                                     </span>
 
-                                    <span class="text-right font-medium text-slate-900">
+                                    <span class="text-right font-medium text-text-primary">
                                         {{
                                             formatCurrency(
                                                 selectedProgram.registration_fee,
@@ -387,7 +387,7 @@ watch(
                                         Monthly Fee
                                     </span>
 
-                                    <span class="text-right font-medium text-slate-900">
+                                    <span class="text-right font-medium text-text-primary">
                                         {{
                                             formatCurrency(
                                                 selectedProgram.monthly_fee,

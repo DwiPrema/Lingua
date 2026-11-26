@@ -205,16 +205,16 @@ async function confirmLogout(): Promise<void> {
         <div v-if="showLogoutModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6"
             @click.self="cancelLogout">
             <section role="dialog" aria-modal="true" aria-labelledby="logout-title"
-                class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl sm:p-8">
-                <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
+                class="w-full max-w-md rounded-2xl bg-surface p-6 shadow-xl sm:p-8">
+                <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-alert">
                     <span class="text-2xl" aria-hidden="true">↪</span>
                 </div>
 
-                <h2 id="logout-title" class="text-xl font-bold text-gray-900">
+                <h2 id="logout-title" class="text-xl font-bold text-text-primary">
                     Log out of Lingua?
                 </h2>
 
-                <p class="mt-2 text-sm leading-6 text-gray-500">
+                <p class="mt-2 text-sm leading-6 text-text-secondary">
                     Are you sure you want to log out of your account?
                     You will need to sign in again to access your dashboard.
                 </p>
@@ -227,7 +227,7 @@ async function confirmLogout(): Promise<void> {
                     </button>
 
                     <button type="button" :disabled="loggingOut"
-                        class="rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                        class="rounded-xl bg-alert px-5 py-3 text-sm font-semibold text-surface transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
                         @click="confirmLogout">
                         {{ loggingOut ? 'Logging out...' : 'Yes, log out' }}
                     </button>
@@ -236,7 +236,7 @@ async function confirmLogout(): Promise<void> {
         </div>
     </Teleport>
 
-    <main class="min-h-screen bg-gray-50 py-8">
+    <main class="min-h-screen py-8">
         <div class="mx-auto">
             <!-- Page heading -->
             <header class="mb-8 flex items-center justify-between gap-4">
@@ -245,10 +245,10 @@ async function confirmLogout(): Promise<void> {
                         @click="router.push('/')">
                         &larr; Back to dashboard
                     </button>
-                    <h1 class="mt-1 text-2xl font-bold text-gray-900 sm:text-3xl">
+                    <h1 class="mt-1 text-2xl font-bold text-text-primary sm:text-3xl">
                         My Profile
                     </h1>
-                    <p class="mt-2 text-sm text-gray-500">
+                    <p class="mt-2 text-sm text-text-secondary">
                         Manage your personal information and account.
                     </p>
                 </div>
@@ -263,13 +263,13 @@ async function confirmLogout(): Promise<void> {
             </header>
 
             <!-- Loading state -->
-            <div v-if="loading" class="rounded-2xl border border-gray-200 bg-white p-10
-                text-center text-sm text-gray-500" role="status">
+            <div v-if="loading" class="rounded-2xl border border-gray-200 bg-surface p-10
+                text-center text-sm text-text-secondary" role="status">
                 Loading your profile...
             </div>
 
             <!-- Error state -->
-            <div v-else-if="error" class="rounded-2xl border border-red-200 bg-white p-6" role="alert">
+            <div v-else-if="error" class="rounded-2xl border border-red-200 bg-surface p-6" role="alert">
                 <p class="font-medium text-alert">
                     Unable to load your profile
                 </p>
@@ -277,7 +277,7 @@ async function confirmLogout(): Promise<void> {
                     {{ error }}
                 </p>
                 <button type="button" class="mt-4 rounded-lg bg-alert px-4 py-2
-                 text-sm font-medium text-white hover:bg-red-900" @click="retry">
+                 text-sm font-medium text-surface hover:bg-red-900" @click="retry">
                     Try again
                 </button>
             </div>
@@ -285,8 +285,8 @@ async function confirmLogout(): Promise<void> {
             <div v-else class="grid grid-cols-1 gap-6 lg:grid-cols-3">
                 <!-- Profile summary -->
                 <section class="h-fit rounded-2xl border border-gray-200
-                 bg-white p-6 shadow-sm">
-                    <h2 class="text-lg font-semibold text-gray-900">
+                 bg-surface p-6 shadow-sm">
+                    <h2 class="text-lg font-semibold text-text-primary">
                         Profile overview
                     </h2>
 
@@ -295,7 +295,7 @@ async function confirmLogout(): Promise<void> {
                             <img v-if="avatarPreview || user?.avatar_url"
                                 :src="avatarPreview || (user?.avatar_url ? `${user.avatar_url}?t=${Date.now()}` : '')"
                                 alt="Profile photo"
-                                class="h-28 w-28 rounded-full border-4 border-white object-cover shadow-md"
+                                class="h-28 w-28 rounded-full border-4 border-surface object-cover shadow-md"
                                 @error="avatarPreview = null" />
 
                             <div v-else class="flex h-28 w-28 items-center justify-center
@@ -306,8 +306,8 @@ async function confirmLogout(): Promise<void> {
 
                             <button type="button" aria-label="Change profile photo" title="Change profile photo" class="absolute bottom-0 right-0 flex h-9 w-9
                 items-center justify-center rounded-full
-                border-4 border-white bg-accent/80 duration-300 ease-in-out
-                text-white transition hover:bg-accent" @click="avatarInput?.click()">
+                border-4 border-surface bg-accent/80 duration-300 ease-in-out
+                text-surface transition hover:bg-accent" @click="avatarInput?.click()">
                                 <span aria-hidden="true">✎</span>
                             </button>
 
@@ -315,11 +315,11 @@ async function confirmLogout(): Promise<void> {
                                 @change="handleAvatarChange" />
                         </div>
 
-                        <h3 class="mt-4 text-xl font-semibold text-gray-900">
+                        <h3 class="mt-4 text-xl font-semibold text-text-primary">
                             {{ form.fullname || 'Your name' }}
                         </h3>
 
-                        <p class="mt-1 text-sm text-gray-500">
+                        <p class="mt-1 text-sm text-text-secondary">
                             {{ user?.email || 'No email available' }}
                         </p>
 
@@ -330,7 +330,7 @@ async function confirmLogout(): Promise<void> {
                     </div>
 
                     <div class="mt-6 border-t border-gray-100 pt-5">
-                        <p class="text-xs leading-5 text-gray-500">
+                        <p class="text-xs leading-5 text-text-secondary">
                             Keep your contact information up to date so your
                             account details remain accurate.
                         </p>
@@ -338,15 +338,15 @@ async function confirmLogout(): Promise<void> {
                 </section>
 
                 <!-- Profile form -->
-                <section class="rounded-2xl border border-gray-200 bg-white
+                <section class="rounded-2xl border border-gray-200 bg-surface
                  p-6 shadow-sm sm:p-8 lg:col-span-2">
                     <div class="flex flex-col justify-between gap-3 sm:flex-row
                    sm:items-center">
                         <div>
-                            <h2 class="text-lg font-semibold text-gray-900">
+                            <h2 class="text-lg font-semibold text-text-primary">
                                 Personal information
                             </h2>
-                            <p class="mt-1 text-sm text-gray-500">
+                            <p class="mt-1 text-sm text-text-secondary">
                                 Your basic account details.
                             </p>
                         </div>
@@ -366,7 +366,7 @@ async function confirmLogout(): Promise<void> {
                                 </label>
                                 <input id="fullname" v-model="form.fullname" type="text" autocomplete="name" required
                                     :readonly="!isEditing" class="w-full rounded-xl border px-4 py-3
-                         text-sm text-gray-900 outline-none transition
+                         text-sm text-text-primary outline-none transition
                          focus:border-accent focus:ring-2
                          focus:ring-red-100 read-only:bg-gray-50
                          read-only:text-gray-600" />
@@ -378,7 +378,7 @@ async function confirmLogout(): Promise<void> {
                                 </label>
                                 <input id="nickname" v-model="form.nickname" type="text" autocomplete="nickname"
                                     :readonly="!isEditing" class="w-full rounded-xl border px-4 py-3
-                         text-sm text-gray-900 outline-none transition
+                         text-sm text-text-primary outline-none transition
                          focus:border-accent focus:ring-2
                          focus:ring-red-100 read-only:bg-gray-50
                          read-only:text-gray-600" />
@@ -390,7 +390,7 @@ async function confirmLogout(): Promise<void> {
                                 </label>
                                 <input id="phone" v-model="form.phone" type="tel" autocomplete="tel" required
                                     :readonly="!isEditing" class="w-full rounded-xl border px-4 py-3
-                         text-sm text-gray-900 outline-none transition
+                         text-sm text-text-primary outline-none transition
                          focus:border-accent focus:ring-2
                          focus:ring-red-100 read-only:bg-gray-50
                          read-only:text-gray-600" />
@@ -402,8 +402,8 @@ async function confirmLogout(): Promise<void> {
                                 </label>
                                 <input id="email" :value="user?.email || ''" type="email" readonly class="w-full cursor-not-allowed rounded-xl
                          border bg-gray-50 px-4 py-3 text-sm
-                         text-gray-500" />
-                                <p class="mt-2 text-xs text-gray-500">
+                         text-text-secondary" />
+                                <p class="mt-2 text-xs text-text-secondary">
                                     Your email is managed by your authentication account.
                                 </p>
                             </div>
@@ -418,9 +418,9 @@ async function confirmLogout(): Promise<void> {
                             </button>
 
                             <button type="submit" :disabled="saving || !form.fullname.trim() || !form.phone.trim()"
-                                class="rounded-xl bg-accent px-5 py-3
-                        text-sm font-semibold text-white
-                        transition hover:bg-red-900
+                                class="rounded-xl bg-primary px-5 py-3
+                        text-sm font-semibold text-surface
+                        transition hover:bg-primary-hover
                         disabled:cursor-not-allowed disabled:opacity-50">
                                 {{ saving ? 'Saving...' : 'Save changes' }}
                             </button>

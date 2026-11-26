@@ -147,7 +147,7 @@ watch(courseId, (newId, oldId) => {
                 </div>
 
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight text-slate-900">
+                    <h1 class="text-xl font-bold tracking-tight text-text-primary">
                         Manage Students
                     </h1>
 
@@ -165,7 +165,7 @@ watch(courseId, (newId, oldId) => {
                 </p>
 
                 <template v-if="course">
-                    <h2 class="mt-2 text-2xl font-bold text-slate-900">
+                    <h2 class="mt-2 text-2xl font-bold text-text-primary">
                         {{ course.name }}
                     </h2>
 
@@ -186,7 +186,7 @@ watch(courseId, (newId, oldId) => {
                     <div class="flex items-center gap-2.5">
                         <Users class="size-5 text-slate-600" />
 
-                        <h2 class="text-lg font-bold text-slate-900">
+                        <h2 class="text-lg font-bold text-text-primary">
                             Students
                         </h2>
 
@@ -215,7 +215,7 @@ watch(courseId, (newId, oldId) => {
                 <div v-else-if="error" class="rounded-2xl border border-red-200 bg-white p-6 text-center">
                     <CircleAlert class="mx-auto size-9 text-red-500" />
 
-                    <h3 class="mt-3 font-semibold text-slate-900">
+                    <h3 class="mt-3 font-semibold text-text-primary">
                         Can't load student data
                     </h3>
 
@@ -224,7 +224,7 @@ watch(courseId, (newId, oldId) => {
                     </p>
 
                     <button type="button" class="mt-4 inline-flex items-center gap-2 rounded-xl
-                   bg-slate-900 px-4 py-2.5 text-sm font-semibold
+                   bg-text-primary px-4 py-2.5 text-sm font-semibold
                    text-white transition hover:bg-slate-700" @click="fetchStudents">
                         <RefreshCw class="size-4" />
                         Try again
@@ -239,7 +239,7 @@ watch(courseId, (newId, oldId) => {
                         <Users class="size-7" />
                     </div>
 
-                    <h3 class="mt-4 font-semibold text-slate-900">
+                    <h3 class="mt-4 font-semibold text-text-primary">
                         No students yet
                     </h3>
 
@@ -265,7 +265,7 @@ watch(courseId, (newId, oldId) => {
                             <!-- Student information -->
                             <div class="min-w-0 flex-1">
                                 <div class="flex flex-wrap items-start justify-between gap-2">
-                                    <h3 class="wrap-break-word font-semibold text-slate-900">
+                                    <h3 class="wrap-break-word font-semibold text-text-primary">
                                         {{ enrollment.fullname || 'Unnamed student' }}
                                     </h3>
 

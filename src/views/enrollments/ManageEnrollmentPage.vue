@@ -210,7 +210,7 @@ watch(courseId, (newId, oldId) => {
                 </div>
 
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight text-slate-900">
+                    <h1 class="text-xl font-bold tracking-tight text-text-primary">
                         Manage Enrollments
                     </h1>
 
@@ -229,7 +229,7 @@ watch(courseId, (newId, oldId) => {
                 </p>
 
                 <template v-if="course">
-                    <h2 class="mt-2 text-2xl font-bold text-slate-900">
+                    <h2 class="mt-2 text-2xl font-bold text-text-primary">
                         {{ course.name || 'Untitled course' }}
                     </h2>
 
@@ -251,7 +251,7 @@ watch(courseId, (newId, oldId) => {
                     <div class="flex items-center gap-2.5">
                         <Users class="size-5 text-slate-600" />
 
-                        <h2 class="text-lg font-bold text-slate-900">
+                        <h2 class="text-lg font-bold text-text-primary">
                             Pending Applications
                         </h2>
 
@@ -302,7 +302,7 @@ watch(courseId, (newId, oldId) => {
                            bg-white p-6 text-center">
                     <CircleAlert class="mx-auto size-9 text-red-500" />
 
-                    <h3 class="mt-3 font-semibold text-slate-900">
+                    <h3 class="mt-3 font-semibold text-text-primary">
                         Can't load enrollment data
                     </h3>
 
@@ -311,7 +311,7 @@ watch(courseId, (newId, oldId) => {
                     </p>
 
                     <button type="button" class="mt-4 inline-flex items-center gap-2 rounded-xl
-                               bg-slate-900 px-4 py-2.5 text-sm font-semibold
+                               bg-text-primary px-4 py-2.5 text-sm font-semibold
                                text-white transition hover:bg-slate-700" @click="fetchEnrollments">
                         <RefreshCw class="size-4" />
                         Try again
@@ -326,7 +326,7 @@ watch(courseId, (newId, oldId) => {
                         <Users class="size-7" />
                     </div>
 
-                    <h3 class="mt-4 font-semibold text-slate-900">
+                    <h3 class="mt-4 font-semibold text-text-primary">
                         No pending applications
                     </h3>
 
@@ -351,7 +351,7 @@ watch(courseId, (newId, oldId) => {
 
                                 <div class="min-w-0 flex-1">
                                     <h3 class="wrap-break-word font-semibold
-                                               text-slate-900">
+                                               text-text-primary">
                                         {{ enrollment.fullname || 'Unnamed student' }}
                                     </h3>
 
@@ -401,7 +401,7 @@ watch(courseId, (newId, oldId) => {
                                 <div class="flex items-center gap-2">
                                     <MessageSquareWarning class="size-5 text-red-600" />
 
-                                    <h4 class="font-semibold text-slate-900">
+                                    <h4 class="font-semibold text-text-primary">
                                         Rejection reason
                                     </h4>
                                 </div>

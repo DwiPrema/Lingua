@@ -226,7 +226,7 @@ onBeforeUnmount(() => {
             <!-- Error State -->
             <div v-else-if="courseStore.error && courses.length === 0" class="mt-6 rounded-2xl border border-red-200
                         bg-white px-6 py-12 text-center">
-                <h3 class="text-lg font-bold text-slate-900">
+                <h3 class="text-lg font-bold text-text-primary">
                     Unable to Load Courses
                 </h3>
 
@@ -244,7 +244,7 @@ onBeforeUnmount(() => {
             <!-- Empty State -->
             <div v-else-if="courses.length === 0 && !courseStore.loading" class="mt-6 rounded-2xl border border-dashed
                         border-slate-300 bg-white px-6 py-16 text-center">
-                <h3 class="text-lg font-bold text-slate-900">
+                <h3 class="text-lg font-bold text-text-primary">
                     No Courses Found
                 </h3>
 
@@ -276,7 +276,7 @@ onBeforeUnmount(() => {
                         </p>
 
                         <h3 class="mt-3 line-clamp-2 text-lg font-bold
-                                    text-slate-900 transition
+                                    text-text-primary transition
                                     group-hover:text-indigo-600">
                             {{ course.name }}
                         </h3>

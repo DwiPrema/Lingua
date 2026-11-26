@@ -219,7 +219,7 @@ watch(studentId, (newId, oldId) => {
                         Student dashboard
                     </p>
 
-                    <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                    <h1 class="mt-2 text-3xl font-extrabold tracking-tight text-text-primary sm:text-4xl">
                         My Enrollments
                     </h1>
 
@@ -315,7 +315,7 @@ watch(studentId, (newId, oldId) => {
                 <div class="mt-4 flex items-center justify-between text-sm text-slate-500">
                     <p>
                         Showing
-                        <strong class="text-slate-900">
+                        <strong class="text-text-primary">
                             {{ filteredEnrollments.length }}
                         </strong>
                         of {{ enrollments.length }} enrollments
@@ -345,13 +345,13 @@ watch(studentId, (newId, oldId) => {
             <section v-else-if="error && enrollments.length === 0"
                 class="mt-6 rounded-2xl border border-accent/20 bg-white p-8 text-center">
                 <CircleAlert :size="34" color="#dc2626"/>
-                <h2 class="mt-4 text-xl font-bold text-slate-900">
+                <h2 class="mt-4 text-xl font-bold text-text-primary">
                     Couldn't Load Enrollments
                 </h2>
                 <p class="mt-2 text-sm text-slate-600">
                     {{ error }}
                 </p>
-                <button type="button" class="mt-5 rounded-xl bg-slate-900 px-5 py-3 font-semibold text-white"
+                <button type="button" class="mt-5 rounded-xl bg-text-primary px-5 py-3 font-semibold text-white"
                     @click="loadEnrollments">
                     Try Again
                 </button>
@@ -364,7 +364,7 @@ watch(studentId, (newId, oldId) => {
                     <GraduationCap />
                 </div>
 
-                <h2 class="mt-5 text-xl font-bold text-slate-900">
+                <h2 class="mt-5 text-xl font-bold text-text-primary">
                     {{
                         enrollments.length === 0
                             ? 'No Enrollments Yet'

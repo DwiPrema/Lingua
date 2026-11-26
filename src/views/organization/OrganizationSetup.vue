@@ -145,7 +145,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 text-slate-900">
+  <div class="min-h-screen bg-slate-50 text-text-primary">
     <header class="border-b border-slate-200 bg-white">
       <div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
         <RouterLink to="/" class="text-xl font-bold tracking-tight">
