@@ -22,6 +22,7 @@ import type { Enrollment, StatusEnrollmentType } from '@/types/enrollment_type'
 import type { Course } from '@/types/course_type'
 import type { Programs } from '@/types/program_type'
 import CustomButton from '@/components/CustomButton.vue'
+import { formatDate } from '@/composables/formatDate'
 
 // =====================================================
 // TYPES
@@ -147,22 +148,6 @@ const statusDescriptions: Record<DisplayStatus, string> = {
 
 function statusDescription(status: DisplayStatus): string {
     return statusDescriptions[status] ?? 'Check your enrollment status'
-}
-
-function formatDate(
-    value: string | null | undefined,
-): string {
-    if (!value) return 'Not available'
-
-    const date = new Date(value)
-
-    if (Number.isNaN(date.getTime())) {
-        return 'Not available'
-    }
-
-    return new Intl.DateTimeFormat('en-ID', {
-        dateStyle: 'medium',
-    }).format(date)
 }
 
 function openEnrollment(enrollment: EnrollmentListItem): void {

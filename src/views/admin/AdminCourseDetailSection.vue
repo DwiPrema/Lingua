@@ -20,7 +20,7 @@ import {
 
 import { useCourseStores } from "@/stores/course_stores";
 import { useCourseProgramStore } from "@/stores/course_program_stores";
-import { formatCurrency } from "@/constant/format_currency";
+import { formatCurrency } from "@/composables/format_currency";
 import { useEnrollmentStores } from "@/stores/enrollments_stores";
 import { Course } from "@/types/course_type";
 import { Programs } from "@/types/program_type";

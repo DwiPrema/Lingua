@@ -3,11 +3,12 @@
 import { computed, ref, watch } from "vue";
 import { storeToRefs } from "pinia";
 
-import { formatCurrency } from "@/constant/format_currency";
+import { formatCurrency } from "@/composables/format_currency";
 import { usePaymentStore } from "@/stores/payment_stores";
 
 import type { Invoice, InvoiceStatus } from "@/types/invoice_type";
 import type { Payment, PaymentStatus } from "@/types/payment_type";
+import { formatDate } from "@/composables/formatDate";
 
 // =====================================================
 // PROPS & EMITS
@@ -176,26 +177,6 @@ const totalPending = computed(() =>
             0,
         ),
 );
-
-// =====================================================
-// DATE FORMATTER
-// =====================================================
-
-function formatDate(value?: string | null): string {
-    if (!value) return "Not available";
-
-    const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) {
-        return "Not available";
-    }
-
-    return new Intl.DateTimeFormat("id-ID", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-    }).format(date);
-}
 
 // =====================================================
 // STATUS HELPERS

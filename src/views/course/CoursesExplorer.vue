@@ -5,6 +5,7 @@ import { useCourseStores } from '@/stores/course_stores'
 import { Search } from '@lucide/vue'
 import { useAuthStore } from '@/stores/auth_stores'
 import { Course } from '@/types/course_type'
+import { formatDate } from '@/composables/formatDate'
 
 const router = useRouter()
 const courseStore = useCourseStores()
@@ -50,21 +51,6 @@ const filteredCourses = computed(() => {
 
     return result
 })
-
-
-const formatDate = (date: string | Date | null | undefined): string | null => {
-    if (!date) return null
-
-    const parsedDate = new Date(date)
-
-    if (Number.isNaN(parsedDate.getTime())) return null
-
-    return new Intl.DateTimeFormat(undefined, {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-    }).format(parsedDate)
-}
 
 const openCourse = (id: string | number): void => {
     const targetRoute = !authStore.session
@@ -271,7 +257,7 @@ onBeforeUnmount(() => {
 
                     <!-- Course Information -->
                     <div class="flex flex-1 flex-col p-5">
-                        <p v-if="course.created_at && formatDate(course.created_at)" class="text-xs text-slate-400">
+                        <p v-if="course.created_at && formatDate(course.created_at)" class="text-xs text-text-secondary">
                             Added {{ formatDate(course.created_at) }}
                         </p>
 

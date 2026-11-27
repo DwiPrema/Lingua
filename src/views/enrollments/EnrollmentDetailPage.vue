@@ -21,12 +21,13 @@ import {
     TriangleAlert,
 } from '@lucide/vue'
 
-import { formatCurrency } from '@/constant/format_currency'
+import { formatCurrency } from '@/composables/format_currency'
 import type { Invoice } from '@/types/invoice_type'
 import type { Payment } from '@/types/payment_type'
 import type { Course } from '@/types/course_type'
 import type { Programs } from '@/types/program_type'
 import { Enrollment, StatusEnrollments, StatusEnrollmentType } from '@/types/enrollment_type'
+import { formatDate } from '@/composables/formatDate'
 
 const route = useRoute()
 const router = useRouter()
@@ -164,21 +165,6 @@ const canStartPayment = computed(() => {
         !paymentError.value &&
         (!latestPayment.value || latestPayment.value.status === 'rejected')
 })
-
-function formatDate(value: string | null | undefined): string {
-    if (!value) return 'Not available'
-
-    const date = new Date(value)
-
-    if (Number.isNaN(date.getTime())) {
-        return 'Not available'
-    }
-
-    return new Intl.DateTimeFormat('en-ID', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-    }).format(date)
-}
 
 function getErrorMessage(
     error: unknown,

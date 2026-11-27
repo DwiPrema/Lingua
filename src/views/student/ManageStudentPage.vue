@@ -18,6 +18,7 @@ import { Course } from '@/types/course_type'
 import { Enrollment } from '@/types/enrollment_type'
 import { useUserDataStores } from '@/stores/user_data_stores'
 import CustomButton from '@/components/CustomButton.vue'
+import { formatDate } from '@/composables/formatDate'
 
 const route = useRoute()
 const router = useRouter()
@@ -43,20 +44,6 @@ const students = computed(() =>
 
 function getStudentAvatarUrl(studentId: string): string | null {
     return userStore.userDataById[studentId]?.avatar_url ?? null;
-}
-
-function formatDate(date: string | null | undefined) {
-    if (!date) return null
-
-    const parsedDate = new Date(date)
-
-    if (Number.isNaN(parsedDate.getTime())) return null
-
-    return new Intl.DateTimeFormat('id-ID', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-    }).format(parsedDate)
 }
 
 function statusClass(status: string) {

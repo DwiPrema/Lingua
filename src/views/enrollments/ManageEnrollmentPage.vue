@@ -20,6 +20,7 @@ import { useEnrollmentStores } from '@/stores/enrollments_stores'
 import { Course } from '@/types/course_type'
 import { Enrollment } from '@/types/enrollment_type'
 import { useUserDataStores } from '@/stores/user_data_stores'
+import { formatDate } from '@/composables/formatDate'
 
 const route = useRoute()
 const router = useRouter()
@@ -46,20 +47,6 @@ const pendingEnrollments = computed(() =>
         (item) => item.status === 'pending',
     ),
 )
-
-function formatDate(date: string) {
-    if (!date) return '-'
-
-    const parsedDate = new Date(date)
-
-    if (Number.isNaN(parsedDate.getTime())) return '-'
-
-    return new Intl.DateTimeFormat('id-ID', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-    }).format(parsedDate)
-}
 
 async function fetchEnrollments() {
     if (!courseId.value) {
@@ -88,7 +75,7 @@ async function fetchEnrollments() {
 
         enrollments.value = result
     } catch (err) {
-        const e = err as {message?: string}
+        const e = err as { message?: string }
 
         error.value =
             e.message ?? 'Gagal memuat data pendaftaran.'
@@ -114,7 +101,7 @@ async function approveEnrollment(enrollment: Enrollment) {
             (item) => item.id !== enrollment.id,
         )
     } catch (err) {
-        const e = err as {message?: string}
+        const e = err as { message?: string }
 
         actionError.value =
             e.message ?? 'Gagal menyetujui pendaftaran.'
@@ -162,7 +149,7 @@ async function rejectEnrollment(enrollment: Enrollment) {
 
         cancelReject()
     } catch (err) {
-        const e = err as {message?: string}
+        const e = err as { message?: string }
 
         actionError.value =
             e?.message ?? 'Gagal menolak pendaftaran.'
@@ -171,11 +158,29 @@ async function rejectEnrollment(enrollment: Enrollment) {
     }
 }
 
+async function fetchStudents() {
+    try {
+        await Promise.all(
+            enrollments.value.map((enrollment) =>
+                userStore.getUserDataById(enrollment.student_id)
+            )
+        )
+    } catch (err) {
+        const e = err as { message?: string }
+
+        error.value =
+            e.message ?? 'Gagal memuat data siswa.'
+    }
+}
+
 function goBack() {
     router.back()
 }
 
-onMounted(fetchEnrollments)
+onMounted(async () => {
+    await fetchEnrollments(),
+        await fetchStudents()
+})
 
 watch(courseId, (newId, oldId) => {
     if (newId && newId !== oldId) {
@@ -183,6 +188,7 @@ watch(courseId, (newId, oldId) => {
         enrollments.value = []
         cancelReject()
         fetchEnrollments()
+        fetchStudents()
     }
 })
 </script>
@@ -343,13 +349,13 @@ watch(courseId, (newId, oldId) => {
                                 </div> -->
 
                                 <!-- Avatar -->
-                            <div class="flex size-12 shrink-0 items-center justify-center
+                                <div class="flex size-12 shrink-0 items-center justify-center
     overflow-hidden rounded-full bg-indigo-50 text-[14px] font-bold
     text-indigo-700">
-                                <img v-if="getStudentAvatarUrl(enrollment.student_id)"
-                                    :src="getStudentAvatarUrl(enrollment.student_id)!" alt="Profile photo"
-                                    class="size-full object-cover" />
-                            </div>
+                                    <img v-if="getStudentAvatarUrl(enrollment.student_id)"
+                                        :src="getStudentAvatarUrl(enrollment.student_id)!" alt="Profile photo"
+                                        class="size-full object-cover" />
+                                </div>
 
                                 <div class="min-w-0 flex-1">
                                     <h3 class="wrap-break-word font-semibold

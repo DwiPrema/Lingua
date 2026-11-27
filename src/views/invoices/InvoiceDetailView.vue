@@ -7,7 +7,7 @@ import { useEnrollmentStores } from "@/stores/enrollments_stores";
 import { useCourseStores } from "@/stores/course_stores";
 import { useCourseProgramStore } from "@/stores/course_program_stores";
 
-import { formatCurrency } from "@/constant/format_currency";
+import { formatCurrency } from "@/composables/format_currency";
 
 import {
     ArrowLeft,
@@ -22,6 +22,7 @@ import { Invoice } from "@/types/invoice_type";
 import { Course } from "@/types/course_type";
 import { Programs } from "@/types/program_type";
 import { Enrollment } from "@/types/enrollment_type";
+import { formatDate } from "@/composables/formatDate";
 
 const route = useRoute();
 const router = useRouter();
@@ -73,20 +74,6 @@ const invoiceStatus = computed(() => {
 
     return statuses[invoice.value?.status ?? "unpaid"] ?? statuses.unpaid;
 });
-
-function formatDate(value: string | null) {
-    if (!value) return "Not available";
-
-    const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) {
-        return "Not available";
-    }
-
-    return new Intl.DateTimeFormat("en-ID", {
-        dateStyle: "medium",
-    }).format(date);
-}
 
 onMounted(loadInvoiceDetail);
 

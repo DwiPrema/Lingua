@@ -9,6 +9,7 @@ import { useInvoiceStore } from "@/stores/invoice_stores";
 import { usePaymentStore } from "@/stores/payment_stores.js";
 import { Payment } from "@/types/payment_type.js";
 import PaymentOverviewSection from "../payment/PaymentOverviewSection.vue";
+import { formatDate } from "@/composables/formatDate.js";
 
 // =====================================================
 // ROUTER & STORE
@@ -149,26 +150,6 @@ const statusClass = computed(() => {
 
 function getStudentAvatarUrl(studentId: string): string | null {
     return userStore.userDataById[studentId]?.avatar_url ?? null;
-}
-
-// =====================================================
-// DATE FORMATTER
-// =====================================================
-
-function formatDate(date?: string | null): string {
-    if (!date) return "Not available";
-
-    const parsedDate = new Date(date);
-
-    if (Number.isNaN(parsedDate.getTime())) {
-        return "Not available";
-    }
-
-    return new Intl.DateTimeFormat("id-ID", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-    }).format(parsedDate);
 }
 
 const registrationDate = computed(() =>

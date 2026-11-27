@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth_stores.js';
-import { formatCurrency } from '@/constant/format_currency'
+import { formatCurrency } from '@/composables/format_currency'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCourseStores } from '@/stores/course_stores'
