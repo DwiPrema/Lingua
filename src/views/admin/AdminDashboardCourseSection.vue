@@ -6,6 +6,7 @@ import { useCourseStores } from "@/stores/course_stores";
 import { Edit, MapPin, Trash } from "@lucide/vue";
 import { useOrganizationStore } from "@/stores/organization_stores";
 import { Course } from "@/types/course_type";
+import CustomButton from "@/components/CustomButton.vue";
 
 const router = useRouter();
 
@@ -65,20 +66,16 @@ async function refreshDashboard() {
     <section>
         <div class="mb-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div>
-                <h2 class="text-xl font-bold text-dark-background">
+                <h2 class="text-[30px] font-black text-primary">
                     My Courses
                 </h2>
 
-                <p class="mt-1 text-sm text-slate-500">
+                <p class="mt-1 text-[14px] text-text-secondary">
                     Manage the courses you have created.
                 </p>
             </div>
 
-            <button type="button" class="rounded-xl bg-indigo-600 px-5 py-3
-                   text-sm font-semibold text-white
-                   hover:bg-indigo-700" @click="goToCreateCourse">
-                + Add Course
-            </button>
+            <CustomButton @click="goToCreateCourse">+ Add Course</CustomButton>
         </div>
 
         <!-- LOADING -->
@@ -87,7 +84,7 @@ async function refreshDashboard() {
             <div class="mx-auto h-8 w-8 animate-spin rounded-full
                    border-4 border-slate-200 border-t-accent"></div>
 
-            <p class="mt-4 text-sm text-slate-500">
+            <p class="mt-4 text-[14px] text-text-secondary">
                 Loading Course Data...
             </p>
         </div>
@@ -99,12 +96,12 @@ async function refreshDashboard() {
                 Failed to load courses
             </h3>
 
-            <p class="mt-2 text-sm text-slate-500">
+            <p class="mt-2 text-[14px] text-text-secondary">
                 {{ error }}
             </p>
 
             <button type="button" class="mt-5 rounded-xl bg-alert/85 px-4 py-2.5
-                   text-sm font-semibold text-white
+                   text-[14px] font-semibold text-white
                    hover:bg-alert" @click="refreshDashboard">
                 Try Again
             </button>
@@ -118,56 +115,48 @@ async function refreshDashboard() {
                 📚
             </div>
 
-            <h3 class="mt-5 text-lg font-bold text-dark-background">
+            <h3 class="mt-5 text-lg font-bold text-text-primary">
                 You don't have any courses yet.
             </h3>
 
-            <p class="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500">
+            <p class="mx-auto mt-2 max-w-sm text-[14px] leading-6 text-text-secondary">
                 Let's add your first course to manage information and course activity on Lingua.
             </p>
 
-            <button type="button" class="mt-6 rounded-xl bg-indigo-600 px-5 py-3
-                   text-sm font-semibold text-white
-                   hover:bg-indigo-700" @click="goToCreateCourse">
-                Add First Course
-            </button>
+            <CustomButton @click="goToCreateCourse">Add First Course</CustomButton>
         </div>
 
         <!-- COURSE LIST -->
         <div v-else class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            <article v-for="course in courses" :key="course.id" class="flex flex-col rounded-2xl border border-slate-200
+            <article v-for="course in courses" :key="course.id" class="flex flex-col rounded-2xl border border-text-primary
                    bg-white p-5 shadow-sm transition
                    hover:-translate-y-0.5 hover:shadow-md">
                 <div class="flex-1">
-                    <h3 class="text-lg font-bold text-dark-background">
+                    <h3 class="text-[20px] font-black text-text-primary">
                         {{ course.name }}
                     </h3>
 
-                    <p class="mt-2 line-clamp-3 text-sm leading-6 text-slate-500">
+                    <p class="line-clamp-3 text-[14px] leading-6 text-text-secondary">
                         {{ course.description || "No description yet." }}
                     </p>
 
-                    <p class="mt-4 text-xs text-slate-500 flex flex-row items-center gap-1">
+                    <p class="mt-4 text-xs text-text-secondary flex flex-row items-center gap-1">
                         <MapPin :size="16" /> <span>{{ course.address || "Address doesn't available" }}</span>
                     </p>
                 </div>
 
-                <div class="mt-6 flex flex-wrap gap-2 border-t border-slate-100 pt-4 justify-between items-center">
-                    <button type="button" class="rounded-lg bg-indigo-50 px-3 py-2
-                       text-sm font-semibold text-indigo-700
-                       hover:bg-indigo-100" @click="goToCourseDetail(course.id)">
-                        Detail
-                    </button>
+                <div class="mt-6 flex flex-wrap gap-2 border-t border-text-secondary pt-4 justify-between items-center">
+                    <CustomButton size="sm" @click="goToCourseDetail(course.id)" variant="secondary" >Detail</CustomButton>
 
                     <div class="flex flex-row gap-2 items-center">
-                        <button type="button" class="rounded-lg bg-dark-background/10 px-3 py-2
-                       text-sm font-semibold text-dark-background
-                       hover:bg-dark-background/20" @click="goToEditCourse(course.id)">
+                        <button type="button" class="rounded-lg bg-text-primary/10 px-3 py-2
+                       text-[14px] font-semibold text-text-primary
+                       hover:bg-text-primary/20" @click="goToEditCourse(course.id)">
                             <Edit :size="16" />
                         </button>
 
                         <button type="button" class="rounded-lg bg-alert/10 px-3 py-2
-                       text-sm font-semibold text-alert
+                       text-[14px] font-semibold text-alert
                        hover:bg-alert/20 ease-in-out transition-all duration-300" @click="handleDeleteCourse(course)">
                             <Trash :size="16" />
                         </button>
@@ -177,7 +166,7 @@ async function refreshDashboard() {
         </div>
 
         <!-- ERROR WHEN STALE DATA EXISTS -->
-        <p v-if="error && courses.length > 0" class="mt-4 text-sm text-alert/85" role="alert">
+        <p v-if="error && courses.length > 0" class="mt-4 text-[14px] text-alert/85" role="alert">
             Update data failed: {{ error }}
         </p>
     </section>

@@ -101,7 +101,7 @@ watch(
         <header class="border-b border-slate-200 bg-light-background top-0 sticky">
             <div class="mx-auto flex items-center justify-between
                        px-4 py-4 sm:px-6 lg:px-8">
-                <button @click="router.back()" class="inline-flex items-center gap-2 text-sm font-medium
+                <button @click="router.back()" class="inline-flex items-center gap-2 text-[14px] font-medium
                            text-slate-600 transition hover:text-primary-hover">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6" />
@@ -148,11 +148,11 @@ watch(
                 Unable to Load Course
             </h1>
 
-            <p class="mt-2 text-sm leading-6 text-slate-500">
+            <p class="mt-2 text-[14px] leading-6 text-text-secondary">
                 {{ pageError }}
             </p>
 
-            <button type="button" class="mt-6 rounded-xl bg-primary px-5 py-3 text-sm
+            <button type="button" class="mt-6 rounded-xl bg-primary px-5 py-3 text-[14px]
                        font-semibold text-white transition hover:bg-primary-hover" @click="loadCourseDetail">
                 Try Again
             </button>
@@ -181,7 +181,7 @@ watch(
                             }}
                         </p>
 
-                        <div v-if="course.address" class="mt-5 flex items-start gap-2 text-sm text-text-secondary">
+                        <div v-if="course.address" class="mt-5 flex items-start gap-2 text-[14px] text-text-secondary">
                             <svg class="mt-0.5 h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -206,7 +206,7 @@ watch(
                             About This Course
                         </h2>
 
-                        <p class="mt-4 whitespace-pre-line text-sm leading-7
+                        <p class="mt-4 whitespace-pre-line text-[14px] leading-7
                                    text-slate-600">
                             {{
                                 course.description ||
@@ -215,11 +215,11 @@ watch(
                         </p>
 
                         <div v-if="course.address" class="mt-6 border-t border-text-primary pt-5">
-                            <h3 class="text-sm font-semibold text-text-primary">
+                            <h3 class="text-[14px] font-semibold text-text-primary">
                                 Course Location
                             </h3>
 
-                            <p class="mt-2 text-sm text-slate-600">
+                            <p class="mt-2 text-[14px] text-slate-600">
                                 {{ course.address }}
                             </p>
                         </div>
@@ -235,7 +235,7 @@ watch(
                                     Available Programs
                                 </h2>
 
-                                <p class="mt-1 text-sm text-slate-500">
+                                <p class="mt-1 text-[14px] text-text-secondary">
                                     Choose a program that matches your learning goals.
                                 </p>
                             </div>
@@ -254,7 +254,7 @@ watch(
 
                         <!-- Program Error -->
                         <div v-else-if="courseProgramStore.error"
-                            class="mt-6 rounded-xl bg-red-50 p-4 text-sm text-alert">
+                            class="mt-6 rounded-xl bg-red-50 p-4 text-[14px] text-alert">
                             Unable to load course programs. Please try again later.
                         </div>
 
@@ -265,7 +265,7 @@ watch(
                                 No Programs Available
                             </p>
 
-                            <p class="mt-2 text-sm text-slate-500">
+                            <p class="mt-2 text-[14px] text-text-secondary">
                                 Please check back later for available programs.
                             </p>
                         </div>
@@ -285,7 +285,7 @@ watch(
                                         </h3>
 
                                         <p class="mt-2 whitespace-pre-line
-                                                   text-sm leading-6 text-slate-600">
+                                                   text-[14px] leading-6 text-slate-600">
                                             {{
                                                 program.description ||
                                                 'No program description is available yet.'
@@ -308,7 +308,7 @@ watch(
                                 <div class="mt-5 grid gap-3 border-t border-slate-200/70
                                            pt-4 sm:grid-cols-2">
                                     <div>
-                                        <p class="text-xs text-slate-500">
+                                        <p class="text-xs text-text-secondary">
                                             Registration Fee
                                         </p>
 
@@ -322,7 +322,7 @@ watch(
                                     </div>
 
                                     <div>
-                                        <p class="text-xs text-slate-500">
+                                        <p class="text-xs text-text-secondary">
                                             Monthly Fee
                                         </p>
 
@@ -334,7 +334,7 @@ watch(
                                             }}
 
                                             <span class="text-xs font-normal
-                                                       text-slate-500">
+                                                       text-text-secondary">
                                                 / month
                                             </span>
                                         </p>
@@ -353,7 +353,7 @@ watch(
                             Join This Course
                         </h2>
 
-                        <p class="mt-2 text-sm leading-6 text-slate-500">
+                        <p class="mt-2 text-[14px] leading-6 text-text-secondary">
                             Select a program to review its fees before continuing.
                         </p>
 
@@ -368,7 +368,7 @@ watch(
                             </p>
 
                             <div class="mt-4 space-y-3">
-                                <div class="flex justify-between gap-3 text-sm">
+                                <div class="flex justify-between gap-3 text-[14px]">
                                     <span class="text-slate-600">
                                         Registration Fee
                                     </span>
@@ -382,7 +382,7 @@ watch(
                                     </span>
                                 </div>
 
-                                <div class="flex justify-between gap-3 text-sm">
+                                <div class="flex justify-between gap-3 text-[14px]">
                                     <span class="text-slate-600">
                                         Monthly Fee
                                     </span>
@@ -400,11 +400,11 @@ watch(
 
                         <!-- No Selection -->
                         <div v-else class="mt-6 rounded-xl border border-dashed
-                                   border-slate-300 p-4 text-sm text-slate-500">
+                                   border-slate-300 p-4 text-[14px] text-text-secondary">
                             No program selected yet.
                         </div>
 
-                        <button type="button" class="mt-6 w-full rounded-xl px-5 py-3 text-sm
+                        <button type="button" class="mt-6 w-full rounded-xl px-5 py-3 text-[14px]
                                    font-semibold transition" :class="selectedProgram
                                     ? 'bg-secondary text-white hover:bg-primary'
                                     : 'cursor-not-allowed bg-slate-100 text-slate-400'
@@ -412,7 +412,7 @@ watch(
                             Continue to Enrollment
                         </button>
 
-                        <p class="mt-3 text-center text-xs leading-5 text-slate-500">
+                        <p class="mt-3 text-center text-xs leading-5 text-text-secondary">
                             Please make sure your selected program meets
                             your learning needs before continuing.
                         </p>

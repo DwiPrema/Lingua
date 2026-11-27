@@ -102,7 +102,7 @@ onUnmounted(() => {
                         Lingua.
                     </h1>
 
-                    <p class="mb-4 text-sm font-medium uppercase tracking-widest text-light-background text-left">
+                    <p class="mb-4 text-[14px] font-medium uppercase tracking-widest text-light-background text-left">
                         Learn & Create
                     </p>
                 </div>
@@ -130,7 +130,7 @@ onUnmounted(() => {
 
 
                     <button type="button" @click="authStore.router.push('/')"
-                        class="mb-6 inline-flex items-center gap-2 rounded-lg text-sm font-medium text-gray-500 transition hover:text-primary">
+                        class="mb-6 inline-flex items-center gap-2 rounded-lg text-[14px] font-medium text-gray-500 transition hover:text-primary">
                         <ArrowLeft :size="24" />
                         Back
                     </button>
@@ -168,7 +168,7 @@ onUnmounted(() => {
                             <!-- OTP INPUT -->
 
                             <div>
-                                <label for="otp" class="mb-2 block text-sm font-medium text-text-secondary">
+                                <label for="otp" class="mb-2 block text-[14px] font-medium text-text-secondary">
                                     Verification code
                                 </label>
 
@@ -177,7 +177,7 @@ onUnmounted(() => {
                                     class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-center text-2xl font-semibold tracking-[0.5em] outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
                             </div>
 
-                            <p v-if="authStore.error" class="mt-2 text-sm text-alert/85" role="alert" aria-live="polite">
+                            <p v-if="authStore.error" class="mt-2 text-[14px] text-alert/85" role="alert" aria-live="polite">
                                 {{ authStore.error }}
                             </p>
 
@@ -193,7 +193,7 @@ onUnmounted(() => {
 
                         <!-- RESEND -->
                         <div class="mt-6 text-center">
-                            <p class="text-sm text-gray-500">
+                            <p class="text-[14px] text-gray-500">
                                 Didn't receive the code?
                             </p>
 
@@ -216,13 +216,13 @@ onUnmounted(() => {
                             </button>
 
                             <!-- Success notification -->
-                            <p v-if="resendSuccess" class="mt-3 rounded-lg bg-green-50 px-3 py-2 text-sm text-success"
+                            <p v-if="resendSuccess" class="mt-3 rounded-lg bg-green-50 px-3 py-2 text-[14px] text-success"
                                 role="status" aria-live="polite">
                                 {{ resendSuccess }}
                             </p>
 
                             <!-- Error notification -->
-                            <p v-if="resendError" class="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-alert"
+                            <p v-if="resendError" class="mt-3 rounded-lg bg-red-50 px-3 py-2 text-[14px] text-alert"
                                 role="alert">
                                 {{ resendError }}
                             </p>
@@ -233,7 +233,7 @@ onUnmounted(() => {
 
                         <div class="mt-8 text-center">
 
-                            <button type="button" class="text-sm text-gray-500 hover:text-dark-background"
+                            <button type="button" class="text-[14px] text-gray-500 hover:text-dark-background"
                                 @click="authStore.router.push('signup')">
                                 ← Change email
                             </button>
@@ -262,21 +262,21 @@ onUnmounted(() => {
                             <button type="button" @click="authStore.loginMethod = 'password'" :class="authStore.loginMethod === 'password'
                                 ? 'bg-primary text-light-background shadow-sm'
                                 : 'text-gray-500 hover:text-dark-background'"
-                                class="rounded-lg px-3 py-2.5 text-sm font-semibold transition">
+                                class="rounded-lg px-3 py-2.5 text-[14px] font-semibold transition">
                                 Password
                             </button>
 
                             <button type="button" @click="authStore.loginMethod = 'otp'" :class="authStore.loginMethod === 'otp'
                                 ? 'bg-accent text-text-primary shadow-sm'
                                 : 'text-gray-500 hover:text-dark-background'"
-                                class="rounded-lg px-3 py-2.5 text-sm font-semibold transition">
+                                class="rounded-lg px-3 py-2.5 text-[14px] font-semibold transition">
                                 Email OTP
                             </button>
                         </div>
 
                         <!-- Error message -->
                         <div v-if="authStore.error" class="mb-5 rounded-xl border border-alert/50 bg-alert/10 p-3">
-                            <p class="text-sm text-alert">
+                            <p class="text-[14px] text-alert">
                                 {{ authStore.error }}
                             </p>
                         </div>
@@ -284,7 +284,7 @@ onUnmounted(() => {
                         <form v-if="authStore.loginMethod === 'password'" class="space-y-5"
                             @submit.prevent="authStore.handlePasswordSignIn">
                             <div>
-                                <label for="login-email" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="login-email" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Email address
                                 </label>
 
@@ -294,7 +294,7 @@ onUnmounted(() => {
                             </div>
 
                             <div>
-                                <label for="login-password" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="login-password" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Password
                                 </label>
 
@@ -311,7 +311,7 @@ onUnmounted(() => {
 
                         <form v-else class="space-y-5" @submit.prevent="authStore.handleOtpSignIn">
                             <div>
-                                <label for="otp-login-email" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="otp-login-email" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Email address
                                 </label>
 
@@ -320,7 +320,7 @@ onUnmounted(() => {
                                     class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
                             </div>
 
-                            <p class="text-sm leading-relaxed text-gray-500">
+                            <p class="text-[14px] leading-relaxed text-gray-500">
                                 We'll send a one-time verification code to your email.
                             </p>
 
@@ -330,7 +330,7 @@ onUnmounted(() => {
                             </button>
                         </form>
 
-                        <p class="mt-8 text-center text-sm text-gray-500">
+                        <p class="mt-8 text-center text-[14px] text-gray-500">
                             Don't have an account?
 
                             <button type="button" class="ml-1 font-semibold text-dark-background hover:underline"
@@ -360,7 +360,7 @@ onUnmounted(() => {
 
                         <div v-if="authStore.error" ref="signupErrorRef"
                             class="mb-6 rounded-xl border border-alert/50 bg-alert/20 p-4">
-                            <p class="text-sm text-alert">
+                            <p class="text-[14px] text-alert">
                                 {{ authStore.error }}
                             </p>
                         </div>
@@ -368,7 +368,7 @@ onUnmounted(() => {
                         <form class="space-y-6" @submit.prevent="handleSignUp">
 
                             <div>
-                                <label class="mb-3 block text-sm font-medium text-gray-700">
+                                <label class="mb-3 block text-[14px] font-medium text-gray-700">
                                     I want to...
                                 </label>
 
@@ -440,7 +440,7 @@ onUnmounted(() => {
 
                             <div>
 
-                                <label for="signup-email" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="signup-email" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Email address
                                 </label>
 
@@ -448,7 +448,7 @@ onUnmounted(() => {
                                     placeholder="you@example.com"
                                     class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
 
-                                <p v-if="authStore.errors.email" class="mt-1 text-sm text-alert">
+                                <p v-if="authStore.errors.email" class="mt-1 text-[14px] text-alert">
                                     {{ authStore.errors.email }}
                                 </p>
 
@@ -456,7 +456,7 @@ onUnmounted(() => {
 
                             <div>
 
-                                <label for="password" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="password" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Password
                                 </label>
 
@@ -464,7 +464,7 @@ onUnmounted(() => {
                                     placeholder="Enter your password!"
                                     class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
 
-                                <p v-if="authStore.errors.password" class="mt-1 text-sm text-alert">
+                                <p v-if="authStore.errors.password" class="mt-1 text-[14px] text-alert">
                                     {{ authStore.errors.password }}
                                 </p>
 
@@ -472,7 +472,7 @@ onUnmounted(() => {
 
                             <div>
 
-                                <label for="fullname" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="fullname" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Full Name
                                 </label>
 
@@ -480,7 +480,7 @@ onUnmounted(() => {
                                     placeholder="Enter your fullname here!"
                                     class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
 
-                                <p v-if="authStore.errors.fullname" class="mt-1 text-sm text-alert">
+                                <p v-if="authStore.errors.fullname" class="mt-1 text-[14px] text-alert">
                                     {{ authStore.errors.fullname }}
                                 </p>
 
@@ -488,7 +488,7 @@ onUnmounted(() => {
 
                             <div>
 
-                                <label for="nickname" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="nickname" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Nick Name
                                 </label>
 
@@ -500,7 +500,7 @@ onUnmounted(() => {
 
                             <div>
 
-                                <label for="phone-number" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="phone-number" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Phone Number
                                 </label>
 
@@ -508,7 +508,7 @@ onUnmounted(() => {
                                     placeholder="Enter your phone number please!"
                                     class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
 
-                                <p v-if="authStore.errors.phoneNumber" class="mt-1 text-sm text-alert">
+                                <p v-if="authStore.errors.phoneNumber" class="mt-1 text-[14px] text-alert">
                                     {{ authStore.errors.phoneNumber }}
                                 </p>
                             </div>
@@ -525,7 +525,7 @@ onUnmounted(() => {
 
                         </form>
 
-                        <p class="mt-8 text-center text-sm text-gray-500">
+                        <p class="mt-8 text-center text-[14px] text-gray-500">
                             Already have an account?
 
                             <button type="button" class="ml-1 font-semibold hover:underline"

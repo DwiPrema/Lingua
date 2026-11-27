@@ -78,7 +78,7 @@ const filteredCourses = computed(() => {
             <h2 class="text-xl font-bold text-text-primary">
                 Explore courses
             </h2>
-            <p class="mt-1 text-sm text-text-secondary">
+            <p class="mt-1 text-[14px] text-text-secondary">
                 Find a course that fits your interests.
             </p>
         </div>
@@ -94,7 +94,7 @@ const filteredCourses = computed(() => {
 
             <input v-model="searchQuery" type="search" placeholder="Search courses by name, description, or location..."
                 class="w-full rounded-xl border border-text-primary
-                   bg-white py-3.5 pl-12 pr-4 text-sm
+                   bg-white py-3.5 pl-12 pr-4 text-[14px]
                    text-text-primary outline-none transition
                    placeholder:text-text-secondary
                    focus:border-secondary focus:ring-4
@@ -109,7 +109,7 @@ const filteredCourses = computed(() => {
                 {{ searchQuery ? 'Search results' : 'Available courses' }}
             </h2>
 
-            <RouterLink to="/student/explore" class="text-sm font-semibold text-primary hover:text-primary-hover">
+            <RouterLink to="/student/explore" class="text-[14px] font-semibold text-primary hover:text-primary-hover">
                 View all →
             </RouterLink>
         </div>
@@ -130,12 +130,12 @@ const filteredCourses = computed(() => {
             <p class="font-semibold text-alert">
                 Unable to load courses
             </p>
-            <p class="mt-1 text-sm text-alert">
+            <p class="mt-1 text-[14px] text-alert">
                 {{ error }}
             </p>
 
             <button type="button" class="mt-4 rounded-lg bg-white px-4 py-2
-                   text-sm font-semibold text-alert
+                   text-[14px] font-semibold text-alert
                    ring-1 ring-red-200 hover:bg-red-100" @click="courseStore.fetchMyCourses()">
                 Try again
             </button>
@@ -153,7 +153,7 @@ const filteredCourses = computed(() => {
                 No courses found
             </h3>
 
-            <p class="mt-2 text-sm text-text-secondary">
+            <p class="mt-2 text-[14px] text-text-secondary">
                 Try another keyword or check back later.
             </p>
         </div>
@@ -172,11 +172,11 @@ const filteredCourses = computed(() => {
                         {{ course.name }}
                     </h3>
 
-                    <p class="mt-2 line-clamp-3 text-sm leading-6 text-text-secondary">
+                    <p class="mt-2 line-clamp-3 text-[14px] leading-6 text-text-secondary">
                         {{ course.description || 'Explore this course to learn more.' }}
                     </p>
 
-                    <div v-if="course.address" class="mt-4 flex items-center gap-1 text-sm text-text-secondary">
+                    <div v-if="course.address" class="mt-4 flex items-center gap-1 text-[14px] text-text-secondary">
                         <MapPin :size="16" />
                         <span>{{ course.address }}</span>
                     </div>
@@ -184,7 +184,7 @@ const filteredCourses = computed(() => {
                     <div class="mt-auto pt-5">
                         <RouterLink :to="`/student/courses/${course.id}`" class="flex w-full items-center justify-center gap-2
                          rounded-xl border border-secondary px-4 py-3
-                         text-sm font-semibold text-surface/80
+                         text-[14px] font-semibold text-surface/80
                          bg-secondary group-hover:text-surface hover:bg-primary
                          transition-all duration-300 ease-in-out">
                             View course details

@@ -211,11 +211,11 @@ const enrolledDate = computed(() =>
                 Failed to Load Student
             </h2>
 
-            <p class="mt-2 text-sm text-alert/85">
+            <p class="mt-2 text-[14px] text-alert/85">
                 {{ error }}
             </p>
 
-            <button @click="loadEnrollment" class="mt-4 rounded-lg bg-alert/85 px-4 py-2 text-sm text-white">
+            <button @click="loadEnrollment" class="mt-4 rounded-lg bg-alert/85 px-4 py-2 text-[14px] text-white">
                 Try Again
             </button>
         </div>
@@ -237,7 +237,7 @@ const enrolledDate = computed(() =>
         <template v-else>
             <section class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <p class="text-sm text-gray-500">
+                    <p class="text-[14px] text-gray-500">
                         Manage Students / Student Detail
                     </p>
 
@@ -245,12 +245,12 @@ const enrolledDate = computed(() =>
                         Student Detail
                     </h1>
 
-                    <p class="mt-1 text-sm text-gray-500">
+                    <p class="mt-1 text-[14px] text-gray-500">
                         View student information and enrollment details.
                     </p>
                 </div>
 
-                <span class="inline-flex w-fit items-center rounded-full px-4 py-2 text-sm font-semibold"
+                <span class="inline-flex w-fit items-center rounded-full px-4 py-2 text-[14px] font-semibold"
                     :class="statusClass">
                     {{ enrollmentStatus }}
                 </span>
@@ -263,7 +263,7 @@ const enrolledDate = computed(() =>
 
                         <!-- Avatar -->
                         <div class="flex size-20 shrink-0 items-center justify-center
-    overflow-hidden rounded-full bg-indigo-50 text-sm font-bold
+    overflow-hidden rounded-full bg-indigo-50 text-[14px] font-bold
     text-indigo-700">
                             <img v-if="getStudentAvatarUrl(enrollment.student_id)"
                                 :src="getStudentAvatarUrl(enrollment.student_id)!" alt="Profile photo"
@@ -276,7 +276,7 @@ const enrolledDate = computed(() =>
                                 {{ enrollment.fullname }}
                             </h2>
 
-                            <p class="mt-1 text-sm text-gray-500">
+                            <p class="mt-1 text-[14px] text-gray-500">
                                 Student ID: {{ enrollment.student_id }}
                             </p>
 
@@ -298,7 +298,7 @@ const enrolledDate = computed(() =>
                 <div class="grid grid-cols-1 gap-5 p-6 sm:grid-cols-2">
 
                     <div>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-[14px] text-gray-500">
                             Full Name
                         </p>
 
@@ -308,7 +308,7 @@ const enrolledDate = computed(() =>
                     </div>
 
                     <div>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-[14px] text-gray-500">
                             Phone Number
                         </p>
 
@@ -318,7 +318,7 @@ const enrolledDate = computed(() =>
                     </div>
 
                     <div class="sm:col-span-2">
-                        <p class="text-sm text-gray-500">
+                        <p class="text-[14px] text-gray-500">
                             Address
                         </p>
 
@@ -337,7 +337,7 @@ const enrolledDate = computed(() =>
                         Enrollment Information
                     </h2>
 
-                    <p class="mt-1 text-sm text-gray-500">
+                    <p class="mt-1 text-[14px] text-gray-500">
                         Course registration details.
                     </p>
                 </div>
@@ -345,7 +345,7 @@ const enrolledDate = computed(() =>
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
 
                     <div>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-[14px] text-gray-500">
                             Course ID
                         </p>
 
@@ -355,7 +355,7 @@ const enrolledDate = computed(() =>
                     </div>
 
                     <div>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-[14px] text-gray-500">
                             Program ID
                         </p>
 
@@ -365,7 +365,7 @@ const enrolledDate = computed(() =>
                     </div>
 
                     <div>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-[14px] text-gray-500">
                             Registration Date
                         </p>
 
@@ -375,7 +375,7 @@ const enrolledDate = computed(() =>
                     </div>
 
                     <div>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-[14px] text-gray-500">
                             Enrollment Date
                         </p>
 
@@ -394,7 +394,7 @@ const enrolledDate = computed(() =>
                         Education Information
                     </h2>
 
-                    <p class="mt-1 text-sm text-gray-500">
+                    <p class="mt-1 text-[14px] text-gray-500">
                         Student educational background.
                     </p>
                 </div>
@@ -402,7 +402,7 @@ const enrolledDate = computed(() =>
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
 
                     <div>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-[14px] text-gray-500">
                             Education Level
                         </p>
 
@@ -412,7 +412,7 @@ const enrolledDate = computed(() =>
                     </div>
 
                     <div>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-[14px] text-gray-500">
                             School / Institution
                         </p>
 
@@ -431,7 +431,7 @@ const enrolledDate = computed(() =>
                         Enrollment Status
                     </h2>
 
-                    <p class="mt-1 text-sm text-gray-500">
+                    <p class="mt-1 text-[14px] text-gray-500">
                         Current enrollment progress.
                     </p>
                 </div>
@@ -448,17 +448,17 @@ const enrolledDate = computed(() =>
                         </span>
                     </div>
 
-                    <p class="mt-2 text-sm leading-relaxed text-gray-600">
+                    <p class="mt-2 text-[14px] leading-relaxed text-gray-600">
                         {{ statusDescription }}
                     </p>
 
                     <div v-if="enrollment.status === 'rejected' && enrollment.rejection_reason"
                         class="mt-4 rounded-lg border border-red-200 bg-red-50 p-4">
-                        <p class="text-sm font-semibold text-alert">
+                        <p class="text-[14px] font-semibold text-alert">
                             Rejection Reason
                         </p>
 
-                        <p class="mt-1 text-sm text-alert/85">
+                        <p class="mt-1 text-[14px] text-alert/85">
                             {{ enrollment.rejection_reason }}
                         </p>
                     </div>
@@ -468,7 +468,7 @@ const enrolledDate = computed(() =>
                 <div class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
 
                     <div>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-[14px] text-gray-500">
                             Reviewed At
                         </p>
 
@@ -478,7 +478,7 @@ const enrolledDate = computed(() =>
                     </div>
 
                     <div>
-                        <p class="text-sm text-gray-500">
+                        <p class="text-[14px] text-gray-500">
                             Approved At
                         </p>
 
@@ -488,7 +488,7 @@ const enrolledDate = computed(() =>
                     </div>
 
                     <div class="sm:col-span-2">
-                        <p class="text-sm text-gray-500">
+                        <p class="text-[14px] text-gray-500">
                             Last Updated
                         </p>
 

@@ -179,7 +179,7 @@ async function submitEnrollment(): Promise<void> {
         <div class="mx-auto">
             <button
                 type="button"
-                class="mb-6 text-sm font-medium text-text-secondary hover:text-slate-950"
+                class="mb-6 text-[14px] font-medium text-text-secondary hover:text-slate-950"
                 @click="router.back()"
             >
                 ← Back
@@ -198,11 +198,11 @@ async function submitEnrollment(): Promise<void> {
                 <h1 class="text-xl font-bold text-text-primary">
                     Unable to load enrollment
                 </h1>
-                <p class="mt-2 text-sm text-alert">{{ pageError }}</p>
+                <p class="mt-2 text-[14px] text-alert">{{ pageError }}</p>
 
                 <button
                     type="button"
-                    class="mt-5 rounded-xl bg-text-primary px-5 py-3 text-sm font-semibold text-white"
+                    class="mt-5 rounded-xl bg-text-primary px-5 py-3 text-[14px] font-semibold text-white"
                     @click="loadEnrollmentData"
                 >
                     Try Again
@@ -211,7 +211,7 @@ async function submitEnrollment(): Promise<void> {
 
             <template v-else>
                 <header class="mb-8">
-                    <p class="text-sm font-semibold uppercase tracking-wider text-accent">
+                    <p class="text-[14px] font-semibold uppercase tracking-wider text-accent">
                         Student enrollment
                     </p>
 
@@ -235,7 +235,7 @@ async function submitEnrollment(): Promise<void> {
                         {{ course?.name }}
                     </h2>
 
-                    <p class="mt-2 text-sm leading-6 text-text-secondary">
+                    <p class="mt-2 text-[14px] leading-6 text-text-secondary">
                         {{ course?.description || 'No course description available.' }}
                     </p>
 
@@ -250,7 +250,7 @@ async function submitEnrollment(): Promise<void> {
 
                     <div class="mt-4 grid gap-4 sm:grid-cols-2">
                         <div class="rounded-xl border border-text-primary p-4">
-                            <p class="text-sm text-slate-500">
+                            <p class="text-[14px] text-text-secondary">
                                 Registration fee
                             </p>
                             <p class="mt-2 text-lg font-bold text-text-primary">
@@ -259,7 +259,7 @@ async function submitEnrollment(): Promise<void> {
                         </div>
 
                         <div class="rounded-xl border border-text-primary p-4">
-                            <p class="text-sm text-slate-500">
+                            <p class="text-[14px] text-text-secondary">
                                 Monthly fee
                             </p>
                             <p class="mt-2 text-lg font-bold text-text-primary">
@@ -278,7 +278,7 @@ async function submitEnrollment(): Promise<void> {
                         <h2 class="text-xl font-bold text-text-primary">
                             Personal Information
                         </h2>
-                        <p class="mt-2 text-sm text-slate-500">
+                        <p class="mt-2 text-[14px] text-text-secondary">
                             Provide accurate information for the course
                             administrator to review your enrollment.
                         </p>
@@ -286,7 +286,7 @@ async function submitEnrollment(): Promise<void> {
 
                     <div class="grid gap-5 sm:grid-cols-2">
                         <div class="sm:col-span-2">
-                            <label for="fullname" class="mb-2 block text-sm font-semibold text-slate-700">
+                            <label for="fullname" class="mb-2 block text-[14px] font-semibold text-slate-700">
                                 Full name <span class="text-red-500">*</span>
                             </label>
                             <input
@@ -302,7 +302,7 @@ async function submitEnrollment(): Promise<void> {
                         </div>
 
                         <div>
-                            <label for="phone" class="mb-2 block text-sm font-semibold text-slate-700">
+                            <label for="phone" class="mb-2 block text-[14px] font-semibold text-slate-700">
                                 Phone number <span class="text-red-500">*</span>
                             </label>
                             <input
@@ -318,7 +318,7 @@ async function submitEnrollment(): Promise<void> {
                         </div>
 
                         <div>
-                            <label for="education" class="mb-2 block text-sm font-semibold text-slate-700">
+                            <label for="education" class="mb-2 block text-[14px] font-semibold text-slate-700">
                                 Education level <span class="text-red-500">*</span>
                             </label>
                             <select
@@ -341,7 +341,7 @@ async function submitEnrollment(): Promise<void> {
                         </div>
 
                         <div class="sm:col-span-2">
-                            <label for="school" class="mb-2 block text-sm font-semibold text-slate-700">
+                            <label for="school" class="mb-2 block text-[14px] font-semibold text-slate-700">
                                 School / Institution
                                 <span class="text-red-500">*</span>
                             </label>
@@ -357,7 +357,7 @@ async function submitEnrollment(): Promise<void> {
                         </div>
 
                         <div class="sm:col-span-2">
-                            <label for="address" class="mb-2 block text-sm font-semibold text-slate-700">
+                            <label for="address" class="mb-2 block text-[14px] font-semibold text-slate-700">
                                 Address <span class="text-red-500">*</span>
                             </label>
                             <textarea
@@ -375,13 +375,13 @@ async function submitEnrollment(): Promise<void> {
                     <p
                         v-if="formError"
                         role="alert"
-                        class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-alert"
+                        class="mt-5 rounded-xl border border-red-200 bg-red-50 p-4 text-[14px] text-alert"
                     >
                         {{ formError }}
                     </p>
 
                     <div class="mt-6 rounded-xl bg-amber-50 p-4">
-                        <p class="text-sm leading-6 text-amber-900">
+                        <p class="text-[14px] leading-6 text-amber-900">
                             <strong>What happens next?</strong>
                             Your enrollment will be submitted with a pending
                             status for administrator review.
@@ -416,39 +416,39 @@ async function submitEnrollment(): Promise<void> {
                     Confirm Enrollment
                 </h2>
 
-                <p class="mt-2 text-sm leading-6 text-text-secondary">
+                <p class="mt-2 text-[14px] leading-6 text-text-secondary">
                     Please make sure your information is correct before
                     submitting.
                 </p>
 
                 <dl class="mt-6 divide-y divide-slate-100">
                     <div class="flex justify-between gap-4 py-3">
-                        <dt class="text-sm text-slate-500">Full name</dt>
-                        <dd class="text-right text-sm font-semibold text-text-primary">
+                        <dt class="text-[14px] text-text-secondary">Full name</dt>
+                        <dd class="text-right text-[14px] font-semibold text-text-primary">
                             {{ form.fullname }}
                         </dd>
                     </div>
                     <div class="flex justify-between gap-4 py-3">
-                        <dt class="text-sm text-slate-500">Course</dt>
-                        <dd class="text-right text-sm font-semibold text-text-primary">
+                        <dt class="text-[14px] text-text-secondary">Course</dt>
+                        <dd class="text-right text-[14px] font-semibold text-text-primary">
                             {{ course?.name }}
                         </dd>
                     </div>
                     <div class="flex justify-between gap-4 py-3">
-                        <dt class="text-sm text-slate-500">Program</dt>
-                        <dd class="text-right text-sm font-semibold text-text-primary">
+                        <dt class="text-[14px] text-text-secondary">Program</dt>
+                        <dd class="text-right text-[14px] font-semibold text-text-primary">
                             {{ program?.name }}
                         </dd>
                     </div>
                     <div class="flex justify-between gap-4 py-3">
-                        <dt class="text-sm text-slate-500">Registration fee</dt>
-                        <dd class="text-right text-sm font-semibold text-text-primary">
+                        <dt class="text-[14px] text-text-secondary">Registration fee</dt>
+                        <dd class="text-right text-[14px] font-semibold text-text-primary">
                             {{ formatCurrency(registrationFee) }}
                         </dd>
                     </div>
                     <div class="flex justify-between gap-4 py-3">
-                        <dt class="text-sm text-slate-500">Monthly fee</dt>
-                        <dd class="text-right text-sm font-semibold text-text-primary">
+                        <dt class="text-[14px] text-text-secondary">Monthly fee</dt>
+                        <dd class="text-right text-[14px] font-semibold text-text-primary">
                             {{ formatCurrency(monthlyFee) }}
                         </dd>
                     </div>

@@ -134,7 +134,7 @@ onUnmounted(() => {
             <h2 class="font-bold">
                 {{ invoice.status === "pending_verification" ? "Payment Verification Pending" : invoice.status === "paid" ? "Payment Completed" : "Payment Unavailable" }}
             </h2>
-            <p class="mt-1 text-sm leading-6">
+            <p class="mt-1 text-[14px] leading-6">
                 {{ invoicePaymentMessage }}
             </p>
         </div>

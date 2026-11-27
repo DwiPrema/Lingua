@@ -214,20 +214,20 @@ async function confirmLogout(): Promise<void> {
                     Log out of Lingua?
                 </h2>
 
-                <p class="mt-2 text-sm leading-6 text-text-secondary">
+                <p class="mt-2 text-[14px] leading-6 text-text-secondary">
                     Are you sure you want to log out of your account?
                     You will need to sign in again to access your dashboard.
                 </p>
 
                 <div class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
                     <button type="button" :disabled="loggingOut"
-                        class="rounded-xl border border-gray-300 px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                        class="rounded-xl border border-gray-300 px-5 py-3 text-[14px] font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
                         @click="cancelLogout">
                         Cancel
                     </button>
 
                     <button type="button" :disabled="loggingOut"
-                        class="rounded-xl bg-alert px-5 py-3 text-sm font-semibold text-surface transition hover:bg-alert disabled:cursor-not-allowed disabled:opacity-50"
+                        class="rounded-xl bg-alert px-5 py-3 text-[14px] font-semibold text-surface transition hover:bg-alert disabled:cursor-not-allowed disabled:opacity-50"
                         @click="confirmLogout">
                         {{ loggingOut ? 'Logging out...' : 'Yes, log out' }}
                     </button>
@@ -241,20 +241,20 @@ async function confirmLogout(): Promise<void> {
             <!-- Page heading -->
             <header class="mb-8 flex items-center justify-between gap-4">
                 <div>
-                    <button type="button" class="mb-5 text-sm font-medium text-slate-500 hover:text-primary"
+                    <button type="button" class="mb-5 text-[14px] font-medium text-text-secondary hover:text-primary"
                         @click="router.push('/')">
                         &larr; Back to dashboard
                     </button>
                     <h1 class="mt-1 text-2xl font-bold text-text-primary sm:text-3xl">
                         My Profile
                     </h1>
-                    <p class="mt-2 text-sm text-text-secondary">
+                    <p class="mt-2 text-[14px] text-text-secondary">
                         Manage your personal information and account.
                     </p>
                 </div>
 
                 <button class="inline-flex items-center gap-2 rounded-lg
-                 border border-red-200 px-3 py-2 text-sm
+                 border border-red-200 px-3 py-2 text-[14px]
                  font-medium text-alert transition
                  hover:bg-red-50" @click="handleLogout">
                     <span aria-hidden="true">↪</span>
@@ -264,7 +264,7 @@ async function confirmLogout(): Promise<void> {
 
             <!-- Loading state -->
             <div v-if="loading" class="rounded-2xl border border-gray-200 bg-surface p-10
-                text-center text-sm text-text-secondary" role="status">
+                text-center text-[14px] text-text-secondary" role="status">
                 Loading your profile...
             </div>
 
@@ -273,11 +273,11 @@ async function confirmLogout(): Promise<void> {
                 <p class="font-medium text-alert">
                     Unable to load your profile
                 </p>
-                <p class="mt-2 text-sm text-gray-600">
+                <p class="mt-2 text-[14px] text-gray-600">
                     {{ error }}
                 </p>
                 <button type="button" class="mt-4 rounded-lg bg-alert px-4 py-2
-                 text-sm font-medium text-surface hover:bg-red-900" @click="retry">
+                 text-[14px] font-medium text-surface hover:bg-red-900" @click="retry">
                     Try again
                 </button>
             </div>
@@ -319,7 +319,7 @@ async function confirmLogout(): Promise<void> {
                             {{ form.fullname || 'Your name' }}
                         </h3>
 
-                        <p class="mt-1 text-sm text-text-secondary">
+                        <p class="mt-1 text-[14px] text-text-secondary">
                             {{ user?.email || 'No email available' }}
                         </p>
 
@@ -346,13 +346,13 @@ async function confirmLogout(): Promise<void> {
                             <h2 class="text-lg font-semibold text-text-primary">
                                 Personal information
                             </h2>
-                            <p class="mt-1 text-sm text-text-secondary">
+                            <p class="mt-1 text-[14px] text-text-secondary">
                                 Your basic account details.
                             </p>
                         </div>
 
                         <button v-if="!isEditing" type="button" class="self-start rounded-lg border border-gray-300
-                     px-4 py-2 text-sm font-medium text-gray-700
+                     px-4 py-2 text-[14px] font-medium text-gray-700
                      transition hover:bg-gray-50 sm:self-auto" @click="startEditing">
                             Edit profile
                         </button>
@@ -361,47 +361,47 @@ async function confirmLogout(): Promise<void> {
                     <form class="mt-8 space-y-6" @submit.prevent="saveEditing">
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                             <div class="sm:col-span-2">
-                                <label for="fullname" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="fullname" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Full name
                                 </label>
                                 <input id="fullname" v-model="form.fullname" type="text" autocomplete="name" required
                                     :readonly="!isEditing" class="w-full rounded-xl border px-4 py-3
-                         text-sm text-text-primary outline-none transition
+                         text-[14px] text-text-primary outline-none transition
                          focus:border-accent focus:ring-2
                          focus:ring-red-100 read-only:bg-gray-50
                          read-only:text-gray-600" />
                             </div>
 
                             <div>
-                                <label for="nickname" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="nickname" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Nickname
                                 </label>
                                 <input id="nickname" v-model="form.nickname" type="text" autocomplete="nickname"
                                     :readonly="!isEditing" class="w-full rounded-xl border px-4 py-3
-                         text-sm text-text-primary outline-none transition
+                         text-[14px] text-text-primary outline-none transition
                          focus:border-accent focus:ring-2
                          focus:ring-red-100 read-only:bg-gray-50
                          read-only:text-gray-600" />
                             </div>
 
                             <div>
-                                <label for="phone" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="phone" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Phone number
                                 </label>
                                 <input id="phone" v-model="form.phone" type="tel" autocomplete="tel" required
                                     :readonly="!isEditing" class="w-full rounded-xl border px-4 py-3
-                         text-sm text-text-primary outline-none transition
+                         text-[14px] text-text-primary outline-none transition
                          focus:border-accent focus:ring-2
                          focus:ring-red-100 read-only:bg-gray-50
                          read-only:text-gray-600" />
                             </div>
 
                             <div class="sm:col-span-2">
-                                <label for="email" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="email" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Email address
                                 </label>
                                 <input id="email" :value="user?.email || ''" type="email" readonly class="w-full cursor-not-allowed rounded-xl
-                         border bg-gray-50 px-4 py-3 text-sm
+                         border bg-gray-50 px-4 py-3 text-[14px]
                          text-text-secondary" />
                                 <p class="mt-2 text-xs text-text-secondary">
                                     Your email is managed by your authentication account.
@@ -412,14 +412,14 @@ async function confirmLogout(): Promise<void> {
                         <div v-if="isEditing" class="flex flex-col-reverse gap-3 border-t
                      border-gray-100 pt-6 sm:flex-row sm:justify-end">
                             <button type="button" :disabled="saving" class="rounded-xl border border-gray-300 px-5 py-3
-                        text-sm font-medium text-gray-700
+                        text-[14px] font-medium text-gray-700
                         hover:bg-gray-50 disabled:opacity-50" @click="cancelEditing">
                                 Cancel
                             </button>
 
                             <button type="submit" :disabled="saving || !form.fullname.trim() || !form.phone.trim()"
                                 class="rounded-xl bg-primary px-5 py-3
-                        text-sm font-semibold text-surface
+                        text-[14px] font-semibold text-surface
                         transition hover:bg-primary-hover
                         disabled:cursor-not-allowed disabled:opacity-50">
                                 {{ saving ? 'Saving...' : 'Save changes' }}

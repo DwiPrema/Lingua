@@ -141,12 +141,12 @@ onMounted(async () => {
                         <div class="mt-8 space-y-6">
                             <div class="flex gap-4">
                                 <span class="flex h-9 w-9 shrink-0 items-center justify-center
-                       rounded-full bg-primary/15 text-sm font-bold text-primary">
+                       rounded-full bg-primary/15 text-[14px] font-bold text-primary">
                                     01
                                 </span>
                                 <div>
                                     <h4 class="font-semibold text-text-primary">Explore courses</h4>
-                                    <p class="mt-1 text-sm leading-6 text-text-secondary">
+                                    <p class="mt-1 text-[14px] leading-6 text-text-secondary">
                                         Browse courses and find the right one for your goals.
                                     </p>
                                 </div>
@@ -154,12 +154,12 @@ onMounted(async () => {
 
                             <div class="flex gap-4">
                                 <span class="flex h-9 w-9 shrink-0 items-center justify-center
-                       rounded-full bg-primary/15 text-sm font-bold text-primary">
+                       rounded-full bg-primary/15 text-[14px] font-bold text-primary">
                                     02
                                 </span>
                                 <div>
                                     <h4 class="font-semibold text-text-primary">Enroll in a course</h4>
-                                    <p class="mt-1 text-sm leading-6 text-text-secondary">
+                                    <p class="mt-1 text-[14px] leading-6 text-text-secondary">
                                         Choose a course and register to begin your learning journey.
                                     </p>
                                 </div>
@@ -167,12 +167,12 @@ onMounted(async () => {
 
                             <div class="flex gap-4">
                                 <span class="flex h-9 w-9 shrink-0 items-center justify-center
-                       rounded-full bg-primary/15 text-sm font-bold text-primary">
+                       rounded-full bg-primary/15 text-[14px] font-bold text-primary">
                                     03
                                 </span>
                                 <div>
                                     <h4 class="font-semibold text-text-primary">Learn and grow</h4>
-                                    <p class="mt-1 text-sm leading-6 text-text-secondary">
+                                    <p class="mt-1 text-[14px] leading-6 text-text-secondary">
                                         Build your knowledge and develop practical skills.
                                     </p>
                                 </div>
@@ -207,12 +207,12 @@ onMounted(async () => {
                         <div class="mt-8 space-y-6">
                             <div class="flex gap-4">
                                 <span class="flex h-9 w-9 shrink-0 items-center justify-center
-                       rounded-full bg-accent/15 text-sm font-bold text-accent">
+                       rounded-full bg-accent/15 text-[14px] font-bold text-accent">
                                     01
                                 </span>
                                 <div>
                                     <h4 class="font-semibold text-text-primary">Create your profile</h4>
-                                    <p class="mt-1 text-sm leading-6 text-text-secondary">
+                                    <p class="mt-1 text-[14px] leading-6 text-text-secondary">
                                         Set up your creator profile and introduce your expertise.
                                     </p>
                                 </div>
@@ -220,12 +220,12 @@ onMounted(async () => {
 
                             <div class="flex gap-4">
                                 <span class="flex h-9 w-9 shrink-0 items-center justify-center
-                       rounded-full bg-accent/15 text-sm font-bold text-accent">
+                       rounded-full bg-accent/15 text-[14px] font-bold text-accent">
                                     02
                                 </span>
                                 <div>
                                     <h4 class="font-semibold text-text-primary">Publish a course</h4>
-                                    <p class="mt-1 text-sm leading-6 text-text-secondary">
+                                    <p class="mt-1 text-[14px] leading-6 text-text-secondary">
                                         Organize your knowledge into a course learners can discover.
                                     </p>
                                 </div>
@@ -233,12 +233,12 @@ onMounted(async () => {
 
                             <div class="flex gap-4">
                                 <span class="flex h-9 w-9 shrink-0 items-center justify-center
-                       rounded-full bg-accent/15 text-sm font-bold text-accent">
+                       rounded-full bg-accent/15 text-[14px] font-bold text-accent">
                                     03
                                 </span>
                                 <div>
                                     <h4 class="font-semibold text-text-primary">Share your knowledge</h4>
-                                    <p class="mt-1 text-sm leading-6 text-text-secondary">
+                                    <p class="mt-1 text-[14px] leading-6 text-text-secondary">
                                         Connect with learners and help them develop new skills.
                                     </p>
                                 </div>

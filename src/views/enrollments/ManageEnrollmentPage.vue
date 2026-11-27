@@ -19,6 +19,7 @@ import { useCourseStores } from '@/stores/course_stores'
 import { useEnrollmentStores } from '@/stores/enrollments_stores'
 import { Course } from '@/types/course_type'
 import { Enrollment } from '@/types/enrollment_type'
+import { useUserDataStores } from '@/stores/user_data_stores'
 
 const route = useRoute()
 const router = useRouter()
@@ -36,6 +37,8 @@ const rejectingEnrollmentId = ref<string | null>(null)
 const rejectionReason = ref<string>('')
 const actionError = ref<string | null>(null)
 
+const userStore = useUserDataStores()
+
 const courseId = computed(() => route.params.courseId as string)
 
 const pendingEnrollments = computed(() =>
@@ -43,18 +46,6 @@ const pendingEnrollments = computed(() =>
         (item) => item.status === 'pending',
     ),
 )
-
-function getInitials(name: string) {
-    if (!name?.trim()) return '?'
-
-    return name
-        .trim()
-        .split(/\s+/)
-        .slice(0, 2)
-        .map((part) => part[0])
-        .join('')
-        .toUpperCase()
-}
 
 function formatDate(date: string) {
     if (!date) return '-'
@@ -95,9 +86,7 @@ async function fetchEnrollments() {
                 courseId.value,
             )
 
-        enrollments.value = Array.isArray(result)
-            ? result
-            : result?.data ?? []
+        enrollments.value = result
     } catch (err) {
         const e = err as {message?: string}
 
@@ -144,6 +133,10 @@ function cancelReject() {
     rejectingEnrollmentId.value = null
     rejectionReason.value = ''
     actionError.value = null
+}
+
+function getStudentAvatarUrl(studentId: string): string | null {
+    return userStore.userDataById[studentId]?.avatar_url ?? null;
 }
 
 async function rejectEnrollment(enrollment: Enrollment) {
@@ -195,8 +188,8 @@ watch(courseId, (newId, oldId) => {
 </script>
 
 <template>
-    <main class="min-h-screen bg-slate-50">
-        <div class="mx-auto w-full max-w-6xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+    <main class="min-h-screen">
+        <div class="mx-auto w-full space-y-6 px-4 py-6 sm:px-6 lg:px-8">
             <!-- Header -->
             <header class="flex items-center gap-3">
                 <button type="button" aria-label="Kembali" class="rounded-xl border border-slate-200 bg-white p-2.5
@@ -210,30 +203,30 @@ watch(courseId, (newId, oldId) => {
                 </div>
 
                 <div>
-                    <h1 class="text-xl font-bold tracking-tight text-text-primary">
+                    <h1 class="text-[20px] font-black tracking-tight text-text-primary">
                         Manage Enrollments
                     </h1>
 
-                    <p class="mt-0.5 text-sm text-slate-500">
+                    <p class="mt-0.5 text-[14px] text-text-secondary">
                         Review student applications for this course.
                     </p>
                 </div>
             </header>
 
             <!-- Course information -->
-            <section class="rounded-2xl border border-slate-200 bg-white p-5
+            <section class="rounded-2xl border border-text-primary bg-accent p-5
                        shadow-sm sm:p-6">
                 <p class="text-xs font-semibold uppercase tracking-wider
-                           text-slate-400">
+                           text-text-primary">
                     Course
                 </p>
 
                 <template v-if="course">
-                    <h2 class="mt-2 text-2xl font-bold text-text-primary">
+                    <h2 class="mt-2 text-[30px] font-black text-text-primary">
                         {{ course.name || 'Untitled course' }}
                     </h2>
 
-                    <p class="mt-2 text-sm leading-6 text-slate-500">
+                    <p class="mt-2 text-[14px] leading-6 text-text-primary">
                         Review applications and decide whether to approve
                         or reject each student.
                     </p>
@@ -263,7 +256,7 @@ watch(courseId, (newId, oldId) => {
 
                     <button type="button" :disabled="loading" class="inline-flex items-center gap-2 rounded-xl
                                border border-slate-200 bg-white px-3 py-2
-                               text-sm font-semibold text-slate-700
+                               text-[14px] font-semibold text-slate-700
                                transition hover:bg-slate-100
                                disabled:cursor-not-allowed disabled:opacity-50" @click="fetchEnrollments">
                         <RefreshCw class="size-4" :class="{ 'animate-spin': loading }" />
@@ -273,7 +266,7 @@ watch(courseId, (newId, oldId) => {
 
                 <!-- Action error -->
                 <div v-if="actionError" role="alert" class="flex items-start gap-2 rounded-xl border
-                           border-red-200 bg-red-50 p-4 text-sm text-alert">
+                           border-red-200 bg-red-50 p-4 text-[14px] text-alert">
                     <CircleAlert class="mt-0.5 size-5 shrink-0" />
                     <p class="flex-1">{{ actionError }}</p>
 
@@ -300,18 +293,18 @@ watch(courseId, (newId, oldId) => {
                 <!-- Fetch error -->
                 <div v-else-if="error" class="rounded-2xl border border-red-200
                            bg-white p-6 text-center">
-                    <CircleAlert class="mx-auto size-9 text-red-500" />
+                    <CircleAlert class="mx-auto size-9 text-alert" />
 
                     <h3 class="mt-3 font-semibold text-text-primary">
                         Can't load enrollment data
                     </h3>
 
-                    <p class="mt-1 text-sm text-slate-500">
+                    <p class="mt-1 text-[14px] text-text-secondary">
                         {{ error }}
                     </p>
 
                     <button type="button" class="mt-4 inline-flex items-center gap-2 rounded-xl
-                               bg-text-primary px-4 py-2.5 text-sm font-semibold
+                               bg-text-primary px-4 py-2.5 text-[14px] font-semibold
                                text-white transition hover:bg-slate-700" @click="fetchEnrollments">
                         <RefreshCw class="size-4" />
                         Try again
@@ -322,7 +315,7 @@ watch(courseId, (newId, oldId) => {
                 <div v-else-if="pendingEnrollments.length === 0" class="rounded-2xl border border-dashed border-slate-300
                            bg-white px-5 py-14 text-center">
                     <div class="mx-auto flex size-14 items-center justify-center
-                               rounded-2xl bg-slate-100 text-slate-500">
+                               rounded-2xl bg-slate-100 text-text-secondary">
                         <Users class="size-7" />
                     </div>
 
@@ -330,7 +323,7 @@ watch(courseId, (newId, oldId) => {
                         No pending applications
                     </h3>
 
-                    <p class="mx-auto mt-1 max-w-sm text-sm leading-6 text-slate-500">
+                    <p class="mx-auto mt-1 max-w-sm text-[14px] leading-6 text-text-secondary">
                         New student applications will appear here when
                         students enroll in this course.
                     </p>
@@ -343,11 +336,20 @@ watch(courseId, (newId, oldId) => {
                         <div class="space-y-4 p-5">
                             <!-- Student heading -->
                             <div class="flex items-start gap-3">
-                                <div class="flex size-12 shrink-0 items-center
+                                <!-- <div class="flex size-12 shrink-0 items-center
                                            justify-center rounded-full bg-indigo-50
-                                           text-sm font-bold text-indigo-700">
+                                           text-[14px] font-bold text-indigo-700">
                                     {{ getInitials(enrollment.fullname) }}
-                                </div>
+                                </div> -->
+
+                                <!-- Avatar -->
+                            <div class="flex size-12 shrink-0 items-center justify-center
+    overflow-hidden rounded-full bg-indigo-50 text-[14px] font-bold
+    text-indigo-700">
+                                <img v-if="getStudentAvatarUrl(enrollment.student_id)"
+                                    :src="getStudentAvatarUrl(enrollment.student_id)!" alt="Profile photo"
+                                    class="size-full object-cover" />
+                            </div>
 
                                 <div class="min-w-0 flex-1">
                                     <h3 class="wrap-break-word font-semibold
@@ -355,7 +357,7 @@ watch(courseId, (newId, oldId) => {
                                         {{ enrollment.fullname || 'Unnamed student' }}
                                     </h3>
 
-                                    <p class="mt-1 text-xs text-slate-500">
+                                    <p class="mt-1 text-xs text-text-secondary">
                                         Submitted
                                         {{ formatDate(enrollment.created_at) }}
                                     </p>
@@ -370,7 +372,7 @@ watch(courseId, (newId, oldId) => {
                             </div>
 
                             <!-- Student details -->
-                            <div class="space-y-2.5 text-sm text-slate-600">
+                            <div class="space-y-2.5 text-[14px] text-slate-600">
                                 <p v-if="enrollment.phone" class="flex items-center gap-2">
                                     <Phone class="size-4 shrink-0 text-slate-400" />
                                     <span class="break-all">
@@ -390,7 +392,7 @@ watch(courseId, (newId, oldId) => {
                                     <span>{{ enrollment.education_level }}</span>
                                 </p>
 
-                                <p v-if="enrollment.address" class="text-sm leading-6 text-slate-500">
+                                <p v-if="enrollment.address" class="text-[14px] leading-6 text-text-secondary">
                                     {{ enrollment.address }}
                                 </p>
                             </div>
@@ -406,20 +408,20 @@ watch(courseId, (newId, oldId) => {
                                     </h4>
                                 </div>
 
-                                <label :for="`reason-${enrollment.id}`" class="block text-sm text-slate-600">
+                                <label :for="`reason-${enrollment.id}`" class="block text-[14px] text-slate-600">
                                     Explain why this application is rejected.
                                 </label>
 
                                 <textarea :id="`reason-${enrollment.id}`" v-model="rejectionReason" rows="3"
                                     maxlength="1000" placeholder="Enter the reason for rejection..." class="w-full resize-y rounded-xl border
                                            border-slate-200 bg-white px-3 py-2.5
-                                           text-sm outline-none transition
+                                           text-[14px] outline-none transition
                                            focus:border-red-400 focus:ring-2
                                            focus:ring-red-100" />
 
                                 <div class="flex flex-wrap justify-end gap-2">
                                     <button type="button" :disabled="processingId === enrollment.id" class="rounded-xl border border-slate-200
-                                               bg-white px-3 py-2 text-sm
+                                               bg-white px-3 py-2 text-[14px]
                                                font-semibold text-slate-700
                                                hover:bg-slate-100
                                                disabled:opacity-50" @click="cancelReject">
@@ -430,7 +432,7 @@ watch(courseId, (newId, oldId) => {
                                         !rejectionReason.trim()
                                         " class="inline-flex items-center gap-2
                                                rounded-xl bg-alert/85 px-3 py-2
-                                               text-sm font-semibold text-white
+                                               text-[14px] font-semibold text-white
                                                hover:bg-alert
                                                disabled:cursor-not-allowed
                                                disabled:opacity-50" @click="rejectEnrollment(enrollment)">
@@ -446,7 +448,7 @@ watch(courseId, (newId, oldId) => {
                                        border-t border-slate-100 pt-4">
                                 <button type="button" :disabled="processingId === enrollment.id" class="inline-flex items-center gap-2
                                            rounded-xl border border-red-200
-                                           bg-white px-4 py-2.5 text-sm
+                                           bg-white px-4 py-2.5 text-[14px]
                                            font-semibold text-alert/85
                                            transition hover:bg-red-50
                                            disabled:cursor-not-allowed
@@ -457,7 +459,7 @@ watch(courseId, (newId, oldId) => {
 
                                 <button type="button" :disabled="processingId === enrollment.id" class="inline-flex items-center gap-2
                                            rounded-xl bg-emerald-600 px-4 py-2.5
-                                           text-sm font-semibold text-white
+                                           text-[14px] font-semibold text-white
                                            transition hover:bg-emerald-700
                                            disabled:cursor-not-allowed
                                            disabled:opacity-50" @click="approveEnrollment(enrollment)">

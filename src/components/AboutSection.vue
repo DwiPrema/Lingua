@@ -390,7 +390,7 @@ onBeforeUnmount(() => {
                 About Lingua.
             </a>
 
-            <span class="text-sm font-semibold text-accent sm:text-[16px] lg:text-[20px]">
+            <span class="text-[14px] font-semibold text-accent sm:text-[16px] lg:text-[20px]">
                 Discover. Learn. Grow.
             </span>
         </header>
@@ -428,7 +428,7 @@ onBeforeUnmount(() => {
                         </p>
                     </div>
 
-                    <div class="role-card__features flex flex-col justify-between self-stretch text-sm font-semibold md:text-base"
+                    <div class="role-card__features flex flex-col justify-between self-stretch text-[14px] font-semibold md:text-base"
                         :class="isIntroExpanded
                             ? [cardFeaturesClass.expanded, role.dividerClass]
                             : cardFeaturesClass.collapsed">
@@ -449,7 +449,7 @@ onBeforeUnmount(() => {
 
             <div class="relative mb-8 h-px w-[90%] m-auto shrink-0 bg-text-primary lg:mb-auto">
                 <span
-                    class="about-caption absolute right-0 top-2 text-sm font-semibold text-primary sm:text-[16px] lg:top-auto lg:text-[20px]">
+                    class="about-caption absolute right-0 top-2 text-[14px] font-semibold text-primary sm:text-[16px] lg:top-auto lg:text-[20px]">
                     One Place. Two Possibilities.
                 </span>
             </div>
@@ -504,7 +504,7 @@ onBeforeUnmount(() => {
                                 </div>
                             </div>
 
-                            <p class="mb-6 line-clamp-3 text-sm font-normal leading-relaxed text-gray-600">
+                            <p class="mb-6 line-clamp-3 text-[14px] font-normal leading-relaxed text-gray-600">
                                 {{ course.description }}
                             </p>
                         </div>

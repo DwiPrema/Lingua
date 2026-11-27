@@ -210,12 +210,12 @@ watch(studentId, (newId, oldId) => {
             <!-- Page header -->
             <header class="sticky top-0 z-10 flex flex-col justify-between gap-5 sm:flex-row sm:items-end bg-surface py-5 border-b border-text-primary m-0">
                 <div>
-                    <button type="button" class="mb-5 text-sm font-medium text-slate-500 hover:text-primary"
+                    <button type="button" class="mb-5 text-[14px] font-medium text-text-secondary hover:text-primary"
                         @click="router.push('/')">
                         &larr; Back to dashboard
                     </button>
 
-                    <p class="text-sm font-semibold uppercase tracking-widest text-accent">
+                    <p class="text-[14px] font-semibold uppercase tracking-widest text-accent">
                         Student dashboard
                     </p>
 
@@ -236,7 +236,7 @@ watch(studentId, (newId, oldId) => {
             <section class="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-5">
                 <article class="rounded-2xl border border-text-secondary bg-surface p-5">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-sm font-medium text-text-secondary">
+                        <p class="text-[14px] font-medium text-text-secondary">
                             Total Enrollments
                         </p>
                         <Layers class="text-text-secondary" :size="18"/>
@@ -248,7 +248,7 @@ watch(studentId, (newId, oldId) => {
 
                 <article class="rounded-2xl border border-accent bg-surface p-5">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-sm font-medium text-text-secondary">
+                        <p class="text-[14px] font-medium text-text-secondary">
                             Pending
                         </p>
                         <Clock3 class="text-warning" :size="18"/>
@@ -260,7 +260,7 @@ watch(studentId, (newId, oldId) => {
 
                 <article class="rounded-2xl border border-success bg-surface p-5">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-sm font-medium text-text-secondary">
+                        <p class="text-[14px] font-medium text-text-secondary">
                             Approved
                         </p>
                         <CheckCircle2 class="text-success" :size="18"/>
@@ -272,7 +272,7 @@ watch(studentId, (newId, oldId) => {
 
                 <article class="rounded-2xl border border-secondary bg-surface p-5">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-sm font-medium text-text-secondary">
+                        <p class="text-[14px] font-medium text-text-secondary">
                             Active
                         </p>
                         <GraduationCap color="#4338ca" :size="18"/>
@@ -284,7 +284,7 @@ watch(studentId, (newId, oldId) => {
 
                 <article class="rounded-2xl border border-alert bg-surface p-5">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-sm font-medium text-text-secondary">
+                        <p class="text-[14px] font-medium text-text-secondary">
                             Rejected
                         </p>
                         <AlertCircle class="text-alert" :size="18"/>
@@ -301,18 +301,18 @@ watch(studentId, (newId, oldId) => {
                     <div class="relative flex-1">
                         <input v-model="searchQuery" type="search"
                             placeholder="Search by course, program, or enrollment ID..."
-                            class="w-full rounded-xl border border-text-primary py-3 pl-4 pr-4 text-sm outline-none transition focus:border-secondary/90 focus:ring-2 focus:ring-rose-100" />
+                            class="w-full rounded-xl border border-text-primary py-3 pl-4 pr-4 text-[14px] outline-none transition focus:border-secondary/90 focus:ring-2 focus:ring-rose-100" />
                     </div>
 
                     <select v-model="selectedStatus" aria-label="Filter enrollments by status"
-                        class="rounded-xl border border-text-primary bg-surface px-4 py-3 text-sm outline-none focus:border-secondary/90 focus:ring-2 focus:ring-rose-100 md:w-56">
+                        class="rounded-xl border border-text-primary bg-surface px-4 py-3 text-[14px] outline-none focus:border-secondary/90 focus:ring-2 focus:ring-rose-100 md:w-56">
                         <option v-for="option in statusOptions" :key="option.value" :value="option.value">
                             {{ option.label }}
                         </option>
                     </select>
                 </div>
 
-                <div class="mt-4 flex items-center justify-between text-sm text-slate-500">
+                <div class="mt-4 flex items-center justify-between text-[14px] text-text-secondary">
                     <p>
                         Showing
                         <strong class="text-text-primary">
@@ -348,7 +348,7 @@ watch(studentId, (newId, oldId) => {
                 <h2 class="mt-4 text-xl font-bold text-text-primary">
                     Couldn't Load Enrollments
                 </h2>
-                <p class="mt-2 text-sm text-slate-600">
+                <p class="mt-2 text-[14px] text-slate-600">
                     {{ error }}
                 </p>
                 <button type="button" class="mt-5 rounded-xl bg-text-primary px-5 py-3 font-semibold text-white"
@@ -372,7 +372,7 @@ watch(studentId, (newId, oldId) => {
                     }}
                 </h2>
 
-                <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                <p class="mx-auto mt-2 max-w-md text-[14px] leading-6 text-text-secondary">
                     {{
                         enrollments.length === 0
                             ? 'Explore available courses and submit your first enrollment to get started.'
@@ -408,7 +408,7 @@ watch(studentId, (newId, oldId) => {
                                 <h2 class="wrap-break-word- text-lg font-bold text-text-primary">
                                     {{ enrollment.course?.name ?? 'Course details unavailable' }}
                                 </h2>
-                                <p class="mt-1 text-sm text-text-secondary">
+                                <p class="mt-1 text-[14px] text-text-secondary">
                                     {{ enrollment.program?.name ?? 'Program details unavailable' }}
                                 </p>
                             </div>
@@ -421,26 +421,26 @@ watch(studentId, (newId, oldId) => {
                     </div>
 
                     <div class="mt-5 rounded-xl bg-slate-50 p-4">
-                        <p class="text-sm font-semibold text-slate-800">
+                        <p class="text-[14px] font-semibold text-slate-800">
                             {{ statusDescription(enrollment.status) }}
                         </p>
 
-                        <div class="mt-3 flex items-center gap-2 text-xs text-slate-500">
+                        <div class="mt-3 flex items-center gap-2 text-xs text-text-secondary">
                             <CalendarDays :size="12"/>
                             Submitted {{ formatDate(enrollment.created_at) }}
                         </div>
                     </div>
 
-                    <div class="mt-4 space-y-2 text-sm">
+                    <div class="mt-4 space-y-2 text-[14px]">
                         <div class="flex justify-between gap-3">
-                            <span class="text-slate-500">Student</span>
+                            <span class="text-text-secondary">Student</span>
                             <span class="text-right font-medium text-slate-800">
                                 {{ enrollment.fullname }}
                             </span>
                         </div>
 
                         <div class="flex justify-between gap-3">
-                            <span class="text-slate-500">Enrollment ID</span>
+                            <span class="text-text-secondary">Enrollment ID</span>
                             <span class="max-w-[65%] break-all text-right font-medium text-slate-800">
                                 {{ enrollment.id }}
                             </span>
@@ -448,7 +448,7 @@ watch(studentId, (newId, oldId) => {
                     </div>
 
                     <button type="button"
-                        class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-text-secondary px-4 py-3 text-sm font-semibold text-text-primary transition hover:border-secondary/50 hover:bg-secondary/15 hover:text-primary"
+                        class="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-text-secondary px-4 py-3 text-[14px] font-semibold text-text-primary transition hover:border-secondary/50 hover:bg-secondary/15 hover:text-primary"
                         @click="openEnrollment(enrollment)">
                         View Enrollment Details
                         <ArrowUpRight :size="14"/>
@@ -457,7 +457,7 @@ watch(studentId, (newId, oldId) => {
             </section>
 
             <p v-if="error && enrollments.length > 0" role="alert"
-                class="mt-5 rounded-xl border border-accent/20 bg-red-50 p-4 text-sm text-alert">
+                class="mt-5 rounded-xl border border-accent/20 bg-red-50 p-4 text-[14px] text-alert">
                 {{ error }}
             </p>
         </div>

@@ -165,19 +165,19 @@ watch(courseId, async () => {
 </script>
 
 <template>
-    <main class="min-h-screen bg-slate-50 text-slate-800">
-        <div class="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 lg:px-8">
+    <main class="min-h-screen text-text-primary">
+        <div class="mx-auto space-y-8 px-4 py-6 sm:px-6 lg:px-8">
             <!-- Top navigation -->
             <header class="flex items-center justify-between gap-4">
-                <button type="button" class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm
-                 font-semibold text-slate-600 transition hover:bg-white
+                <button type="button" class="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-[14px]
+                 font-semibold text-slate-600 transition hover:bg-surface
                  hover:text-text-primary" @click="goBack">
                     <ArrowLeft class="h-4 w-4" />
                     Back to Dashboard
                 </button>
 
                 <button type="button" class="inline-flex items-center gap-2 rounded-xl border border-slate-200
-                 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700
+                 bg-surface px-4 py-2.5 text-[14px] font-semibold text-text-primary
                  transition hover:border-indigo-300 hover:text-indigo-700" :disabled="isLoading" @click="loadCourse">
                     {{ isLoading ? "Loading..." : "Refresh" }}
                 </button>
@@ -194,7 +194,7 @@ watch(courseId, async () => {
 
             <!-- Error state -->
             <section v-else-if="pageError && !course"
-                class="rounded-3xl border border-red-200 bg-white px-6 py-12 text-center">
+                class="rounded-3xl border border-red-200 bg-surface px-6 py-12 text-center">
                 <div class="mx-auto flex h-14 w-14 items-center justify-center
                  rounded-2xl bg-red-50 text-alert/85">
                     <BookOpen class="h-7 w-7" />
@@ -204,12 +204,12 @@ watch(courseId, async () => {
                     Unable to load course
                 </h1>
 
-                <p class="mx-auto mt-2 max-w-lg text-sm text-slate-500">
+                <p class="mx-auto mt-2 max-w-lg text-[14px] text-text-secondary">
                     {{ pageError }}
                 </p>
 
-                <button type="button" class="mt-6 rounded-xl bg-indigo-600 px-5 py-3 text-sm
-                 font-semibold text-white hover:bg-indigo-700" @click="loadCourse">
+                <button type="button" class="mt-6 rounded-xl bg-indigo-600 px-5 py-3 text-[14px]
+                 font-semibold text-surface hover:bg-indigo-700" @click="loadCourse">
                     Try again
                 </button>
             </section>
@@ -217,10 +217,10 @@ watch(courseId, async () => {
             <template v-else-if="course">
                 <!-- Course hero -->
                 <section class="relative overflow-hidden rounded-3xl bg-linear-to-br
-                 from-indigo-700 via-indigo-600 to-violet-600 p-6 text-white
+                 from-primary-hover via-primary to-secondary p-6 text-surface
                  shadow-lg shadow-indigo-900/10 sm:p-10">
                     <div class="pointer-events-none absolute -right-16 -top-20
-                   h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
+                   h-64 w-64 rounded-full bg-surface/10 blur-3xl"></div>
 
                     <div class="pointer-events-none absolute -bottom-24 right-1/3
                    h-48 w-48 rounded-full bg-violet-300/20 blur-3xl"></div>
@@ -229,7 +229,7 @@ watch(courseId, async () => {
                       lg:justify-between">
                         <div class="max-w-3xl">
                             <div class="flex h-14 w-14 items-center justify-center
-                       rounded-2xl border border-white/20 bg-white/15">
+                       rounded-2xl border border-surface/20 bg-surface/15">
                                 <BookOpen class="h-7 w-7" />
                             </div>
 
@@ -243,19 +243,19 @@ watch(courseId, async () => {
                                 {{ courseName }}
                             </h1>
 
-                            <p class="mt-4 max-w-2xl whitespace-pre-line text-sm
+                            <p class="mt-4 max-w-2xl surfacespace-pre-line text-[14px]
                         leading-7 text-indigo-100 sm:text-base">
                                 {{ courseDescription }}
                             </p>
 
-                            <div class="mt-6 flex items-start gap-2 text-sm text-indigo-100">
+                            <div class="mt-6 flex items-start gap-2 text-[14px] text-indigo-100">
                                 <MapPin class="mt-0.5 h-5 w-5 shrink-0" />
                                 <span>{{ courseAddress }}</span>
                             </div>
                         </div>
 
                         <button type="button" class="inline-flex shrink-0 items-center justify-center gap-2
-                     rounded-xl bg-white px-5 py-3 text-sm font-bold
+                     rounded-xl bg-surface px-5 py-3 text-[14px] font-bold
                      text-indigo-700 shadow-sm transition hover:bg-indigo-50" @click="editCourse">
                             <Pencil class="h-4 w-4" />
                             Edit Course
@@ -266,7 +266,7 @@ watch(courseId, async () => {
                 <!-- Inline notice -->
                 <div v-if="notice" class="flex items-center justify-between gap-3 rounded-xl
                  border border-amber-200 bg-amber-50 px-4 py-3
-                 text-sm text-amber-800">
+                 text-[14px] text-amber-800">
                     <span>{{ notice }}</span>
                     <button type="button" class="font-semibold underline" @click="notice = ''">
                         Dismiss
@@ -279,17 +279,17 @@ watch(courseId, async () => {
                         <h2 class="text-xl font-bold tracking-tight text-text-primary">
                             Overview
                         </h2>
-                        <p class="mt-1 text-sm text-slate-500">
+                        <p class="mt-1 text-[14px] text-text-secondary">
                             A quick summary of your course.
                         </p>
                     </div>
 
                     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                        <article v-for="item in overview" :key="item.label" class="rounded-2xl border border-slate-200/80 bg-white p-5
+                        <article v-for="item in overview" :key="item.label" class="rounded-2xl border border-slate-200/80 bg-surface p-5
                      shadow-sm shadow-text-primary/2">
                             <div class="flex items-start justify-between">
                                 <div>
-                                    <p class="text-sm font-medium text-slate-500">
+                                    <p class="text-[14px] font-medium text-text-secondary">
                                         {{ item.label }}
                                     </p>
                                     <p class="mt-3 text-3xl font-extrabold text-text-primary">
@@ -311,7 +311,7 @@ watch(courseId, async () => {
 
                 <!-- Programs Section -->
                 <section class="overflow-hidden rounded-3xl border border-slate-200/80
-           bg-white shadow-sm">
+           bg-surface shadow-sm">
                     <!-- Section Header -->
                     <div class="flex flex-col gap-4 border-b border-slate-100
                px-5 py-6 sm:flex-row sm:items-center
@@ -334,7 +334,7 @@ watch(courseId, async () => {
                                     </span>
                                 </div>
 
-                                <p class="mt-1 text-sm leading-6 text-slate-500">
+                                <p class="mt-1 text-[14px] leading-6 text-text-secondary">
                                     Organize and manage the learning programs offered
                                     by this course.
                                 </p>
@@ -343,8 +343,8 @@ watch(courseId, async () => {
 
                         <div class="flex shrink-0 items-center gap-2">
                             <button type="button" :disabled="loading" aria-label="Refresh programs" class="inline-flex h-11 items-center justify-center gap-2
-                       rounded-xl border border-slate-200 bg-white
-                       px-3 text-sm font-semibold text-slate-600
+                       rounded-xl border border-slate-200 bg-surface
+                       px-3 text-[14px] font-semibold text-slate-600
                        transition hover:border-indigo-300
                        hover:text-indigo-700 disabled:cursor-not-allowed
                        disabled:opacity-50" @click="refreshProgram">
@@ -353,8 +353,8 @@ watch(courseId, async () => {
                             </button>
 
                             <button type="button" class="inline-flex h-11 items-center justify-center gap-2
-                       rounded-xl bg-indigo-600 px-4 text-sm
-                       font-semibold text-white shadow-sm
+                       rounded-xl bg-indigo-600 px-4 text-[14px]
+                       font-semibold text-surface shadow-sm
                        shadow-indigo-600/20 transition
                        hover:bg-indigo-700 active:scale-[0.98]" @click="
                         router.push({
@@ -375,21 +375,21 @@ watch(courseId, async () => {
                sm:justify-between">
                         <div class="flex items-start gap-3">
                             <div class="flex h-9 w-9 shrink-0 items-center justify-center
-                       rounded-xl bg-white text-alert/85">
+                       rounded-xl bg-surface text-alert/85">
                                 <RefreshCw class="h-4 w-4" />
                             </div>
 
                             <div>
-                                <p class="text-sm font-semibold text-red-800">
+                                <p class="text-[14px] font-semibold text-red-800">
                                     Unable to load or update programs
                                 </p>
-                                <p class="mt-1 text-sm text-alert">
+                                <p class="mt-1 text-[14px] text-alert">
                                     {{ error }}
                                 </p>
                             </div>
                         </div>
 
-                        <button type="button" class="shrink-0 rounded-lg px-3 py-2 text-sm
+                        <button type="button" class="shrink-0 rounded-lg px-3 py-2 text-[14px]
                    font-semibold text-alert transition
                    hover:bg-red-100" @click="refreshProgram">
                             Try again
@@ -430,14 +430,14 @@ watch(courseId, async () => {
                             No programs yet
                         </h3>
 
-                        <p class="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+                        <p class="mx-auto mt-2 max-w-md text-[14px] leading-6 text-text-secondary">
                             Create your first learning program to organize the
                             courses you offer, such as Regular, Private, or Intensive.
                         </p>
 
                         <button type="button" class="mt-6 inline-flex items-center gap-2 rounded-xl
-                   bg-indigo-600 px-5 py-3 text-sm font-semibold
-                   text-white transition hover:bg-indigo-700" @click="
+                   bg-indigo-600 px-5 py-3 text-[14px] font-semibold
+                   text-surface transition hover:bg-indigo-700" @click="
                     router.push({
                         name: 'course-program-create',
                         params: { courseId },
@@ -451,7 +451,7 @@ watch(courseId, async () => {
                     <!-- Program Cards -->
                     <div v-else class="grid gap-4 p-5 sm:grid-cols-2 sm:p-7 xl:grid-cols-3">
                         <article v-for="program in programs" :key="program.id" class="flex min-w-0 flex-col rounded-2xl border
-               border-slate-200 bg-white p-5
+               border-slate-200 bg-surface p-5
                transition hover:border-indigo-200
                hover:shadow-md hover:shadow-text-primary/5">
                             <!-- Program Header -->
@@ -461,7 +461,7 @@ watch(courseId, async () => {
                                 </h3>
 
                                 <p class="mt-2 line-clamp-3 wrap-break-word
-                           text-sm leading-6 text-slate-500">
+                           text-[14px] leading-6 text-text-secondary">
                                     {{
                                         program.description ||
                                         "No description available."
@@ -472,11 +472,11 @@ watch(courseId, async () => {
                             <!-- Program Fees -->
                             <div class="mt-5 space-y-3 rounded-xl bg-slate-50 p-4">
                                 <div class="flex items-center justify-between gap-3">
-                                    <span class="text-sm text-slate-500">
+                                    <span class="text-[14px] text-text-secondary">
                                         Monthly Fee
                                     </span>
 
-                                    <span class="text-sm font-semibold text-text-primary">
+                                    <span class="text-[14px] font-semibold text-text-primary">
                                         {{ formatCurrency(program.monthly_fee) }}
                                     </span>
                                 </div>
@@ -484,11 +484,11 @@ watch(courseId, async () => {
                                 <div class="h-px bg-slate-200"></div>
 
                                 <div class="flex items-center justify-between gap-3">
-                                    <span class="text-sm text-slate-500">
+                                    <span class="text-[14px] text-text-secondary">
                                         Registration Fee
                                     </span>
 
-                                    <span class="text-sm font-semibold text-text-primary">
+                                    <span class="text-[14px] font-semibold text-text-primary">
                                         {{ formatCurrency(program.registration_fee) }}
                                     </span>
                                 </div>
@@ -514,7 +514,7 @@ watch(courseId, async () => {
 
                     <!-- Loading Indicator for Refresh -->
                     <div v-if="loading && programs.length > 0" class="border-t border-slate-100 px-5 py-3 text-center
-               text-xs font-medium text-slate-500">
+               text-xs font-medium text-text-secondary">
                         Refreshing programs...
                     </div>
                 </section>
@@ -522,19 +522,19 @@ watch(courseId, async () => {
                 <RouterView />
 
                 <!-- Classes -->
-                <section class="rounded-2xl border border-slate-200/80 bg-white p-5
+                <section class="rounded-2xl border border-slate-200/80 bg-surface p-5
                  shadow-sm shadow-text-primary/2 sm:p-6">
                     <div class="flex flex-wrap items-center justify-between gap-4">
                         <div>
                             <h2 class="text-xl font-bold text-text-primary">Classes</h2>
-                            <p class="mt-1 text-sm text-slate-500">
+                            <p class="mt-1 text-[14px] text-text-secondary">
                                 Manage class groups and their learning schedules.
                             </p>
                         </div>
 
                         <button type="button" class="inline-flex items-center gap-2 rounded-xl border
-                     border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold
-                     text-slate-700 hover:border-indigo-300 hover:text-indigo-700" @click="showComingSoon('Class')">
+                     border-slate-200 bg-surface px-4 py-2.5 text-[14px] font-semibold
+                     text-text-primary hover:border-indigo-300 hover:text-indigo-700" @click="showComingSoon('Class')">
                             <Plus class="h-4 w-4" />
                             Add Class
                         </button>
@@ -543,12 +543,12 @@ watch(courseId, async () => {
                     <div class="mt-6 flex flex-col items-center rounded-2xl
                       bg-slate-50 px-5 py-10 text-center">
                         <div class="flex h-12 w-12 items-center justify-center
-                     rounded-2xl bg-white text-slate-500 shadow-sm">
+                     rounded-2xl bg-surface text-text-secondary shadow-sm">
                             <GraduationCap class="h-6 w-6" />
                         </div>
 
                         <h3 class="mt-4 font-bold text-text-primary">No classes displayed</h3>
-                        <p class="mt-2 max-w-md text-sm leading-6 text-slate-500">
+                        <p class="mt-2 max-w-md text-[14px] leading-6 text-text-secondary">
                             Your classes and schedules will be displayed here when the
                             class-management feature is available.
                         </p>
@@ -559,14 +559,14 @@ watch(courseId, async () => {
                 <section>
                     <div class="mb-4">
                         <h2 class="text-xl font-bold text-text-primary">Management</h2>
-                        <p class="mt-1 text-sm text-slate-500">
+                        <p class="mt-1 text-[14px] text-text-secondary">
                             Shortcuts to manage your course.
                         </p>
                     </div>
 
                     <div class="grid gap-4 md:grid-cols-2">
                         <button type="button" class="group flex items-center gap-4 rounded-2xl border
-                     border-slate-200/80 bg-white p-5 text-left shadow-sm
+                     border-slate-200/80 bg-surface p-5 text-left shadow-sm
                      transition hover:-translate-y-0.5 hover:border-indigo-300
                      hover:shadow-md" @click="router.push({ name: 'manage-student', params: { courseId: course.id } })">
                             <div class="flex h-12 w-12 shrink-0 items-center justify-center
@@ -576,7 +576,7 @@ watch(courseId, async () => {
 
                             <div class="min-w-0 flex-1">
                                 <h3 class="font-bold text-text-primary">Manage Students</h3>
-                                <p class="mt-1 text-sm leading-5 text-slate-500">
+                                <p class="mt-1 text-[14px] leading-5 text-text-secondary">
                                     View and manage students enrolled in this course.
                                 </p>
                             </div>
@@ -587,7 +587,7 @@ watch(courseId, async () => {
                         </button>
 
                         <button type="button" class="group flex items-center gap-4 rounded-2xl border
-                     border-slate-200/80 bg-white p-5 text-left shadow-sm
+                     border-slate-200/80 bg-surface p-5 text-left shadow-sm
                      transition hover:-translate-y-0.5 hover:border-indigo-300
                      hover:shadow-md" @click="router.push({
                         name: 'manage-enrollment',
@@ -600,7 +600,7 @@ watch(courseId, async () => {
 
                             <div class="min-w-0 flex-1">
                                 <h3 class="font-bold text-text-primary">Manage Enrollments</h3>
-                                <p class="mt-1 text-sm leading-5 text-slate-500">
+                                <p class="mt-1 text-[14px] leading-5 text-text-secondary">
                                     Review and manage student enrollment requests.
                                 </p>
                             </div>
@@ -611,7 +611,7 @@ watch(courseId, async () => {
                         </button>
 
                         <div class="flex items-center gap-4 rounded-2xl border
-                     border-slate-200/80 bg-white p-5 shadow-sm md:col-span-2">
+                     border-slate-200/80 bg-surface p-5 shadow-sm md:col-span-2">
                             <div class="flex h-12 w-12 shrink-0 items-center justify-center
                        rounded-xl bg-violet-50 text-violet-600">
                                 <Building2 class="h-6 w-6" />
@@ -619,14 +619,14 @@ watch(courseId, async () => {
 
                             <div class="min-w-0 flex-1">
                                 <h3 class="font-bold text-text-primary">Course Information</h3>
-                                <p class="mt-1 text-sm leading-5 text-slate-500">
+                                <p class="mt-1 text-[14px] leading-5 text-text-secondary">
                                     Update your course name, description, and address.
                                 </p>
                             </div>
 
                             <button type="button" class="inline-flex shrink-0 items-center gap-2 rounded-xl
-                       border border-slate-200 px-3 py-2 text-sm font-semibold
-                       text-slate-700 hover:border-indigo-300 hover:text-indigo-700" @click="editCourse">
+                       border border-slate-200 px-3 py-2 text-[14px] font-semibold
+                       text-text-primary hover:border-indigo-300 hover:text-indigo-700" @click="editCourse">
                                 <Pencil class="h-4 w-4" />
                                 Edit
                             </button>

@@ -8,7 +8,8 @@ type ButtonVariant =
   | "outline"
   | "ghost"
   | "danger"
-  | "success";
+  | "success"
+  | "accent";
 
 type ButtonSize = "sm" | "md" | "lg";
 
@@ -65,12 +66,15 @@ const buttonClasses = computed(() => {
       "bg-alert/85 text-white hover:bg-alert focus-visible:ring-red-500",
 
     success:
-      "bg-green-600 text-white hover:bg-green-700 focus-visible:ring-green-500",
+      "bg-success/85 text-white hover:bg-success focus-visible:ring-success",
+
+    accent:
+      "bg-accent/85 text-white hover:bg-accent focus-visible:ring-accent",
   };
 
   const sizes: Record<ButtonSize, string> = {
     sm: "px-3 py-1.5 text-xs",
-    md: "px-4 py-2 text-sm",
+    md: "px-4 py-2 text-[14px]",
     lg: "px-5 py-3 text-base",
   };
 

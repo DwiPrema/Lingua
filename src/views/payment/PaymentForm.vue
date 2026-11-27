@@ -138,13 +138,13 @@ onMounted(() => {
                     Invoice Information
                 </h3>
 
-                <p class="text-sm text-gray-800">
+                <p class="text-[14px] text-gray-800">
                     Review your invoice before making payment.
                 </p>
             </div>
 
             <div class="space-y-3">
-                <div class="flex justify-between gap-4 text-sm">
+                <div class="flex justify-between gap-4 text-[14px]">
                     <span class="text-gray-800">Invoice Number</span>
 
                     <span class="font-medium text-gray-900">
@@ -155,7 +155,7 @@ onMounted(() => {
 
                 <div class="h-px w-auto bg-gray-800 rounded-full"></div>
 
-                <div class="flex justify-between gap-4 text-sm">
+                <div class="flex justify-between gap-4 text-[14px]">
                     <span class="text-gray-800">Invoice Type</span>
 
                     <span class="font-medium text-gray-900">
@@ -184,7 +184,7 @@ onMounted(() => {
                     Payment Method
                 </h3>
 
-                <p class="text-sm font-light text-gray-800">
+                <p class="text-[14px] font-light text-gray-800">
                     Select your payment method.
                 </p>
             </div>
@@ -233,33 +233,33 @@ onMounted(() => {
 
             <div class="mt-4 space-y-3">
                 <div>
-                    <p class="text-sm text-gray-500">Bank</p>
+                    <p class="text-[14px] text-gray-500">Bank</p>
                     <p class="font-medium">
                         {{ paymentAccount?.bank_name ?? "kosong" }}
                     </p>
                 </div>
 
                 <div>
-                    <p class="text-sm text-gray-500">Account Number</p>
+                    <p class="text-[14px] text-gray-500">Account Number</p>
                     <p class="font-medium">
                         {{ paymentAccount?.account_number ?? "kosong" }}
                     </p>
                 </div>
 
                 <div>
-                    <p class="text-sm text-gray-500">Account Holder</p>
+                    <p class="text-[14px] text-gray-500">Account Holder</p>
                     <p class="font-medium">
                         {{ paymentAccount?.account_name ?? "kosong" }}
                     </p>
                 </div>
 
                 <div v-if="paymentAccount?.payment_notes">
-                    <p class="text-sm text-gray-500">Payment Notes</p>
+                    <p class="text-[14px] text-gray-500">Payment Notes</p>
                     <p>{{ paymentAccount?.payment_notes ?? "kosong" }}</p>
                 </div>
 
                 <div v-if="paymentAccount?.qris_url">
-                    <p class="text-sm text-gray-500">QRIS</p>
+                    <p class="text-[14px] text-gray-500">QRIS</p>
                     <img :src="paymentAccount?.qris_url" alt="Organization QRIS" class="w-48 rounded-lg" />
                 </div>
             </div>
@@ -272,24 +272,24 @@ onMounted(() => {
             </h3>
 
             <div class="space-y-2">
-                <label for="account-holder" class="text-sm font-medium text-gray-700">
+                <label for="account-holder" class="text-[14px] font-medium text-gray-700">
                     Account Holder Name
                 </label>
 
                 <input id="account-holder" v-model="accountHolderName" type="text" maxlength="100" autocomplete="name"
                     placeholder="Enter account holder name" class="w-full rounded-lg border border-gray-300
-                           bg-white px-4 py-3 text-sm outline-none
+                           bg-white px-4 py-3 text-[14px] outline-none
                            focus:border-primary focus:ring-2
                            focus:ring-primary/20" />
             </div>
 
             <div class="space-y-2">
-                <label class="text-sm font-medium text-gray-700">
+                <label class="text-[14px] font-medium text-gray-700">
                     Payment Amount
                 </label>
 
                 <input :value="formattedAmount" type="text" readonly class="w-full rounded-lg border border-gray-200
-                           bg-gray-100 px-4 py-3 text-sm font-semibold
+                           bg-gray-100 px-4 py-3 text-[14px] font-semibold
                            text-gray-700" />
 
                 <p class="text-xs text-gray-500">
@@ -298,13 +298,13 @@ onMounted(() => {
             </div>
 
             <div class="space-y-2">
-                <label for="payment-date" class="text-sm font-medium text-gray-700">
+                <label for="payment-date" class="text-[14px] font-medium text-gray-700">
                     Payment Date
                 </label>
 
                 <input id="payment-date" v-model="paymentDate" type="date" :max="new Date().toISOString().slice(0, 10)"
                     class="w-full rounded-lg border border-gray-300
-                           bg-white px-4 py-3 text-sm outline-none
+                           bg-white px-4 py-3 text-[14px] outline-none
                            focus:border-primary focus:ring-2
                            focus:ring-primary/20" />
             </div>
@@ -317,7 +317,7 @@ onMounted(() => {
                     Payment Proof
                 </h3>
 
-                <p class="text-sm text-gray-500">
+                <p class="text-[14px] text-gray-500">
                     Upload your transfer receipt or payment screenshot.
                 </p>
             </div>
@@ -345,7 +345,7 @@ onMounted(() => {
             <div v-if="proofFile" class="flex items-center justify-between gap-3
                        rounded-lg border border-gray-200 p-3">
                 <div class="min-w-0">
-                    <p class="truncate text-sm font-medium text-gray-900">
+                    <p class="truncate text-[14px] font-medium text-gray-900">
                         {{ proofFile.name }}
                     </p>
 
@@ -355,7 +355,7 @@ onMounted(() => {
                 </div>
 
                 <button type="button" @click="proofFile = null; if (fileInput) fileInput.value = ''"
-                    class="text-sm text-red-500 hover:text-alert/85">
+                    class="text-[14px] text-red-500 hover:text-alert/85">
                     Remove
                 </button>
             </div>
@@ -363,7 +363,7 @@ onMounted(() => {
 
         <!-- Additional Notes -->
         <section class="space-y-2">
-            <label for="payment-notes" class="text-sm font-medium text-gray-700">
+            <label for="payment-notes" class="text-[14px] font-medium text-gray-700">
                 Additional Notes
                 <span class="font-normal text-gray-400">
                     (Optional)
@@ -373,12 +373,12 @@ onMounted(() => {
             <textarea id="payment-notes" v-model="notes" rows="3" maxlength="500"
                 placeholder="Additional information about your payment..." class="w-full resize-none rounded-lg border
                        border-gray-300 bg-white px-4 py-3
-                       text-sm outline-none focus:border-primary
+                       text-[14px] outline-none focus:border-primary
                        focus:ring-2 focus:ring-primary/20"/>
         </section>
 
         <!-- Error Message -->
-        <div v-if="errorMessage" role="alert" class="rounded-lg bg-red-50 p-3 text-sm text-alert/85">
+        <div v-if="errorMessage" role="alert" class="rounded-lg bg-red-50 p-3 text-[14px] text-alert/85">
             {{ errorMessage }}
         </div>
 

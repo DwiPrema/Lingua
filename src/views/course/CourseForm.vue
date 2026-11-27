@@ -167,22 +167,22 @@ function handleCancel() {
     <!-- Page Header -->
     <header class="flex items-start gap-4">
       <div class="min-w-0">
-        <p class="text-xs font-semibold uppercase tracking-wider text-gray-500">
+        <p class="text-[12px] font-semibold uppercase tracking-wider text-text-secondary">
           Courses / {{ isEditMode ? "Edit" : "Create" }}
         </p>
 
-        <h1 class="mt-1 text-2xl font-bold text-gray-900 sm:text-3xl">
+        <h1 class="mt-1 text-[30px] font-black text-text-primary sm:text-3xl">
           {{ pageTitle }}
         </h1>
 
-        <p class="mt-2 text-sm text-gray-500">
+        <p class="mt-2 text-[14px] text-text-secondary">
           {{ pageDescription }}
         </p>
       </div>
     </header>
 
     <!-- Course Form Card -->
-    <section class="rounded-2xl border border-gray-200 bg-white p-5
+    <section class="rounded-2xl border border-text-primary bg-surface p-5
              shadow-sm sm:p-8">
       <div class="mb-8 flex items-center gap-4">
         <div class="flex h-12 w-12 shrink-0 items-center justify-center
@@ -191,18 +191,18 @@ function handleCancel() {
         </div>
 
         <div>
-          <h2 class="text-lg font-semibold text-gray-900">
+          <h2 class="text-[20px] font-bold text-text-primary">
             Course Information
           </h2>
 
-          <p class="mt-1 text-sm text-gray-500">
+          <p class="mt-1 text-[14px] text-text-secondary">
             Enter the basic details of your course.
           </p>
         </div>
       </div>
 
       <!-- Initial loading -->
-      <div v-if="initializing" class="flex items-center gap-3 py-10 text-sm text-gray-500">
+      <div v-if="initializing" class="flex items-center gap-3 py-10 text-[14px] text-text-secondary">
         <span class="h-5 w-5 animate-spin rounded-full
                  border-2 border-gray-300 border-t-primary" />
         Loading course information...
@@ -211,31 +211,31 @@ function handleCancel() {
       <template v-else>
         <!-- Feedback -->
         <div v-if="validationMessage || error" role="alert" class="mb-6 rounded-xl border border-red-200 bg-red-50
-                 p-4 text-sm text-alert">
+                 p-4 text-[14px] text-alert">
           {{ validationMessage || error }}
         </div>
 
         <form class="space-y-6" @submit.prevent="handleSubmit">
           <!-- Course Name -->
           <div>
-            <label for="course-name" class="mb-2 block text-sm font-medium text-gray-700">
+            <label for="course-name" class="mb-2 block text-[14px] font-medium text-text-primary">
               Course Name <span class="text-alert/85">*</span>
             </label>
 
             <input id="course-name" v-model="form.name" type="text" required maxlength="150"
               placeholder="e.g. English for Beginners" class="w-full rounded-xl border border-gray-300 px-4 py-3
-                     text-sm outline-none transition
+                     text-[14px] outline-none transition
                      placeholder:text-gray-400 focus:border-primary
                      focus:ring-2 focus:ring-primary/10" />
 
-            <p class="mt-2 text-xs text-gray-500">
+            <p class="mt-2 text-[12px] text-text-secondary">
               Choose a clear name that students can easily recognize.
             </p>
           </div>
 
           <!-- Description -->
           <div>
-            <label for="course-description" class="mb-2 block text-sm font-medium text-gray-700">
+            <label for="course-description" class="mb-2 block text-[14px] font-medium text-text-primary">
               Description
             </label>
 
@@ -244,19 +244,19 @@ function handleCancel() {
 
               <textarea id="course-description" v-model="form.description" rows="5" maxlength="2000"
                 placeholder="Describe what students will learn..." class="w-full resize-y rounded-xl border border-gray-300
-                       py-3 pl-11 pr-4 text-sm outline-none transition
+                       py-3 pl-11 pr-4 text-[14px] outline-none transition
                        placeholder:text-gray-400 focus:border-primary
                        focus:ring-2 focus:ring-primary/10" />
             </div>
 
-            <p class="mt-2 text-xs text-gray-500">
+            <p class="mt-2 text-[12px] text-text-secondary">
               Explain the learning objectives or topics covered.
             </p>
           </div>
 
           <!-- Address -->
           <div>
-            <label for="course-address" class="mb-2 block text-sm font-medium text-gray-700">
+            <label for="course-address" class="mb-2 block text-[14px] font-medium text-text-primary">
               Address <span class="text-alert/85">*</span>
             </label>
 
@@ -265,12 +265,12 @@ function handleCancel() {
 
               <input id="course-address" v-model="form.address" type="text" required maxlength="500"
                 placeholder="Enter the course location" class="w-full rounded-xl border border-gray-300 py-3
-                       pl-11 pr-4 text-sm outline-none transition
+                       pl-11 pr-4 text-[14px] outline-none transition
                        placeholder:text-gray-400 focus:border-primary
                        focus:ring-2 focus:ring-primary/10" />
             </div>
 
-            <p class="mt-2 text-xs text-gray-500">
+            <p class="mt-2 text-[12px] text-text-secondary">
               Provide the address where the course takes place.
             </p>
           </div>
@@ -279,20 +279,20 @@ function handleCancel() {
           <div class="flex flex-col-reverse gap-3 border-t border-gray-100
                    pt-6 sm:flex-row sm:justify-end">
             <button type="button" :disabled="loading" class="rounded-xl border border-gray-300 px-5 py-3
-                     text-sm font-medium text-gray-700 transition
+                     text-[14px] font-medium text-text-primary transition
                      hover:bg-gray-50 disabled:cursor-not-allowed
                      disabled:opacity-50" @click="handleCancel">
               Cancel
             </button>
 
             <button type="submit" :disabled="loading || initializing" class="inline-flex items-center justify-center gap-2
-                     rounded-xl bg-primary px-6 py-3 text-sm
-                     font-semibold text-white transition hover:opacity-90
+                     rounded-xl bg-primary px-6 py-3 text-[14px]
+                     font-semibold text-surface transition hover:opacity-90
                      focus:outline-none focus:ring-2 focus:ring-primary
                      focus:ring-offset-2 disabled:cursor-not-allowed
                      disabled:opacity-60">
               <span v-if="loading" class="h-4 w-4 animate-spin rounded-full
-                       border-2 border-white/40 border-t-white" />
+                       border-2 border-surface/40 border-t-surface" />
 
               <Pencil v-else-if="isEditMode" :size="18" />
               <Plus v-else :size="18" />
@@ -310,7 +310,7 @@ function handleCancel() {
       </template>
     </section>
 
-    <p class="text-center text-xs text-gray-500">
+    <p class="text-center text-[12px] text-text-secondary">
       Fields marked <span class="text-alert/85">*</span> are required.
     </p>
   </div>

@@ -263,11 +263,11 @@ function handleCancel() {
                 {{ pageTitle }}
             </h1>
 
-            <p class="mt-2 text-sm text-gray-500">
+            <p class="mt-2 text-[14px] text-gray-500">
                 {{ pageDescription }}
             </p>
 
-            <p v-if="course" class="mt-3 text-sm font-medium text-primary">
+            <p v-if="course" class="mt-3 text-[14px] font-medium text-primary">
                 Course: {{ course.name }}
             </p>
         </header>
@@ -284,14 +284,14 @@ function handleCancel() {
                         Program Information
                     </h2>
 
-                    <p class="mt-1 text-sm text-gray-500">
+                    <p class="mt-1 text-[14px] text-gray-500">
                         Configure the program details and tuition fees.
                     </p>
                 </div>
             </div>
 
             <!-- INITIAL LOADING -->
-            <div v-if="initializing" class="flex items-center gap-3 py-10 text-sm text-gray-500">
+            <div v-if="initializing" class="flex items-center gap-3 py-10 text-[14px] text-gray-500">
                 <span class="h-5 w-5 animate-spin rounded-full border-2 border-gray-300 border-t-primary" />
                 Loading program information...
             </div>
@@ -299,20 +299,20 @@ function handleCancel() {
             <template v-else>
                 <!-- ERROR MESSAGE -->
                 <div v-if="validationMessage || error" role="alert"
-                    class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-alert">
+                    class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-[14px] text-alert">
                     {{ validationMessage || error }}
                 </div>
 
                 <form class="space-y-6" @submit.prevent="handleSubmit">
                     <!-- PROGRAM NAME -->
                     <div>
-                        <label for="program-name" class="mb-2 block text-sm font-medium text-gray-700">
+                        <label for="program-name" class="mb-2 block text-[14px] font-medium text-gray-700">
                             Program Name <span class="text-alert">*</span>
                         </label>
 
                         <input id="program-name" v-model="form.name" type="text" required maxlength="150"
                             placeholder="e.g. English Beginner - Monthly Class"
-                            class="w-full rounded-xl border border-gray-300 px-4 py-3 text-sm outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/10" />
+                            class="w-full rounded-xl border border-gray-300 px-4 py-3 text-[14px] outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/10" />
 
                         <p class="mt-2 text-xs text-gray-500">
                             Give this program a clear and recognizable name.
@@ -321,7 +321,7 @@ function handleCancel() {
 
                     <!-- DESCRIPTION -->
                     <div>
-                        <label for="program-description" class="mb-2 block text-sm font-medium text-gray-700">
+                        <label for="program-description" class="mb-2 block text-[14px] font-medium text-gray-700">
                             Description
                         </label>
 
@@ -330,7 +330,7 @@ function handleCancel() {
 
                             <textarea id="program-description" v-model="form.description" rows="5" maxlength="2000"
                                 placeholder="Describe the learning plan, facilities, or program details..."
-                                class="w-full resize-y rounded-xl border border-gray-300 py-3 pl-11 pr-4 text-sm outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/10" />
+                                class="w-full resize-y rounded-xl border border-gray-300 py-3 pl-11 pr-4 text-[14px] outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/10" />
                         </div>
 
                         <p class="mt-2 text-xs text-gray-500">
@@ -345,7 +345,7 @@ function handleCancel() {
                                 Program Pricing
                             </h3>
 
-                            <p class="mt-1 text-sm text-gray-500">
+                            <p class="mt-1 text-[14px] text-gray-500">
                                 Set the initial registration fee and recurring monthly fee.
                             </p>
                         </div>
@@ -353,7 +353,7 @@ function handleCancel() {
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                             <!-- REGISTRATION FEE -->
                             <div>
-                                <label for="registration-fee" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="registration-fee" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Registration Fee
                                     <span class="text-alert">*</span>
                                 </label>
@@ -361,13 +361,13 @@ function handleCancel() {
                                 <div class="relative">
                                     <Wallet :size="18" class="absolute left-4 top-3.5 text-gray-400" />
 
-                                    <span class="absolute left-11 top-3.5 text-sm font-medium text-gray-500">
+                                    <span class="absolute left-11 top-3.5 text-[14px] font-medium text-gray-500">
                                         Rp
                                     </span>
 
                                     <input id="registration-fee" :value="form.registrationFee" type="text"
                                         inputmode="numeric" required placeholder="0"
-                                        class="w-full rounded-xl border border-gray-300 py-3 pl-18 pr-4 text-sm outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/10"
+                                        class="w-full rounded-xl border border-gray-300 py-3 pl-18 pr-4 text-[14px] outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/10"
                                         @input="
                                             handleFeeInput(
                                                 'registrationFee',
@@ -383,7 +383,7 @@ function handleCancel() {
 
                             <!-- MONTHLY FEE -->
                             <div>
-                                <label for="monthly-fee" class="mb-2 block text-sm font-medium text-gray-700">
+                                <label for="monthly-fee" class="mb-2 block text-[14px] font-medium text-gray-700">
                                     Monthly Fee
                                     <span class="text-alert">*</span>
                                 </label>
@@ -391,13 +391,13 @@ function handleCancel() {
                                 <div class="relative">
                                     <CreditCard :size="18" class="absolute left-4 top-3.5 text-gray-400" />
 
-                                    <span class="absolute left-11 top-3.5 text-sm font-medium text-gray-500">
+                                    <span class="absolute left-11 top-3.5 text-[14px] font-medium text-gray-500">
                                         Rp
                                     </span>
 
                                     <input id="monthly-fee" :value="form.monthlyFee" type="text" inputmode="numeric"
                                         required placeholder="0"
-                                        class="w-full rounded-xl border border-gray-300 py-3 pl-18 pr-4 text-sm outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/10"
+                                        class="w-full rounded-xl border border-gray-300 py-3 pl-18 pr-4 text-[14px] outline-none transition placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/10"
                                         @input="
                                             handleFeeInput(
                                                 'monthlyFee',
@@ -449,13 +449,13 @@ function handleCancel() {
                     <!-- ACTIONS -->
                     <div class="flex flex-col-reverse gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:justify-end">
                         <button type="button" :disabled="loading"
-                            class="rounded-xl border border-gray-300 px-5 py-3 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                            class="rounded-xl border border-gray-300 px-5 py-3 text-[14px] font-medium text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
                             @click="handleCancel">
                             Cancel
                         </button>
 
                         <button type="submit" :disabled="loading || initializing"
-                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60">
+                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-[14px] font-semibold text-white transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60">
                             <span v-if="loading"
                                 class="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
 

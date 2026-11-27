@@ -133,7 +133,7 @@ onBeforeUnmount(() => {
 
 <template>
     <main class="min-h-screen py-8 sm:py-10">
-        <button type="button" class="text-sm font-medium text-slate-500 hover:text-primary"
+        <button type="button" class="text-[14px] font-medium text-text-secondary hover:text-primary"
             @click="router.push('/')">
             &larr; Back
         </button>
@@ -141,7 +141,7 @@ onBeforeUnmount(() => {
         <section class="border-b border-accent">
             <div class="mx-auto py-5">
 
-                <p class="text-sm font-semibold uppercase tracking-wider text-accent">
+                <p class="text-[14px] font-semibold uppercase tracking-wider text-accent">
                     Find Your Next Opportunity
                 </p>
 
@@ -163,7 +163,7 @@ onBeforeUnmount(() => {
                     <Search class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
 
                     <input v-model="searchQuery" type="search" placeholder="Search courses by name..." class="w-full rounded-xl border border-slate-200
-                                bg-white py-3 pl-11 pr-4 text-sm
+                                bg-white py-3 pl-11 pr-4 text-[14px]
                                 outline-none transition
                                 placeholder:text-slate-400
                                 focus:border-primary
@@ -171,12 +171,12 @@ onBeforeUnmount(() => {
                 </div>
 
                 <div class="flex items-center gap-3">
-                    <label for="course-sort" class="shrink-0 text-sm text-slate-500">
+                    <label for="course-sort" class="shrink-0 text-[14px] text-text-secondary">
                         Sort by
                     </label>
 
                     <select id="course-sort" v-model="sortBy" class="w-full rounded-xl border border-slate-200
-                                bg-white px-4 py-3 text-sm font-medium
+                                bg-white px-4 py-3 text-[14px] font-medium
                                 text-slate-700 outline-none
                                 focus:border-primary
                                 focus:ring-4 focus:ring-indigo-100
@@ -194,13 +194,13 @@ onBeforeUnmount(() => {
                         Available Courses
                     </h2>
 
-                    <p class="mt-1 text-sm text-text-secondary">
+                    <p class="mt-1 text-[14px] text-text-secondary">
                         Explore programs and find your next learning experience.
                     </p>
                 </div>
 
                 <span class="shrink-0 rounded-full bg-accent px-3 py-1.5
-                            text-sm font-medium text-text-primary
+                            text-[14px] font-medium text-text-primary
                             ring-1 ring-text-primary">
                     {{ courses.length }}
                     {{ courses.length === 1 ? 'course' : 'courses' }}
@@ -230,12 +230,12 @@ onBeforeUnmount(() => {
                     Unable to Load Courses
                 </h3>
 
-                <p class="mt-2 text-sm text-slate-500">
+                <p class="mt-2 text-[14px] text-text-secondary">
                     {{ courseStore.error }}
                 </p>
 
                 <button type="button" class="mt-5 rounded-xl bg-indigo-600 px-5 py-2.5
-                            text-sm font-semibold text-white
+                            text-[14px] font-semibold text-white
                             hover:bg-indigo-700" @click="retryLoading">
                     Try Again
                 </button>
@@ -248,7 +248,7 @@ onBeforeUnmount(() => {
                     No Courses Found
                 </h3>
 
-                <p class="mt-2 text-sm text-slate-500">
+                <p class="mt-2 text-[14px] text-text-secondary">
                     {{
                         searchQuery
                             ? 'Try a different course name.'
@@ -256,7 +256,7 @@ onBeforeUnmount(() => {
                     }}
                 </p>
 
-                <button v-if="searchQuery" type="button" class="mt-4 text-sm font-semibold text-indigo-600"
+                <button v-if="searchQuery" type="button" class="mt-4 text-[14px] font-semibold text-indigo-600"
                     @click="searchQuery = ''">
                     Clear Search
                 </button>
@@ -281,8 +281,8 @@ onBeforeUnmount(() => {
                             {{ course.name }}
                         </h3>
 
-                        <p class="mt-2 line-clamp-3 flex-1 text-sm
-                                    leading-6 text-slate-500">
+                        <p class="mt-2 line-clamp-3 flex-1 text-[14px]
+                                    leading-6 text-text-secondary">
                             {{
                                 course.description ||
                                 'Explore this course to learn more about its programs.'
@@ -291,7 +291,7 @@ onBeforeUnmount(() => {
 
                         <div v-if="course.address" class="mt-4 flex items-start gap-2
                                     border-t border-slate-100 pt-4
-                                    text-sm text-slate-500">
+                                    text-[14px] text-text-secondary">
                             <svg class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -306,7 +306,7 @@ onBeforeUnmount(() => {
 
                         <button type="button" class="mt-5 flex w-full items-center
                                     justify-center gap-2 rounded-xl
-                                    bg-primary px-4 py-3 text-sm
+                                    bg-primary px-4 py-3 text-[14px]
                                     font-semibold text-white transition
                                     hover:bg-primary-hover
                                     focus:outline-none focus:ring-4

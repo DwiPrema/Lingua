@@ -269,7 +269,7 @@ function invoiceTypeLabel(
                 Payment Overview
             </h2>
 
-            <p class="mt-1 text-sm text-gray-500">
+            <p class="mt-1 text-[14px] text-gray-500">
                 Monitor invoices, payment status, and payment history.
             </p>
         </div>
@@ -279,7 +279,7 @@ function invoiceTypeLabel(
             v-if="loading"
             class="rounded-xl border border-gray-200 bg-white py-12 text-center"
         >
-            <p class="text-sm text-gray-500">
+            <p class="text-[14px] text-gray-500">
                 Loading payment information...
             </p>
         </div>
@@ -293,14 +293,14 @@ function invoiceTypeLabel(
                 Failed to load payment information
             </p>
 
-            <p class="mt-1 text-sm text-alert/85">
+            <p class="mt-1 text-[14px] text-alert/85">
                 {{ error }}
             </p>
 
             <button
                 type="button"
                 @click="emit('retry')"
-                class="mt-3 rounded-lg bg-alert/85 px-4 py-2 text-sm font-medium text-white"
+                class="mt-3 rounded-lg bg-alert/85 px-4 py-2 text-[14px] font-medium text-white"
             >
                 Try Again
             </button>
@@ -312,7 +312,7 @@ function invoiceTypeLabel(
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 
                 <div class="rounded-xl border border-gray-200 bg-white p-5">
-                    <p class="text-sm text-gray-500">
+                    <p class="text-[14px] text-gray-500">
                         Total Invoices
                     </p>
 
@@ -322,7 +322,7 @@ function invoiceTypeLabel(
                 </div>
 
                 <div class="rounded-xl border border-gray-200 bg-white p-5">
-                    <p class="text-sm text-gray-500">
+                    <p class="text-[14px] text-gray-500">
                         Total Paid
                     </p>
 
@@ -332,7 +332,7 @@ function invoiceTypeLabel(
                 </div>
 
                 <div class="rounded-xl border border-gray-200 bg-white p-5">
-                    <p class="text-sm text-gray-500">
+                    <p class="text-[14px] text-gray-500">
                         Outstanding
                     </p>
 
@@ -342,7 +342,7 @@ function invoiceTypeLabel(
                 </div>
 
                 <div class="rounded-xl border border-gray-200 bg-white p-5">
-                    <p class="text-sm text-gray-500">
+                    <p class="text-[14px] text-gray-500">
                         Pending Verification
                     </p>
 
@@ -362,7 +362,7 @@ function invoiceTypeLabel(
                     No invoices yet
                 </h3>
 
-                <p class="mt-2 text-sm text-gray-500">
+                <p class="mt-2 text-[14px] text-gray-500">
                     No payment invoices have been created for this enrollment.
                 </p>
             </div>
@@ -392,11 +392,11 @@ function invoiceTypeLabel(
                                     </span>
                                 </div>
 
-                                <p class="mt-2 text-sm text-gray-500">
+                                <p class="mt-2 text-[14px] text-gray-500">
                                     Created: {{ formatDate(invoice.created_at) }}
                                 </p>
 
-                                <p class="mt-1 text-sm text-gray-500">
+                                <p class="mt-1 text-[14px] text-gray-500">
                                     Due date: {{ formatDate(invoice.due_at) }}
                                 </p>
                             </div>
@@ -419,7 +419,7 @@ function invoiceTypeLabel(
                         <!-- INVOICE BREAKDOWN -->
                         <div class="mt-5 rounded-lg bg-gray-50 p-4">
 
-                            <div class="flex justify-between gap-4 text-sm">
+                            <div class="flex justify-between gap-4 text-[14px]">
                                 <span class="text-gray-500">
                                     Registration Fee
                                 </span>
@@ -429,7 +429,7 @@ function invoiceTypeLabel(
                                 </span>
                             </div>
 
-                            <div class="mt-3 flex justify-between gap-4 text-sm">
+                            <div class="mt-3 flex justify-between gap-4 text-[14px]">
                                 <span class="text-gray-500">
                                     Monthly Fee
                                 </span>
@@ -469,7 +469,7 @@ function invoiceTypeLabel(
                             v-if="getPayments(invoice.id).length === 0"
                             class="rounded-lg border border-dashed border-gray-200 p-5 text-center"
                         >
-                            <p class="text-sm text-gray-500">
+                            <p class="text-[14px] text-gray-500">
                                 No payment attempts submitted.
                             </p>
                         </div>
@@ -490,7 +490,7 @@ function invoiceTypeLabel(
                                             Payment Attempt #{{ getPayments(invoice.id).length - index }}
                                         </p>
 
-                                        <p class="mt-1 text-sm text-gray-500">
+                                        <p class="mt-1 text-[14px] text-gray-500">
                                             {{ paymentMethodLabel(payment.payment_method) }}
                                         </p>
 
@@ -519,7 +519,7 @@ function invoiceTypeLabel(
 
                                     <div class="flex flex-wrap items-center justify-between gap-3">
                                         <div>
-                                            <p class="text-sm font-semibold text-gray-800">
+                                            <p class="text-[14px] font-semibold text-gray-800">
                                                 Payment Proof
                                             </p>
 
@@ -532,7 +532,7 @@ function invoiceTypeLabel(
                                             type="button"
                                             @click="openProof(payment)"
                                             :disabled="!payment.proof_path"
-                                            class="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                                            class="rounded-lg border border-gray-300 px-3 py-2 text-[14px] font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50"
                                         >
                                             View Proof
                                         </button>
@@ -540,14 +540,14 @@ function invoiceTypeLabel(
 
                                     <div
                                         v-if="proofLoading[payment.id]"
-                                        class="mt-3 rounded-lg bg-gray-50 p-4 text-sm text-gray-500"
+                                        class="mt-3 rounded-lg bg-gray-50 p-4 text-[14px] text-gray-500"
                                     >
                                         Loading payment proof...
                                     </div>
 
                                     <div
                                         v-else-if="proofErrors[payment.id]"
-                                        class="mt-3 rounded-lg bg-red-50 p-3 text-sm text-alert/85"
+                                        class="mt-3 rounded-lg bg-red-50 p-3 text-[14px] text-alert/85"
                                     >
                                         {{ proofErrors[payment.id] }}
                                     </div>
@@ -565,14 +565,14 @@ function invoiceTypeLabel(
 
                                     <p
                                         v-else-if="!payment.proof_path"
-                                        class="mt-3 text-sm text-gray-500"
+                                        class="mt-3 text-[14px] text-gray-500"
                                     >
                                         No payment proof available.
                                     </p>
 
                                     <p
                                         v-else
-                                        class="mt-3 text-sm text-gray-500"
+                                        class="mt-3 text-[14px] text-gray-500"
                                     >
                                         Document proof. Select View Proof to preview it.
                                     </p>
@@ -584,11 +584,11 @@ function invoiceTypeLabel(
                                     v-if="payment.status === 'rejected' && payment.rejection_reason"
                                     class="mt-4 rounded-lg border border-red-200 bg-red-50 p-3"
                                 >
-                                    <p class="text-sm font-semibold text-alert">
+                                    <p class="text-[14px] font-semibold text-alert">
                                         Rejection Reason
                                     </p>
 
-                                    <p class="mt-1 text-sm text-alert/85">
+                                    <p class="mt-1 text-[14px] text-alert/85">
                                         {{ payment.rejection_reason }}
                                     </p>
                                 </div>
@@ -601,7 +601,7 @@ function invoiceTypeLabel(
                                     <button
                                         type="button"
                                         @click="openRejectForm(payment)"
-                                        class="rounded-lg border border-red-200 px-4 py-2 text-sm font-semibold text-alert/85 hover:bg-red-50"
+                                        class="rounded-lg border border-red-200 px-4 py-2 text-[14px] font-semibold text-alert/85 hover:bg-red-50"
                                     >
                                         Reject Payment
                                     </button>
@@ -609,7 +609,7 @@ function invoiceTypeLabel(
                                     <button
                                         type="button"
                                         @click="emit('verify', payment)"
-                                        class="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700"
+                                        class="rounded-lg bg-green-600 px-4 py-2 text-[14px] font-semibold text-white hover:bg-green-700"
                                     >
                                         Verify Payment
                                     </button>
@@ -648,14 +648,14 @@ function invoiceTypeLabel(
 
                     <div
                         v-if="proofLoading[selectedProof.id]"
-                        class="py-12 text-center text-sm text-gray-500"
+                        class="py-12 text-center text-[14px] text-gray-500"
                     >
                         Loading proof...
                     </div>
 
                     <div
                         v-else-if="proofErrors[selectedProof.id]"
-                        class="py-12 text-center text-sm text-alert/85"
+                        class="py-12 text-center text-[14px] text-alert/85"
                     >
                         {{ proofErrors[selectedProof.id] }}
                     </div>
@@ -694,7 +694,7 @@ function invoiceTypeLabel(
                     Reject Payment
                 </h3>
 
-                <p class="mt-2 text-sm text-gray-500">
+                <p class="mt-2 text-[14px] text-gray-500">
                     Please provide a reason for rejecting this payment.
                 </p>
 
@@ -702,7 +702,7 @@ function invoiceTypeLabel(
                     v-model="rejectionReason"
                     rows="4"
                     placeholder="Enter rejection reason..."
-                    class="mt-4 w-full rounded-lg border border-gray-300 p-3 text-sm outline-none focus:border-red-500 focus:ring-2 focus:ring-red-100"
+                    class="mt-4 w-full rounded-lg border border-gray-300 p-3 text-[14px] outline-none focus:border-red-500 focus:ring-2 focus:ring-red-100"
                 />
 
                 <div class="mt-4 flex justify-end gap-2">
@@ -710,7 +710,7 @@ function invoiceTypeLabel(
                     <button
                         type="button"
                         @click="closeRejectForm"
-                        class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700"
+                        class="rounded-lg border border-gray-300 px-4 py-2 text-[14px] font-medium text-gray-700"
                     >
                         Cancel
                     </button>
@@ -719,7 +719,7 @@ function invoiceTypeLabel(
                         type="button"
                         @click="submitRejection"
                         :disabled="!rejectionReason.trim()"
-                        class="rounded-lg bg-alert/85 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+                        class="rounded-lg bg-alert/85 px-4 py-2 text-[14px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
                     >
                         Reject Payment
                     </button>

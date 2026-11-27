@@ -51,7 +51,7 @@ onMounted(() => {
                 </div>
 
                 <!-- Deskripsi -->
-                <p class="text-gray-600 text-sm line-clamp-2 font-normal leading-relaxed mb-6">
+                <p class="text-gray-600 text-[14px] line-clamp-2 font-normal leading-relaxed mb-6">
                     {{ course.description }}
                 </p>
             </div>

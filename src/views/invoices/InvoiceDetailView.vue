@@ -147,7 +147,7 @@ async function loadInvoiceDetail() {
 
             <!-- Back Button -->
             <button type="button"
-                class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-text-secondary transition hover:text-text-primary"
+                class="mb-6 inline-flex items-center gap-2 text-[14px] font-semibold text-text-secondary transition hover:text-text-primary"
                 @click="router.back()">
                 <ArrowLeft :size="17" />
                 Back
@@ -166,11 +166,11 @@ async function loadInvoiceDetail() {
                     Unable to Load Invoice
                 </h1>
 
-                <p class="mt-2 text-sm text-alert/85">
+                <p class="mt-2 text-[14px] text-alert/85">
                     {{ pageError }}
                 </p>
 
-                <button type="button" class="mt-5 rounded-xl bg-text-primary px-5 py-3 text-sm font-semibold text-white"
+                <button type="button" class="mt-5 rounded-xl bg-text-primary px-5 py-3 text-[14px] font-semibold text-white"
                     @click="loadInvoiceDetail">
                     Try Again
                 </button>
@@ -188,7 +188,7 @@ async function loadInvoiceDetail() {
                                 Invoice Details
                             </h1>
 
-                            <p class="mt-1 text-sm opacity-90">
+                            <p class="mt-1 text-[14px] opacity-90">
                                 {{ invoiceStatus.description }}
                             </p>
                         </div>
@@ -253,7 +253,7 @@ async function loadInvoiceDetail() {
                                 {{ course?.name ?? "Course unavailable" }}
                             </p>
 
-                            <p class="mt-1 text-sm text-text-secondary">
+                            <p class="mt-1 text-[14px] text-text-secondary">
                                 Program:
                                 <span class="font-semibold text-slate-700">
                                     {{ program?.name ?? "Program unavailable" }}
@@ -301,7 +301,7 @@ async function loadInvoiceDetail() {
                         </div>
 
                         <div v-if="invoice.invoice_type === 'monthly'"
-                            class="flex items-center gap-2 text-sm text-text-secondary">
+                            class="flex items-center gap-2 text-[14px] text-text-secondary">
                             <CalendarDays :size="16" />
                             Billing period:
                             {{ formatDate(invoice.billing_period_start) }}
@@ -334,7 +334,7 @@ async function loadInvoiceDetail() {
                                 Payment Required
                             </h3>
 
-                            <p class="mt-1 text-sm leading-6 text-amber-800">
+                            <p class="mt-1 text-[14px] leading-6 text-amber-800">
                                 Your enrollment has been approved.
                                 Complete this payment to activate your enrollment.
                             </p>
@@ -348,7 +348,7 @@ async function loadInvoiceDetail() {
                         Payment Under Review
                     </h3>
 
-                    <p class="mt-1 text-sm leading-6 text-blue-800">
+                    <p class="mt-1 text-[14px] leading-6 text-blue-800">
                         Your payment proof has been submitted.
                         Please wait for the course administrator to verify it.
                     </p>
@@ -360,7 +360,7 @@ async function loadInvoiceDetail() {
                         Payment Completed
                     </h3>
 
-                    <p class="mt-1 text-sm leading-6 text-emerald-800">
+                    <p class="mt-1 text-[14px] leading-6 text-emerald-800">
                         Your payment has been verified successfully.
                         Thank you!
                     </p>
