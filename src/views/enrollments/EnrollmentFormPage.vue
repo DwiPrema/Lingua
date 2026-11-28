@@ -8,9 +8,9 @@ import { useEnrollmentStores } from '@/stores/enrollments_stores'
 import { EnrollmentException } from '@/utils/exception/enrollment_exception'
 import { useAuthStore } from '@/stores/auth_stores'
 import { formatCurrency } from '@/composables/format_currency'
-import { Course } from '@/types/course_type'
-import { Programs } from '@/types/program_type'
-import { EnrollmentForm, StatusEnrollments } from '@/types/enrollment_type'
+import type { Course } from '@/types/course_type'
+import type { Programs } from '@/types/program_type'
+import { StatusEnrollments, type EnrollmentForm } from '@/types/enrollment_type'
 
 const route = useRoute()
 const router = useRouter()

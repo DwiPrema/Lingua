@@ -4,7 +4,11 @@ import { useRouter } from 'vue-router'
 
 import { useOrganizationStore } from '@/stores/organization_stores'
 import { supabase } from '@/lib/supabase'
-import { OrganizationSetupInput } from '@/service/organization_service'
+import type { OrganizationSetupInput } from '@/service/organization_service'
+import '@/assets/grid.css'
+import CustomButton from '@/components/CustomButton.vue'
+import { useUserDataStores } from '@/stores/user_data_stores'
+import { useAuthStore } from '@/stores/auth_stores'
 
 const router = useRouter()
 const organizationStore = useOrganizationStore()
@@ -28,6 +32,9 @@ const joinError = ref('')
 
 const userLoading = ref(true)
 const currentUserId = ref('')
+
+const userDataStore = useUserDataStores()
+const authStore = useAuthStore()
 
 function clearValidationErrors() {
   Object.keys(errors).forEach((key) => {
@@ -125,9 +132,18 @@ async function handleSubmit(): Promise<void> {
       payment_notes: form.payment_notes?.trim() || null,
     })
 
+    await userDataStore.getUserData()
+
+    if (userDataStore.userData?.role !== 'instructor') {
+      throw new Error(
+        'Organisasi berhasil disimpan, tetapi role instructor belum diperbarui.'
+      )
+    }
+
     sessionStorage.removeItem('registrationIntent')
 
     await router.replace({ name: 'dashboard' })
+
   } catch (error) {
     console.error('Failed to complete organization setup:', error)
 
@@ -137,7 +153,6 @@ async function handleSubmit(): Promise<void> {
         : 'Gagal menyimpan organisasi.'
   }
 }
-
 
 async function handleJoin(): Promise<void> {
   joinError.value = ''
@@ -189,10 +204,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 text-text-primary">
+  <div class="min-h-screen hero-grid text-text-primary">
     <header class="border-b border-slate-200 bg-white">
-      <div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
-        <RouterLink to="/" class="text-xl font-bold tracking-tight">
+      <div class="mx-auto flex h-16 items-center justify-between px-5">
+        <RouterLink to="/" class="text-[30px] font-black tracking-tight">
           Lingua<span class="text-primary">.</span>
         </RouterLink>
 
@@ -202,45 +217,44 @@ onMounted(() => {
       </div>
     </header>
 
-    <main class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+    <main class="mx-auto px-4 py-10 sm:px-6">
       <div class="mb-8">
-        <span class="text-xs font-semibold uppercase tracking-widest text-primary">
+        <span class="text-[12px] font-semibold uppercase tracking-widest text-primary">
           Organization setup
         </span>
 
-        <h1 class="mt-3 text-3xl font-bold tracking-tight">
+        <h1 class="mt-3 text-[36px] font-black tracking-tight">
           Setup Organisasi
         </h1>
 
-        <p class="mt-3 text-[14px] leading-6 text-text-secondary">
+        <p class="mt-1 text-[14px] leading-6 text-text-secondary">
           Lengkapi profil organisasi dan informasi pembayaran sebelum
           mulai mengelola course di Lingua.
         </p>
       </div>
 
-      <section class="mb-6 rounded-2xl border border-indigo-100 bg-white p-5 sm:p-6">
+      <section class="mb-6 rounded-2xl border border-text-primary bg-accent p-5 sm:p-6">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 class="font-semibold">
+            <h2 class="font-bold text-[18px]">
               Sudah memiliki organisasi?
             </h2>
 
-            <p class="mt-1 text-[14px] text-text-secondary">
+            <p class="mt-1 text-[14px] text-text-primary">
               Bergabung menggunakan ID dari owner organisasi.
             </p>
           </div>
 
-          <button type="button"
-            class="rounded-xl border border-indigo-200 px-4 py-2.5 text-[14px] font-semibold text-primary-hover hover:bg-indigo-50"
-            @click="joinModalOpen = true">
-            Join Organization
-          </button>
+          <CustomButton @click="joinModalOpen = true" variant="outline"
+            class="text-text-primary border border-text-primary cursor-pointer transition-all duration-300 ease-in-out">
+            Join Organization <span aria-hidden="true">→</span>
+          </CustomButton>
         </div>
       </section>
 
-      <form class="overflow-hidden rounded-2xl border border-slate-200 bg-white" @submit.prevent="handleSubmit">
+      <form class="overflow-hidden rounded-2xl border border-text-primary bg-surface" @submit.prevent="handleSubmit">
         <div class="border-b border-slate-100 px-5 py-5 sm:px-7">
-          <h2 class="font-semibold">
+          <h2 class="font-bold text-[18px]">
             Informasi Organisasi
           </h2>
 

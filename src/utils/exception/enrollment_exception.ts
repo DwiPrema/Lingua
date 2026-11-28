@@ -1,13 +1,38 @@
+
+export type EnrollmentExceptionType =
+    | 'conflict'
+    | 'notFound'
+    | 'validation'
+    | 'unauthorized'
+
+export type EnrollmentExceptionCode =
+    | 'ENROLLMENT_ALREADY_EXISTS'
+    | 'COURSE_NOT_FOUND'
+    | 'COURSE_INACTIVE'
+    | 'UNAUTHORIZED'
+    | 'INVALID_STATUS_TRANSITION'
+
+type EnrollmentExceptionInput = {
+    type: EnrollmentExceptionType
+    code: EnrollmentExceptionCode
+    message: string
+}
+
 export class EnrollmentException extends Error {
-    constructor({ type, code, message }) {
+    readonly type: EnrollmentExceptionType
+    readonly code: EnrollmentExceptionCode
+
+    constructor({ type, code, message }: EnrollmentExceptionInput) {
         super(message)
 
         this.name = 'EnrollmentException'
         this.type = type
         this.code = code
+
+        Object.setPrototypeOf(this, EnrollmentException.prototype)
     }
 
-    static alreadyExists() {
+    static alreadyExists(): EnrollmentException {
         return new EnrollmentException({
             type: 'conflict',
             code: 'ENROLLMENT_ALREADY_EXISTS',
@@ -15,7 +40,7 @@ export class EnrollmentException extends Error {
         })
     }
 
-    static courseNotFound() {
+    static courseNotFound(): EnrollmentException {
         return new EnrollmentException({
             type: 'notFound',
             code: 'COURSE_NOT_FOUND',
@@ -23,7 +48,7 @@ export class EnrollmentException extends Error {
         })
     }
 
-    static courseInactive() {
+    static courseInactive(): EnrollmentException {
         return new EnrollmentException({
             type: 'validation',
             code: 'COURSE_INACTIVE',
@@ -31,7 +56,7 @@ export class EnrollmentException extends Error {
         })
     }
 
-    static unauthorized() {
+    static unauthorized(): EnrollmentException {
         return new EnrollmentException({
             type: 'unauthorized',
             code: 'UNAUTHORIZED',
@@ -39,7 +64,7 @@ export class EnrollmentException extends Error {
         })
     }
 
-    static invalidStatusTransition() {
+    static invalidStatusTransition(): EnrollmentException {
         return new EnrollmentException({
             type: 'validation',
             code: 'INVALID_STATUS_TRANSITION',

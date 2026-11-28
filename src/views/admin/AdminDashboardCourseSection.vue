@@ -5,7 +5,7 @@ import { useRouter } from "vue-router";
 import { useCourseStores } from "@/stores/course_stores";
 import { Edit, MapPin, Trash } from "@lucide/vue";
 import { useOrganizationStore } from "@/stores/organization_stores";
-import { Course } from "@/types/course_type";
+import type { Course } from "@/types/course_type";
 import CustomButton from "@/components/CustomButton.vue";
 
 const router = useRouter();

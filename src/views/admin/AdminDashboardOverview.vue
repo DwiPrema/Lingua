@@ -8,8 +8,8 @@ import {
 } from "vue";
 import { RouterView, useRoute, useRouter } from "vue-router";
 
-import { useCourseStores } from "@/stores/course_stores.js";
-import { useOrganizationStore } from "@/stores/organization_stores.js";
+import { useCourseStores } from "@/stores/course_stores";
+import { useOrganizationStore } from "@/stores/organization_stores";
 import AdminDashboardCourseSection from "./AdminDashboardCourseSection.vue";
 import CustomButton from "@/components/CustomButton.vue";
 import { User } from "@lucide/vue";

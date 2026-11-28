@@ -7,7 +7,7 @@ import { useEnrollmentStores } from "@/stores/enrollments_stores";
 import { useUserDataStores } from "@/stores/user_data_stores";
 import { useInvoiceStore } from "@/stores/invoice_stores";
 import { usePaymentStore } from "@/stores/payment_stores.js";
-import { Payment } from "@/types/payment_type.js";
+import type { Payment } from "@/types/payment_type.js";
 import PaymentOverviewSection from "../payment/PaymentOverviewSection.vue";
 import { formatDate } from "@/composables/formatDate.js";
 import { useStudentAvatar } from '@/composables/useStudentAvatar'

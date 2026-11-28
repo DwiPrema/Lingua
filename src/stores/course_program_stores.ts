@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 import { courseProgramService } from "@/service/course_program_data_service";
-import { CreateProgramInput, Programs, UpdateProgramInput } from "@/types/program_type";
+import type { CreateProgramInput, Programs, UpdateProgramInput } from "@/types/program_type";
 
 export const useCourseProgramStore = defineStore(
     "course_program",

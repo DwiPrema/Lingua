@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import * as courseDataService from "@/service/course_data_service";
-import { Course, CreateCourseInput, UpdateCourseInput } from "@/types/course_type";
+import type { Course, CreateCourseInput, UpdateCourseInput } from "@/types/course_type";
 
 export const useCourseStores = defineStore("courses", () => {
     const courses = ref<Course[]>([]);

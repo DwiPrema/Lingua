@@ -1,6 +1,6 @@
 import { DatabaseTableName } from "@/constant/database_table_name";
 import { supabase } from "@/lib/supabase";
-import { CreateEnrollmentPayload, Enrollment, StatusEnrollments } from "@/types/enrollment_type";
+import { type CreateEnrollmentPayload, type Enrollment, StatusEnrollments } from "@/types/enrollment_type";
 import { EnrollmentException } from "@/utils/exception/enrollment_exception";
 
 export async function getActiveEnrollment(studentId: string, courseId: string) {

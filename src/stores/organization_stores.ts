@@ -1,12 +1,16 @@
 
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 import type { Organization } from '@/types/organization_type'
-import { organizationService, OrganizationSetupInput } from '@/service/organization_service'
+import { organizationService, type OrganizationSetupInput } from '@/service/organization_service'
 
 export const useOrganizationStore = defineStore('organization', () => {
   const organization = ref<Organization | null>(null)
+
+  const hasOrganization = computed(() => {
+    return organization.value !== null
+  })
 
   const isLoading = ref(false)
   const error = ref<string | null>(null)
@@ -82,6 +86,30 @@ export const useOrganizationStore = defineStore('organization', () => {
     }
   }
 
+  async function fetchMyOrganization(): Promise<Organization | null> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const result = await organizationService.fetchMyOrganization()
+
+      organization.value = result
+
+      return result
+    } catch (err) {
+      console.error('Failed to fetch my organization:', err)
+
+      error.value =
+        err instanceof Error
+          ? err.message
+          : 'Failed to fetch organization.'
+
+      throw err
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   async function joinOrganization(organizationId: string) {
     isLoading.value = true
     error.value = null
@@ -114,6 +142,7 @@ export const useOrganizationStore = defineStore('organization', () => {
     organization,
     isLoading,
     error,
+    hasOrganization,
 
     clearError,
     fetchByOwnerId,
@@ -121,5 +150,6 @@ export const useOrganizationStore = defineStore('organization', () => {
     updateSettings,
     joinOrganization,
     resetOrganization,
+    fetchMyOrganization,
   }
 })

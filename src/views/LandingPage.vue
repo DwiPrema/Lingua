@@ -9,8 +9,8 @@ import StatsCard from '@/components/StatsCard.vue';
 import CustomButton from '@/components/CustomButton.vue';
 import AboutSection from '@/components/AboutSection.vue';
 import { useLenis } from '@/composables/useLenis';
-import Aos from 'aos';
 import '@/assets/grid.css';
+import Aos from 'aos';
 
 const router = useRouter()
 const userStore = useUserDataStores()

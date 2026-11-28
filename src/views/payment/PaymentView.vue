@@ -6,7 +6,7 @@ import { useInvoiceStore } from "@/stores/invoice_stores";
 import { usePaymentStore } from "@/stores/payment_stores";
 
 import PaymentForm from "@/views/payment/PaymentForm.vue";
-import { PaymentPayload } from "@/types/payment_type";
+import type { PaymentPayload } from "@/types/payment_type";
 
 const route = useRoute();
 const router = useRouter();

@@ -6,7 +6,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import * as authService from "@/service/auth_service";
 import { useUserDataStores } from "./user_data_stores";
 import { useOrganizationStore } from "./organization_stores";
-import { AuthIntent, ErrorWithMessage, LoginMethod, OtpType, RegistrationIntent, SignUpFormErrors } from "@/types/auth_type";
+import type { AuthIntent, ErrorWithMessage, LoginMethod, RegistrationIntent, SignUpFormErrors } from "@/types/auth_type";
 
 function getErrorMessage(
     error: unknown,

@@ -2,7 +2,7 @@
 import { formatDate } from '@/composables/formatDate'
 import { useEnrollmentStores } from '@/stores/enrollments_stores'
 import { useUserDataStores } from '@/stores/user_data_stores'
-import { Enrollment } from '@/types/enrollment_type'
+import type { Enrollment } from '@/types/enrollment_type'
 import { Check, Clock3, GraduationCap, MessageSquareWarning, Phone, RefreshCw, School, X } from '@lucide/vue'
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'

@@ -1,6 +1,6 @@
 import { DatabaseTableName } from "@/constant/database_table_name";
 import { supabase } from "@/lib/supabase";
-import { LandingStatistics, UpdateUserPayload } from "@/types/user_type";
+import type { LandingStatistics, UpdateUserPayload } from "@/types/user_type";
 
 export async function getDataUser(uid: string) {
   const { data, error } = await supabase

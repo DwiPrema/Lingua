@@ -15,8 +15,8 @@ import {
 import { useCourseStores } from "@/stores/course_stores";
 import { useCourseProgramStore } from "@/stores/course_program_stores";
 import { formatCurrency } from "@/composables/format_currency";
-import { Course } from "@/types/course_type";
-import { Programs } from "@/types/program_type";
+import type { Course } from "@/types/course_type";
+import type { Programs } from "@/types/program_type";
 
 const route = useRoute();
 const router = useRouter();

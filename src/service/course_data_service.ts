@@ -1,6 +1,6 @@
 import { DatabaseTableName } from "@/constant/database_table_name";
 import { supabase } from "@/lib/supabase";
-import { Course, CreateCourseInput, UpdateCourseInput } from "@/types/course_type";
+import type { Course, CreateCourseInput, UpdateCourseInput } from "@/types/course_type";
 
 export async function getAllCourseData(): Promise<Course[]> {
     const { data, error } = await supabase.from(DatabaseTableName.coursesCollection).select().order('created_at', { ascending: false })

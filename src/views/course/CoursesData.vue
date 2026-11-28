@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCourseStores } from '@/stores/course_stores.js';
+import { useCourseStores } from '@/stores/course_stores';
 import { CircleX, MapPin } from '@lucide/vue';
 import { onMounted } from 'vue';
 import CourseCardSkeleton from '@/components/CourseCardSkeleton.vue';

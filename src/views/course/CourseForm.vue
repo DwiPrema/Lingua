@@ -17,7 +17,7 @@ import {
 
 import { useCourseStores } from "@/stores/course_stores";
 import { useOrganizationStore } from "@/stores/organization_stores";
-import { Course } from "@/types/course_type";
+import type { Course } from "@/types/course_type";
 
 const router = useRouter();
 const route = useRoute();

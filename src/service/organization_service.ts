@@ -1,7 +1,7 @@
 
 import { DatabaseTableName } from '@/constant/database_table_name'
 import { supabase } from '@/lib/supabase'
-import { Organization } from '@/types/organization_type'
+import type { Organization } from '@/types/organization_type'
 
 const ORGANIZATIONS_TABLE = DatabaseTableName.organizationsCollection
 
@@ -30,6 +30,56 @@ export const organizationService = {
 
         return data as Organization | null
     },
+
+
+    async fetchMyOrganization(): Promise<Organization | null> {
+        const { data: { user }, error: authError } =
+            await supabase.auth.getUser()
+
+        if (authError) throw authError
+
+        if (!user) {
+            throw new Error('Authentication required.')
+        }
+
+        const { data: ownedOrganization, error: ownerError } =
+            await supabase
+                .from(DatabaseTableName.organizationsCollection)
+                .select('*')
+                .eq('owner_id', user.id)
+                .maybeSingle()
+
+        if (ownerError) throw ownerError
+
+        if (ownedOrganization) {
+            return ownedOrganization as Organization
+        }
+
+        const { data: membership, error: membershipError } =
+            await supabase
+                .from(DatabaseTableName.organizationMemberCollection)
+                .select('organization_id')
+                .eq('admin_id', user.id)
+                .maybeSingle()
+
+        if (membershipError) throw membershipError
+
+        if (!membership) {
+            return null
+        }
+
+        const { data: organization, error: organizationError } =
+            await supabase
+                .from(DatabaseTableName.organizationsCollection)
+                .select('*')
+                .eq('id', membership.organization_id)
+                .maybeSingle()
+
+        if (organizationError) throw organizationError
+
+        return organization as Organization | null
+    },
+
 
     async completeSetup(
         payload: OrganizationSetupInput

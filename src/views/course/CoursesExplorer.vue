@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useCourseStores } from '@/stores/course_stores'
 import { Search } from '@lucide/vue'
 import { useAuthStore } from '@/stores/auth_stores'
-import { Course } from '@/types/course_type'
+import type { Course } from '@/types/course_type'
 import { formatDate } from '@/composables/formatDate'
 
 const router = useRouter()

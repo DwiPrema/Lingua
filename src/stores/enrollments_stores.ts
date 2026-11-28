@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import * as enrollmentService from '@/service/enrollments_service'
-import { CreateEnrollmentPayload, Enrollment } from '@/types/enrollment_type'
+import type { CreateEnrollmentPayload, Enrollment } from '@/types/enrollment_type'
 import { useAuthStore } from './auth_stores'
 
 export const useEnrollmentStores = defineStore('enrollment', () => {

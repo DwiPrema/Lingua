@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
     defineProps({
         size: {type: String, default: '24px'},
         color: {type: String, default: 'currentColor'}

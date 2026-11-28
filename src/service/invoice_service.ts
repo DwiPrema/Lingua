@@ -1,6 +1,7 @@
 
 import { DatabaseTableName } from "@/constant/database_table_name";
 import { supabase } from "@/lib/supabase";
+import type { Enrollment } from "@/types/enrollment_type";
 import type { Invoice } from "@/types/invoice_type";
 
 // =====================================================

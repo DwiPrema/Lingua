@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { useAuthStore } from '@/stores/auth_stores';
 import { useHeaderStore } from '@/stores/header';
 import { useUserDataStores } from '@/stores/user_data_stores';
@@ -65,17 +65,13 @@ onMounted(async () => {
                 </button>
 
                 <ul class="flex flex-col gap-6">
-                    <!-- <li v-for="menu in store.menuItems" :key="menu.name">
-                        <button @click="store.scrollToSection(menu.href)" class="text-text-primary">{{ menu.name
-                            }}</button>
-                    </li> -->
 
                     <li>
-                            <CustomButton @click="router.push('/auth/login')" block="true">Login</CustomButton>
+                            <CustomButton @click="router.push('/auth/login')" :block="true">Login</CustomButton>
                     </li>
 
                     <li>
-                            <CustomButton @click="router.push('/auth/signup')" block="true">Sign Up</CustomButton>
+                            <CustomButton @click="router.push('/auth/signup')" :block="true">Sign Up</CustomButton>
                     </li>
                 </ul>
             </div>

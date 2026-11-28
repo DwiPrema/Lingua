@@ -18,10 +18,10 @@ import {
     ReceiptText,
     TriangleAlert,
 } from "@lucide/vue";
-import { Invoice } from "@/types/invoice_type";
-import { Course } from "@/types/course_type";
-import { Programs } from "@/types/program_type";
-import { Enrollment } from "@/types/enrollment_type";
+import type { Invoice } from "@/types/invoice_type";
+import type { Course } from "@/types/course_type";
+import type { Programs } from "@/types/program_type";
+import type { Enrollment } from "@/types/enrollment_type";
 import { formatDate } from "@/composables/formatDate";
 
 const route = useRoute();

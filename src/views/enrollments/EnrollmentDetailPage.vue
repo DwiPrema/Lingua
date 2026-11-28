@@ -26,7 +26,7 @@ import type { Invoice } from '@/types/invoice_type'
 import type { Payment } from '@/types/payment_type'
 import type { Course } from '@/types/course_type'
 import type { Programs } from '@/types/program_type'
-import { Enrollment, StatusEnrollments, StatusEnrollmentType } from '@/types/enrollment_type'
+import { type Enrollment, StatusEnrollments, type StatusEnrollmentType } from '@/types/enrollment_type'
 import { formatDate } from '@/composables/formatDate'
 
 const route = useRoute()

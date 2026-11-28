@@ -67,7 +67,6 @@ const router = createRouter({
             path: "/courses/:id",
             name: "guest.course-detail",
             component: CourseDetail,
-            requiresGuest: true
         },
         {
             path: "/explore-courses",
@@ -221,6 +220,7 @@ const router = createRouter({
     ],
 });
 
+
 router.beforeEach(async (to) => {
     const authStore = useAuthStore();
     const userDataStore = useUserDataStores();
@@ -231,10 +231,12 @@ router.beforeEach(async (to) => {
 
     const isAuthenticated = Boolean(authStore.session);
 
+    // OTP flow
     if (to.meta.requiresOtpFlow && !authStore.authIntent) {
         return { name: "auth-login" };
     }
 
+    // Authentication
     if (to.meta.requiresAuth && !isAuthenticated) {
         return {
             name: "auth-login",
@@ -242,95 +244,110 @@ router.beforeEach(async (to) => {
         };
     }
 
-    if (isAuthenticated) {
-        try {
-            if (!userDataStore.userData) {
-                await userDataStore.getUserData();
+    if (!isAuthenticated) return true;
+
+    try {
+        if (!userDataStore.userData) {
+            await userDataStore.getUserData();
+        }
+
+        const role = userDataStore.userData?.role;
+
+        if (!role) {
+            if (to.meta.requiresInstructor || to.meta.requiresStudent) {
+                return { name: "landingPage" };
             }
 
-            const role = userDataStore.userData?.role;
+            return true;
+        }
 
-            if (!role) {
-                if (to.meta.requiresInstructor || to.meta.requiresStudent) {
-                    return { name: "landingPage" };
-                }
+        const isOrganizationSetup =
+            to.name === "organization-setup";
 
-                return true;
+        const isCreatorOnboarding =
+            role === "student" &&
+            authStore.registrationIntent === "create";
+
+        // CREATOR ONBOARDING
+        // Creator yang belum menyelesaikan setup hanya boleh
+        // mengakses halaman Organization Setup.
+        if (isCreatorOnboarding) {
+            if (!isOrganizationSetup) {
+                return { name: "organization-setup" };
             }
 
-            if (role === "student" && to.name === "landingPage") {
+            return true;
+        }
+
+        // Guest-only pages
+        if (to.meta.requiresGuest) {
+            if (role === "student") {
                 return { name: "student.dashboard" };
             }
 
-            if (role === "instructor" && to.name === "landingPage") {
+            if (role === "instructor") {
+                return { name: "dashboard" };
+            }
+        }
+
+        // Student access
+        if (to.meta.requiresStudent && role !== "student") {
+            if (role === "instructor") {
                 return { name: "dashboard" };
             }
 
-            if (to.meta.requiresGuest) {
-                if (role === "student") {
-                    return { name: "student.dashboard" };
-                }
+            return { name: "landingPage" };
+        }
 
-                if (role === "instructor") {
-                    return { name: "dashboard" };
-                }
-            }
-
-            if (to.meta.requiresStudent && role !== "student") {
-                if (role === "instructor") {
-                    return { name: "dashboard" };
-                }
-
-                return { name: "landingPage" };
-            }
-
-            if (role === "student" && to.meta.requiresInstructor) {
+        // Instructor access
+        if (
+            to.meta.requiresInstructor &&
+            role !== "instructor"
+        ) {
+            if (role === "student") {
                 return { name: "student.dashboard" };
             }
 
+            return { name: "landingPage" };
+        }
+
+        // Organization access
+        if (
+            role === "instructor" &&
+            (
+                to.meta.requiresOrganization ||
+                isOrganizationSetup
+            )
+        ) {
+            const organizationStore = useOrganizationStore();
+
+            if (!organizationStore.organization) {
+                await organizationStore.fetchMyOrganization();
+            }
+
+            const hasOrganization =
+                organizationStore.hasOrganization;
+
             if (
-                to.meta.requiresInstructor &&
-                role !== "instructor"
+                to.meta.requiresOrganization &&
+                !hasOrganization
             ) {
-                return { name: "landingPage" };
+                return { name: "organization-setup" };
             }
 
             if (
-                role === "instructor" &&
-                (
-                    to.meta.requiresOrganization ||
-                    to.name === "organization-setup"
-                )
+                isOrganizationSetup &&
+                hasOrganization
             ) {
-                const organizationStore = useOrganizationStore();
-
-                if (!organizationStore.organization) {
-                    await organizationStore.fetchMyOrganization();
-                }
-
-                const hasOrganization =
-                    organizationStore.hasOrganization;
-
-                if (
-                    to.meta.requiresOrganization &&
-                    !hasOrganization
-                ) {
-                    return { name: "organization-setup" };
-                }
-
-                if (
-                    to.name === "organization-setup" &&
-                    hasOrganization
-                ) {
-                    return { name: "dashboard" };
-                }
+                return { name: "dashboard" };
             }
-        } catch (error) {
-            console.error("Route guard error:", error);
+        }
 
-            if (to.meta.requiresAuth) {
-                return { name: "landingPage" };
-            }
+    } catch (error) {
+        console.error("Route guard error:", error);
+
+        if (to.meta.requiresAuth) {
+            return { name: "landingPage" };
         }
     }
 

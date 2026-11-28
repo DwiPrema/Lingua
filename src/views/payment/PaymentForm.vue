@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import type { Invoice } from "@/types/invoice_type";
-import { PaymentMethod, PaymentPayload } from "@/types/payment_type";
-import { OrganizationBankAccount } from "@/types/organization_type";
+import type { PaymentMethod, PaymentPayload } from "@/types/payment_type";
+import type { OrganizationBankAccount } from "@/types/organization_type";
 
 const props = defineProps<{
     invoice: Invoice;

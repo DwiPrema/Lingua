@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import CustomButton from '@/components/CustomButton.vue';
 import { RouterView, useRouter } from 'vue-router';
 import '@/assets/grid.css';

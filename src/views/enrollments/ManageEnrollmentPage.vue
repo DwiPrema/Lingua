@@ -17,8 +17,8 @@ import {
 
 import { useCourseStores } from '@/stores/course_stores'
 import { useEnrollmentStores } from '@/stores/enrollments_stores'
-import { Course } from '@/types/course_type'
-import { Enrollment } from '@/types/enrollment_type'
+import type { Course } from '@/types/course_type'
+import type { Enrollment } from '@/types/enrollment_type'
 import { useUserDataStores } from '@/stores/user_data_stores'
 import { formatDate } from '@/composables/formatDate'
 import { useStudentAvatar } from '@/composables/useStudentAvatar'
