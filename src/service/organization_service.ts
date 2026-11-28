@@ -4,10 +4,22 @@ import { supabase } from '@/lib/supabase'
 import { Organization } from '@/types/organization_type'
 
 const ORGANIZATIONS_TABLE = DatabaseTableName.organizationsCollection
-const ORGANIZATION_MEMBERS_TABLE = DatabaseTableName.organizationMemberCollection
+
+export type OrganizationSetupInput = {
+    name: string
+    bank_name: string
+    account_number: string
+    account_name: string
+    qris_url?: string | null
+    payment_notes?: string | null
+}
 
 export const organizationService = {
-    async getByOwnerId(ownerId: string) {
+    async getByOwnerId(ownerId: string): Promise<Organization | null> {
+        if (!ownerId) {
+            throw new Error('Owner ID wajib tersedia.')
+        }
+
         const { data, error } = await supabase
             .from(ORGANIZATIONS_TABLE)
             .select('*')
@@ -16,74 +28,48 @@ export const organizationService = {
 
         if (error) throw error
 
-        return data
+        return data as Organization | null
     },
 
-    async createOrganization({
-        owner_id,
-        name,
-        bank_name,
-        account_number,
-        account_name,
-        qris_url = null,
-        payment_notes = null,
-    }: Organization) {
-        if (!owner_id) {
-            throw new Error('Owner ID wajib tersedia.')
+    async completeSetup(
+        payload: OrganizationSetupInput
+    ): Promise<Organization> {
+        const normalizedPayload = {
+            name: payload.name.trim(),
+            bank_name: payload.bank_name.trim(),
+            account_number: payload.account_number.trim(),
+            account_name: payload.account_name.trim(),
+            qris_url: payload.qris_url?.trim() || null,
+            payment_notes: payload.payment_notes?.trim() || null,
         }
 
-        const payload = {
-            name: name.trim(),
-            bank_name: bank_name.trim(),
-            account_number: account_number.trim(),
-            account_name: account_name.trim(),
-            qris_url: qris_url?.trim() || null,
-            payment_notes: payment_notes?.trim() || null,
+        if (
+            !normalizedPayload.name ||
+            !normalizedPayload.bank_name ||
+            !normalizedPayload.account_number ||
+            !normalizedPayload.account_name
+        ) {
+            throw new Error('Lengkapi seluruh informasi organization.')
         }
 
-        try {
-            const existing = await this.getByOwnerId(owner_id)
-
-            if (!existing) {
-                const { data: inserted, error: insertError } = await supabase
-                    .from(ORGANIZATIONS_TABLE)
-                    .insert({
-                        ...payload,
-                        owner_id: owner_id,
-                    })
-                    .select()
-                    .single()
-
-                if (insertError) throw insertError
-
-                const { error: memberError } = await supabase
-                    .from(ORGANIZATION_MEMBERS_TABLE)
-                    .insert({
-                        organization_id: inserted.id,
-                        admin_id: owner_id,
-                        role: 'owner',
-                    })
-
-                if (memberError) {
-                    throw memberError
-                }
-
-                return inserted
+        const { data, error } = await supabase.rpc(
+            'complete_organization_setup',
+            {
+                p_name: normalizedPayload.name,
+                p_bank_name: normalizedPayload.bank_name,
+                p_account_number: normalizedPayload.account_number,
+                p_account_name: normalizedPayload.account_name,
+                p_qris_url: normalizedPayload.qris_url,
+                p_payment_notes: normalizedPayload.payment_notes,
             }
+        )
 
-            const { data: updated, error: updateError } = await supabase
-                .from(ORGANIZATIONS_TABLE)
-                .update(payload)
-                .eq('owner_id', owner_id)
-                .select()
-                .single()
+        if (error) throw error
 
-            if (updateError) throw updateError
-
-            return updated
-        } catch (error) {
-            console.error('organizationService.save:', error)
-            throw error
+        if (!data) {
+            throw new Error('Organization setup gagal diselesaikan.')
         }
+
+        return data as Organization
     },
 }

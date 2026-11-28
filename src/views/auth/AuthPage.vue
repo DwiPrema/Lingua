@@ -177,7 +177,8 @@ onUnmounted(() => {
                                     class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-4 text-center text-2xl font-semibold tracking-[0.5em] outline-none transition focus:border-dark-background focus:bg-white focus:ring-2 focus:ring-dark-background/10" />
                             </div>
 
-                            <p v-if="authStore.error" class="mt-2 text-[14px] text-alert/85" role="alert" aria-live="polite">
+                            <p v-if="authStore.error" class="mt-2 text-[14px] text-alert/85" role="alert"
+                                aria-live="polite">
                                 {{ authStore.error }}
                             </p>
 
@@ -216,8 +217,9 @@ onUnmounted(() => {
                             </button>
 
                             <!-- Success notification -->
-                            <p v-if="resendSuccess" class="mt-3 rounded-lg bg-green-50 px-3 py-2 text-[14px] text-success"
-                                role="status" aria-live="polite">
+                            <p v-if="resendSuccess"
+                                class="mt-3 rounded-lg bg-green-50 px-3 py-2 text-[14px] text-success" role="status"
+                                aria-live="polite">
                                 {{ resendSuccess }}
                             </p>
 
@@ -374,10 +376,9 @@ onUnmounted(() => {
 
                                 <div class="grid grid-cols-2 gap-3">
 
-                                    <button type="button" class="rounded-2xl border p-4 text-left transition" :class="authStore.role === 'student'
+                                    <button type="button" class="rounded-2xl border p-4 text-left transition" :class="authStore.registrationIntent === 'learn'
                                         ? 'border-dark-background bg-gray-50 ring-1 ring-primary'
-                                        : 'border-gray-200 hover:border-gray-400'
-                                        " @click="authStore.role = 'student'">
+                                        : 'border-gray-200 hover:border-gray-400'" @click="authStore.setRegistrationIntent('learn')">
 
                                         <div class="mb-3 flex items-center justify-between">
 
@@ -391,10 +392,9 @@ onUnmounted(() => {
                                                 </p>
                                             </div>
 
-                                            <div class="h-4 w-4 rounded-full border" :class="authStore.role === 'student'
+                                            <div class="h-4 w-4 rounded-full border" :class="authStore.registrationIntent === 'learn'
                                                 ? 'border-primary bg-primary'
-                                                : 'border-gray-300'
-                                                "></div>
+                                                : 'border-gray-300'"></div>
 
                                         </div>
 
@@ -404,10 +404,9 @@ onUnmounted(() => {
 
                                     </button>
 
-                                    <button type="button" class="rounded-2xl border p-4 text-left transition" :class="authStore.role === 'instructor'
+                                    <button type="button" class="rounded-2xl border p-4 text-left transition" :class="authStore.registrationIntent === 'create'
                                         ? 'border-dark-background bg-gray-50 ring-1 ring-primary'
-                                        : 'border-gray-200 hover:border-gray-400'
-                                        " @click="authStore.role = 'instructor'">
+                                        : 'border-gray-200 hover:border-gray-400'" @click="authStore.setRegistrationIntent('create')">
 
                                         <div class="mb-3 flex items-center justify-between">
 
@@ -422,10 +421,9 @@ onUnmounted(() => {
                                                 </p>
                                             </div>
 
-                                            <div class="h-4 w-4 rounded-full border" :class="authStore.role === 'instructor'
+                                            <div class="h-4 w-4 rounded-full border" :class="authStore.registrationIntent === 'create'
                                                 ? 'border-primary bg-primary'
-                                                : 'border-gray-300'
-                                                "></div>
+                                                : 'border-gray-300'"></div>
 
                                         </div>
 

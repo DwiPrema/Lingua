@@ -1,345 +1,469 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+
 import { useOrganizationStore } from '@/stores/organization_stores'
-import { Organization } from '@/types/organization_type'
 import { supabase } from '@/lib/supabase'
+import { OrganizationSetupInput } from '@/service/organization_service'
 
 const router = useRouter()
 const organizationStore = useOrganizationStore()
 
-type FormErrors = Partial<Record<keyof Organization, string>>
+type FormErrors = Partial<Record<keyof OrganizationSetupInput, string>>
 
-const form = reactive<Organization>({
-  owner_id: '',
-  name: '',
-  bank_name: '',
-  account_number: '',
-  account_name: '',
-  qris_url: '',
-  payment_notes: '',
-} as Organization)
+const form = reactive<OrganizationSetupInput>({
+    name: '',
+    bank_name: '',
+    account_number: '',
+    account_name: '',
+    qris_url: '',
+    payment_notes: '',
+})
 
 const errors = reactive<FormErrors>({})
 
-const joinModalOpen = ref<boolean>(false)
-const organizationId = ref<string>('')
-const joinError = ref<string>('')
+const joinModalOpen = ref(false)
+const organizationId = ref('')
+const joinError = ref('')
 
-const userLoading = ref<boolean>(true)
-const currentUserId = ref<string>('')
+const userLoading = ref(true)
+const currentUserId = ref('')
+
+function clearValidationErrors() {
+    Object.keys(errors).forEach((key) => {
+        delete errors[key as keyof FormErrors]
+    })
+}
+
+function clearFormErrors() {
+    clearValidationErrors()
+    organizationStore.clearError()
+}
 
 async function getCurrentUser(): Promise<void> {
-  userLoading.value = true
+    userLoading.value = true
+    organizationStore.clearError()
 
-  try {
-    const { data, error } = await supabase.auth.getUser()
+    try {
+        const { data, error } = await supabase.auth.getUser()
 
-    if (error) throw error
+        if (error) throw error
 
-    if (!data.user) {
-      throw new Error('Silakan login terlebih dahulu.')
+        if (!data.user) {
+            throw new Error('Silakan login terlebih dahulu.')
+        }
+
+        currentUserId.value = data.user.id
+    } catch (error) {
+        console.error('Failed to get current user:', error)
+
+        organizationStore.error =
+            error instanceof Error
+                ? error.message
+                : 'Gagal mengambil informasi pengguna.'
+    } finally {
+        userLoading.value = false
     }
-
-    currentUserId.value = data.user.id
-    form.owner_id = data.user.id
-  } catch (error) {
-    console.error('Failed to get current user:', error)
-    organizationStore.error =
-      error instanceof Error
-        ? error.message
-        : 'Gagal mengambil informasi pengguna.'
-  } finally {
-    userLoading.value = false
-  }
 }
 
 function validateForm(): boolean {
-  Object.keys(errors).forEach((key) => {
-    delete errors[key as keyof FormErrors]
-  })
+    clearValidationErrors()
 
-  if (!form.name.trim()) {
-    errors.name = 'Nama organisasi wajib diisi.'
-  }
-
-  if (!form.bank_name.trim()) {
-    errors.bank_name = 'Nama bank wajib diisi.'
-  }
-
-  if (!form.account_number.trim()) {
-    errors.account_number = 'Nomor rekening wajib diisi.'
-  } else if (!/^[0-9 -]+$/.test(form.account_number.trim())) {
-    errors.account_number = 'Nomor rekening tidak valid.'
-  }
-
-  if (!form.account_name.trim()) {
-    errors.account_name = 'Nama pemilik rekening wajib diisi.'
-  }
-
-  if (form.qris_url?.trim()) {
-    try {
-      const url = new URL(form.qris_url)
-
-      if (!['http:', 'https:'].includes(url.protocol)) {
-        errors.qris_url = 'URL QRIS tidak valid.'
-      }
-    } catch {
-      errors.qris_url = 'Masukkan URL QRIS yang valid.'
+    if (!form.name.trim()) {
+        errors.name = 'Nama organisasi wajib diisi.'
     }
-  }
 
-  return Object.keys(errors).length === 0
+    if (!form.bank_name.trim()) {
+        errors.bank_name = 'Nama bank wajib diisi.'
+    }
+
+    if (!form.account_number.trim()) {
+        errors.account_number = 'Nomor rekening wajib diisi.'
+    } else if (!/^[0-9 -]+$/.test(form.account_number.trim())) {
+        errors.account_number = 'Nomor rekening tidak valid.'
+    }
+
+    if (!form.account_name.trim()) {
+        errors.account_name = 'Nama pemilik rekening wajib diisi.'
+    }
+
+    if (form.qris_url?.trim()) {
+        try {
+            const url = new URL(form.qris_url.trim())
+
+            if (!['http:', 'https:'].includes(url.protocol)) {
+                errors.qris_url = 'URL QRIS tidak valid.'
+            }
+        } catch {
+            errors.qris_url = 'Masukkan URL QRIS yang valid.'
+        }
+    }
+
+    return Object.keys(errors).length === 0
 }
 
 async function handleSubmit(): Promise<void> {
-  if (organizationStore.loading || userLoading.value) return
+    if (organizationStore.isLoading || userLoading.value) return
 
-  if (!validateForm()) return
+    clearFormErrors()
 
-  try {
-    const { data, error } = await supabase.auth.getUser()
-
-    if (error) throw error
-
-    if (!data.user) {
-      throw new Error('Session login tidak ditemukan. Silakan login kembali.')
+    if (!currentUserId.value) {
+        organizationStore.error =
+            'Session login tidak ditemukan. Silakan login kembali.'
+        return
     }
 
-    const ownerId = data.user.id
+    if (!validateForm()) return
 
-    currentUserId.value = ownerId
-    form.owner_id = ownerId
+    try {
+        await organizationStore.completeSetup({
+            name: form.name.trim(),
+            bank_name: form.bank_name.trim(),
+            account_number: form.account_number.trim(),
+            account_name: form.account_name.trim(),
+            qris_url: form.qris_url?.trim() || null,
+            payment_notes: form.payment_notes?.trim() || null,
+        })
 
-    await organizationStore.saveOrganization({
-      ...form,
-      owner_id: ownerId,
-    })
+        sessionStorage.removeItem('registrationIntent')
 
-    await router.replace({ name: 'dashboard' })
-  } catch (error) {
-    console.error('Failed to save organization:', error)
+        await router.replace({ name: 'dashboard' })
+    } catch (error) {
+        console.error('Failed to complete organization setup:', error)
 
-    organizationStore.error =
-      error instanceof Error
-        ? error.message
-        : 'Gagal menyimpan organisasi.'
-  }
+        organizationStore.error =
+            error instanceof Error
+                ? error.message
+                : 'Gagal menyimpan organisasi.'
+    }
 }
 
 async function handleJoin(): Promise<void> {
-  joinError.value = ''
+    joinError.value = ''
 
-  if (!organizationId.value.trim()) {
-    joinError.value = 'Masukkan ID organisasi.'
-    return
-  }
+    if (!organizationId.value.trim()) {
+        joinError.value = 'Masukkan ID organisasi.'
+        return
+    }
 
-  joinError.value = 'Fitur join organization belum dihubungkan.'
+    joinError.value = 'Fitur join organization belum dihubungkan.'
+}
+
+function closeJoinModal(): void {
+    joinModalOpen.value = false
+    joinError.value = ''
+    organizationId.value = ''
 }
 
 onMounted(() => {
-  getCurrentUser()
+    void getCurrentUser()
 })
-
 </script>
 
 <template>
-  <div class="min-h-screen bg-slate-50 text-text-primary">
-    <header class="border-b border-slate-200 bg-white">
-      <div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
-        <RouterLink to="/" class="text-xl font-bold tracking-tight">
-          Lingua<span class="text-primary">.</span>
-        </RouterLink>
+    <div class="min-h-screen bg-slate-50 text-text-primary">
+        <header class="border-b border-slate-200 bg-white">
+            <div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-5">
+                <RouterLink to="/" class="text-xl font-bold tracking-tight">
+                    Lingua<span class="text-primary">.</span>
+                </RouterLink>
 
-        <span class="text-[14px] text-text-secondary">Instructor onboarding</span>
-      </div>
-    </header>
+                <span class="text-[14px] text-text-secondary">
+                    Instructor onboarding
+                </span>
+            </div>
+        </header>
 
-    <main class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <div class="mb-8">
-        <span class="text-xs font-semibold uppercase tracking-widest text-primary">
-          Organization setup
-        </span>
+        <main class="mx-auto max-w-3xl px-4 py-10 sm:px-6">
+            <div class="mb-8">
+                <span class="text-xs font-semibold uppercase tracking-widest text-primary">
+                    Organization setup
+                </span>
 
-        <h1 class="mt-3 text-3xl font-bold tracking-tight">
-          Setup Organisasi
-        </h1>
+                <h1 class="mt-3 text-3xl font-bold tracking-tight">
+                    Setup Organisasi
+                </h1>
 
-        <p class="mt-3 text-[14px] leading-6 text-text-secondary">
-          Lengkapi profil organisasi dan informasi pembayaran sebelum
-          mulai mengelola course di Lingua.
-        </p>
-      </div>
+                <p class="mt-3 text-[14px] leading-6 text-text-secondary">
+                    Lengkapi profil organisasi dan informasi pembayaran sebelum
+                    mulai mengelola course di Lingua.
+                </p>
+            </div>
 
-      <section class="mb-6 rounded-2xl border border-indigo-100 bg-white p-5 sm:p-6">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 class="font-semibold">Sudah memiliki organisasi?</h2>
-            <p class="mt-1 text-[14px] text-text-secondary">
-              Bergabung menggunakan ID dari owner organisasi.
+            <section class="mb-6 rounded-2xl border border-indigo-100 bg-white p-5 sm:p-6">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h2 class="font-semibold">
+                            Sudah memiliki organisasi?
+                        </h2>
+
+                        <p class="mt-1 text-[14px] text-text-secondary">
+                            Bergabung menggunakan ID dari owner organisasi.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="rounded-xl border border-indigo-200 px-4 py-2.5 text-[14px] font-semibold text-primary-hover hover:bg-indigo-50"
+                        @click="joinModalOpen = true"
+                    >
+                        Join Organization
+                    </button>
+                </div>
+            </section>
+
+            <form
+                class="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+                @submit.prevent="handleSubmit"
+            >
+                <div class="border-b border-slate-100 px-5 py-5 sm:px-7">
+                    <h2 class="font-semibold">
+                        Informasi Organisasi
+                    </h2>
+
+                    <p class="mt-1 text-[14px] text-text-secondary">
+                        Informasi dasar dan rekening penerima pembayaran.
+                    </p>
+                </div>
+
+                <div class="space-y-6 p-5 sm:p-7">
+                    <div>
+                        <label for="name" class="mb-2 block text-[14px] font-medium">
+                            Nama Organisasi <span class="text-alert">*</span>
+                        </label>
+
+                        <input
+                            id="name"
+                            v-model="form.name"
+                            placeholder="Contoh: Lingo English Course"
+                            :disabled="organizationStore.isLoading"
+                            class="w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 disabled:bg-slate-100"
+                        />
+
+                        <p v-if="errors.name" class="mt-1 text-xs text-alert">
+                            {{ errors.name }}
+                        </p>
+                    </div>
+
+                    <div class="grid gap-5 sm:grid-cols-2">
+                        <div>
+                            <label for="bank_name" class="mb-2 block text-[14px] font-medium">
+                                Nama Bank <span class="text-alert">*</span>
+                            </label>
+
+                            <input
+                                id="bank_name"
+                                v-model="form.bank_name"
+                                placeholder="Contoh: BCA"
+                                :disabled="organizationStore.isLoading"
+                                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 disabled:bg-slate-100"
+                            />
+
+                            <p v-if="errors.bank_name" class="mt-1 text-xs text-alert">
+                                {{ errors.bank_name }}
+                            </p>
+                        </div>
+
+                        <div>
+                            <label for="account_number" class="mb-2 block text-[14px] font-medium">
+                                Nomor Rekening <span class="text-alert">*</span>
+                            </label>
+
+                            <input
+                                id="account_number"
+                                v-model="form.account_number"
+                                inputmode="numeric"
+                                placeholder="Nomor rekening"
+                                :disabled="organizationStore.isLoading"
+                                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 disabled:bg-slate-100"
+                            />
+
+                            <p v-if="errors.account_number" class="mt-1 text-xs text-alert">
+                                {{ errors.account_number }}
+                            </p>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="account_name" class="mb-2 block text-[14px] font-medium">
+                                Atas Nama Rekening <span class="text-alert">*</span>
+                            </label>
+
+                            <input
+                                id="account_name"
+                                v-model="form.account_name"
+                                placeholder="Nama pemilik rekening"
+                                :disabled="organizationStore.isLoading"
+                                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 disabled:bg-slate-100"
+                            />
+
+                            <p v-if="errors.account_name" class="mt-1 text-xs text-alert">
+                                {{ errors.account_name }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="qris_url" class="mb-2 block text-[14px] font-medium">
+                            URL QRIS <span class="text-slate-400">(Opsional)</span>
+                        </label>
+
+                        <input
+                            id="qris_url"
+                            v-model="form.qris_url"
+                            type="url"
+                            placeholder="https://example.com/qris.png"
+                            :disabled="organizationStore.isLoading"
+                            class="w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 disabled:bg-slate-100"
+                        />
+
+                        <p v-if="errors.qris_url" class="mt-1 text-xs text-alert">
+                            {{ errors.qris_url }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <label for="paymentNotes" class="mb-2 block text-[14px] font-medium">
+                            Catatan Pembayaran <span class="text-slate-400">(Opsional)</span>
+                        </label>
+
+                        <textarea
+                            id="paymentNotes"
+                            v-model="form.payment_notes"
+                            rows="3"
+                            placeholder="Instruksi tambahan untuk siswa"
+                            :disabled="organizationStore.isLoading"
+                            class="w-full resize-y rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 disabled:bg-slate-100"
+                        />
+                    </div>
+
+                    <div
+                        v-if="organizationStore.error"
+                        role="alert"
+                        class="rounded-xl border border-rose-200 bg-rose-50 p-3 text-[14px] text-rose-700"
+                    >
+                        {{ organizationStore.error }}
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/70 p-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
+                    <p class="text-xs text-text-secondary">
+                        Pastikan informasi organisasi sudah benar.
+                    </p>
+
+                    <button
+                        type="submit"
+                        :disabled="organizationStore.isLoading || userLoading || !currentUserId"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-[14px] font-semibold text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                        <svg
+                            v-if="organizationStore.isLoading"
+                            class="h-4 w-4 animate-spin"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                        >
+                            <circle
+                                cx="12"
+                                cy="12"
+                                r="9"
+                                stroke="currentColor"
+                                stroke-opacity=".25"
+                                stroke-width="3"
+                            />
+                            <path
+                                d="M21 12a9 9 0 0 0-9-9"
+                                stroke="currentColor"
+                                stroke-width="3"
+                                stroke-linecap="round"
+                            />
+                        </svg>
+
+                        {{
+                            userLoading
+                                ? 'Memeriksa sesi...'
+                                : organizationStore.isLoading
+                                    ? 'Menyimpan...'
+                                    : 'Simpan & Lanjut'
+                        }}
+                    </button>
+                </div>
+            </form>
+
+            <p class="mt-6 text-center text-xs text-slate-400">
+                Lingua · Course management made simpler.
             </p>
-          </div>
+        </main>
 
-          <button type="button"
-            class="rounded-xl border border-indigo-200 px-4 py-2.5 text-[14px] font-semibold text-primary-hover hover:bg-indigo-50"
-            @click="joinModalOpen = true">
-            Join Organization
-          </button>
-        </div>
-      </section>
+        <Teleport to="body">
+            <div
+                v-if="joinModalOpen"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4"
+                @click.self="closeJoinModal"
+            >
+                <section
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="join-title"
+                    class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+                >
+                    <div class="flex items-center justify-between">
+                        <h2 id="join-title" class="text-lg font-bold">
+                            Join Organization
+                        </h2>
 
-      <form class="overflow-hidden rounded-2xl border border-slate-200 bg-white" @submit.prevent="handleSubmit">
-        <div class="border-b border-slate-100 px-5 py-5 sm:px-7">
-          <h2 class="font-semibold">Informasi Organisasi</h2>
-          <p class="mt-1 text-[14px] text-text-secondary">
-            Informasi dasar dan rekening penerima pembayaran.
-          </p>
-        </div>
+                        <button
+                            type="button"
+                            class="rounded-lg px-3 py-2 text-text-secondary hover:bg-slate-100"
+                            aria-label="Tutup"
+                            @click="closeJoinModal"
+                        >
+                            ✕
+                        </button>
+                    </div>
 
-        <div class="space-y-6 p-5 sm:p-7">
-          <div>
-            <label for="name" class="mb-2 block text-[14px] font-medium">
-              Nama Organisasi <span class="text-alert">*</span>
-            </label>
-            <input id="name" v-model="form.name" placeholder="Contoh: Lingo English Course"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50" />
-            <p v-if="errors.name" class="mt-1 text-xs text-alert">
-              {{ errors.name }}
-            </p>
-          </div>
+                    <p class="mt-2 text-[14px] leading-6 text-text-secondary">
+                        Masukkan ID organisasi yang diberikan oleh owner.
+                    </p>
 
-          <div class="grid gap-5 sm:grid-cols-2">
-            <div>
-              <label for="bank_name" class="mb-2 block text-[14px] font-medium">
-                Nama Bank <span class="text-alert">*</span>
-              </label>
-              <input id="bank_name" v-model="form.bank_name" placeholder="Contoh: BCA"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50" />
-              <p v-if="errors.bank_name" class="mt-1 text-xs text-alert">
-                {{ errors.bank_name }}
-              </p>
+                    <form class="mt-5 space-y-4" @submit.prevent="handleJoin">
+                        <div>
+                            <label
+                                for="organizationId"
+                                class="mb-2 block text-[14px] font-medium"
+                            >
+                                Organization ID
+                            </label>
+
+                            <input
+                                id="organizationId"
+                                v-model="organizationId"
+                                placeholder="Masukkan ID organisasi"
+                                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50"
+                            />
+
+                            <p v-if="joinError" class="mt-2 text-xs text-alert">
+                                {{ joinError }}
+                            </p>
+                        </div>
+
+                        <div class="flex justify-end gap-3">
+                            <button
+                                type="button"
+                                class="rounded-xl border border-slate-200 px-4 py-2.5 text-[14px] font-semibold"
+                                @click="closeJoinModal"
+                            >
+                                Batal
+                            </button>
+
+                            <button
+                                type="submit"
+                                class="rounded-xl bg-primary px-4 py-2.5 text-[14px] font-semibold text-white hover:bg-primary-hover"
+                            >
+                                Lanjutkan
+                            </button>
+                        </div>
+                    </form>
+                </section>
             </div>
-
-            <div>
-              <label for="account_number" class="mb-2 block text-[14px] font-medium">
-                Nomor Rekening <span class="text-alert">*</span>
-              </label>
-              <input id="account_number" v-model="form.account_number" inputmode="numeric" placeholder="Nomor rekening"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50" />
-              <p v-if="errors.account_number" class="mt-1 text-xs text-alert">
-                {{ errors.account_number }}
-              </p>
-            </div>
-
-            <div class="sm:col-span-2">
-              <label for="account_name" class="mb-2 block text-[14px] font-medium">
-                Atas Nama Rekening <span class="text-alert">*</span>
-              </label>
-              <input id="account_name" v-model="form.account_name" placeholder="Nama pemilik rekening"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50" />
-              <p v-if="errors.account_name" class="mt-1 text-xs text-alert">
-                {{ errors.account_name }}
-              </p>
-            </div>
-          </div>
-
-          <div>
-            <label for="qris_url" class="mb-2 block text-[14px] font-medium">
-              URL QRIS <span class="text-slate-400">(Opsional)</span>
-            </label>
-            <input id="qris_url" v-model="form.qris_url" type="url" placeholder="https://example.com/qris.png"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50" />
-            <p v-if="errors.qris_url" class="mt-1 text-xs text-alert">
-              {{ errors.qris_url }}
-            </p>
-          </div>
-
-          <div>
-            <label for="paymentNotes" class="mb-2 block text-[14px] font-medium">
-              Catatan Pembayaran <span class="text-slate-400">(Opsional)</span>
-            </label>
-            <textarea id="paymentNotes" v-model="form.payment_notes" rows="3"
-              placeholder="Instruksi tambahan untuk siswa"
-              class="w-full resize-y rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50" />
-          </div>
-
-          <div v-if="organizationStore.error" role="alert"
-            class="rounded-xl border border-rose-200 bg-rose-50 p-3 text-[14px] text-rose-700">
-            {{ organizationStore.error }}
-          </div>
-        </div>
-
-        <div
-          class="flex flex-col gap-3 border-t border-slate-100 bg-slate-50/70 p-5 sm:flex-row sm:items-center sm:justify-between sm:px-7">
-          <p class="text-xs text-text-secondary">
-            Pastikan informasi organisasi sudah benar.
-          </p>
-
-          <button type="submit" :disabled="organizationStore.loading"
-            class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-[14px] font-semibold text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60">
-            <svg v-if="organizationStore.loading" class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity=".25" stroke-width="3" />
-              <path d="M21 12a9 9 0 0 0-9-9" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
-            </svg>
-            {{
-              organizationStore.loading
-                ? 'Menyimpan...'
-                : 'Simpan & Lanjut'
-            }}
-          </button>
-        </div>
-      </form>
-
-      <p class="mt-6 text-center text-xs text-slate-400">
-        Lingua · Course management made simpler.
-      </p>
-    </main>
-
-    <Teleport to="body">
-      <div v-if="joinModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4"
-        @click.self="joinModalOpen = false">
-        <section role="dialog" aria-modal="true" aria-labelledby="join-title"
-          class="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-          <div class="flex items-center justify-between">
-            <h2 id="join-title" class="text-lg font-bold">
-              Join Organization
-            </h2>
-            <button type="button" class="rounded-lg px-3 py-2 text-text-secondary hover:bg-slate-100" aria-label="Tutup"
-              @click="joinModalOpen = false">
-              ✕
-            </button>
-          </div>
-
-          <p class="mt-2 text-[14px] leading-6 text-text-secondary">
-            Masukkan ID organisasi yang diberikan oleh owner.
-          </p>
-
-          <form class="mt-5 space-y-4" @submit.prevent="handleJoin">
-            <div>
-              <label for="organizationId" class="mb-2 block text-[14px] font-medium">
-                Organization ID
-              </label>
-              <input id="organizationId" v-model="organizationId" placeholder="Masukkan ID organisasi"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-[14px] outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50" />
-              <p v-if="joinError" class="mt-2 text-xs text-alert">
-                {{ joinError }}
-              </p>
-            </div>
-
-            <div class="flex justify-end gap-3">
-              <button type="button" class="rounded-xl border border-slate-200 px-4 py-2.5 text-[14px] font-semibold"
-                @click="joinModalOpen = false">
-                Batal
-              </button>
-              <button type="submit"
-                class="rounded-xl bg-primary px-4 py-2.5 text-[14px] font-semibold text-white hover:bg-primary-hover">
-                Lanjutkan
-              </button>
-            </div>
-          </form>
-        </section>
-      </div>
-    </Teleport>
-  </div>
+        </Teleport>
+    </div>
 </template>

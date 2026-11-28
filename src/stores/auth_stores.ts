@@ -6,7 +6,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import * as authService from "@/service/auth_service";
 import { useUserDataStores } from "./user_data_stores";
 import { useOrganizationStore } from "./organization_stores";
-import { AuthIntent, ErrorWithMessage, LoginMethod, OtpType, SignUpFormErrors, UserRole } from "@/types/auth_type";
+import { AuthIntent, ErrorWithMessage, LoginMethod, OtpType, RegistrationIntent, SignUpFormErrors } from "@/types/auth_type";
 
 function getErrorMessage(
     error: unknown,
@@ -30,33 +30,21 @@ function getStoredAuthIntent(): AuthIntent {
     return value === "signup" || value === "login-otp" ? value : null;
 }
 
-// =========================================================
-// Store
-// =========================================================
-
 export const useAuthStore = defineStore("auth", () => {
-    // =====================================================
-    // SIGN UP FORM STATE
-    // =====================================================
-
     const email = ref(sessionStorage.getItem("signupEmail") ?? "");
     const password = ref("");
-
     const fullname = ref("");
     const nickname = ref("");
     const phoneNumber = ref("");
-    const role = ref<UserRole>("student");
 
-    // =====================================================
-    // OTP STATE
-    // =====================================================
+    const registrationIntent = ref<RegistrationIntent>(
+        sessionStorage.getItem("registrationIntent") === "create"
+            ? "create"
+            : "learn"
+    );
 
     const otp = ref("");
     const authIntent = ref<AuthIntent>(getStoredAuthIntent());
-
-    // =====================================================
-    // AUTH STATE
-    // =====================================================
 
     const session = ref<Session | null>(null);
     const user = ref<User | null>(null);
@@ -64,32 +52,16 @@ export const useAuthStore = defineStore("auth", () => {
     const currentUser = computed(() => user.value);
     const isInitialized = ref(false);
 
-    // =====================================================
-    // UI STATE
-    // =====================================================
-
     const loading = ref(false);
     const error = ref<string | null>(null);
     const errors = ref<SignUpFormErrors>({});
-
-    // =====================================================
-    // ROUTER
-    // =====================================================
 
     const route = useRoute();
     const router = useRouter();
 
     const authMode = computed(() => route.name);
 
-    // =====================================================
-    // LOGIN METHOD
-    // =====================================================
-
     const loginMethod = ref<LoginMethod>("password");
-
-    // =====================================================
-    // AUTH INTENT
-    // =====================================================
 
     function setAuthIntent(intent: AuthIntent): void {
         authIntent.value = intent;
@@ -101,17 +73,13 @@ export const useAuthStore = defineStore("auth", () => {
         }
     }
 
-    // =====================================================
-    // SIGN UP VALIDATION
-    // =====================================================
+    function setRegistrationIntent(intent: RegistrationIntent): void {
+        registrationIntent.value = intent;
+        sessionStorage.setItem("registrationIntent", intent);
+    }
 
     function validateSignUpForm(): boolean {
         const validationErrors: SignUpFormErrors = {};
-
-        if (!role.value) {
-            validationErrors.role =
-                "Please choose how you want to use Lingua.";
-        }
 
         const normalizedEmail = email.value.trim();
 
@@ -124,8 +92,7 @@ export const useAuthStore = defineStore("auth", () => {
         if (!password.value.trim()) {
             validationErrors.password = "Password is required.";
         } else if (password.value.length < 8) {
-            validationErrors.password =
-                "Password minimum is 8 characters.";
+            validationErrors.password = "Password minimum is 8 characters.";
         }
 
         if (!fullname.value.trim()) {
@@ -145,14 +112,9 @@ export const useAuthStore = defineStore("auth", () => {
         return Object.keys(validationErrors).length === 0;
     }
 
-    // =====================================================
-    // SIGN UP
-    // =====================================================
-
     async function signUp(
         userEmail: string,
         userPassword: string,
-        userRole: UserRole,
         userFullname: string,
         userNickname: string,
         userPhone: string,
@@ -163,7 +125,6 @@ export const useAuthStore = defineStore("auth", () => {
         try {
             email.value = userEmail;
             password.value = userPassword;
-            role.value = userRole;
             fullname.value = userFullname;
             nickname.value = userNickname;
             phoneNumber.value = userPhone;
@@ -176,7 +137,6 @@ export const useAuthStore = defineStore("auth", () => {
                 userFullname,
                 userNickname,
                 userPhone,
-                userRole,
             );
         } catch (err: unknown) {
             error.value = getErrorMessage(err, "Failed to sign up.");
@@ -185,10 +145,6 @@ export const useAuthStore = defineStore("auth", () => {
             loading.value = false;
         }
     }
-
-    // =====================================================
-    // HANDLE SIGN UP
-    // =====================================================
 
     async function handleSignUp(): Promise<void> {
         if (!validateSignUpForm()) return;
@@ -200,7 +156,6 @@ export const useAuthStore = defineStore("auth", () => {
             await signUp(
                 email.value.trim(),
                 password.value,
-                role.value,
                 fullname.value.trim(),
                 nickname.value.trim(),
                 phoneNumber.value.trim(),
@@ -225,10 +180,6 @@ export const useAuthStore = defineStore("auth", () => {
             loading.value = false;
         }
     }
-
-    // =====================================================
-    // VERIFY OTP
-    // =====================================================
 
     async function verifyOtpCode(
         userEmail: string,
@@ -287,9 +238,6 @@ export const useAuthStore = defineStore("auth", () => {
         loading.value = true;
 
         try {
-            const otpType: OtpType =
-                authIntent.value === "login-otp" ? "email" : "signup";
-
             const data = await authService.verifyOtp(
                 normalizedEmail,
                 token,
@@ -303,7 +251,11 @@ export const useAuthStore = defineStore("auth", () => {
 
             password.value = "";
 
-            await router.push({ name: "organization-setup" });
+            if (registrationIntent.value === "create") {
+                await router.push({ name: "organization-setup" });
+            } else {
+                await router.push({ name: "student-dashboard" });
+            }
         } catch (err: unknown) {
             const message = getErrorMessage(
                 err,
@@ -332,7 +284,7 @@ export const useAuthStore = defineStore("auth", () => {
             const organizationStore = useOrganizationStore();
 
             userDataStore.clearUserData();
-            organizationStore.clearOrganization();
+            organizationStore.resetOrganization();
 
             session.value = null;
             user.value = null;
@@ -530,59 +482,51 @@ export const useAuthStore = defineStore("auth", () => {
     // =====================================================
 
     return {
-        // Signup form
         email,
         password,
         fullname,
         nickname,
         phoneNumber,
-        role,
 
-        // OTP
         otp,
         authIntent,
 
-        // Auth state
+        registrationIntent,
+
         session,
         user,
         currentUser,
         isInitialized,
 
-        // UI state
         loading,
         error,
         errors,
 
-        // Router
         route,
         router,
         authMode,
 
-        // Login method
         loginMethod,
 
-        // Auth intent
         setAuthIntent,
 
-        // Signup
         signUp,
         handleSignUp,
         validateSignUpForm,
 
-        // OTP
+
+        setRegistrationIntent,
+
         verifyOtpCode,
         handleVerify,
         handleResendOtp,
 
-        // Session
         initializeAuth,
         listenToAuthChanges,
         validateCurrentUser,
 
-        // Sign out
         signOut,
 
-        // Sign in
         handlePasswordSignIn,
         handleOtpSignIn,
     };

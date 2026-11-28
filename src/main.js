@@ -17,9 +17,6 @@ const authStore = useAuthStore(pinia);
 
 await authStore.initializeAuth();
 
-const subscription =
-    authStore.listenToAuthChanges();
-
 await router.isReady();
 
 app.mount("#app");

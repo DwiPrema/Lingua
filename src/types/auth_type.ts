@@ -16,3 +16,5 @@ export interface SignUpFormErrors {
 export type ErrorWithMessage = {
     message: string;
 };
+
+export type RegistrationIntent = "learn" | "create";

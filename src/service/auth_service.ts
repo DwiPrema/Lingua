@@ -1,13 +1,16 @@
+
 import { supabase } from "@/lib/supabase"
-import type { Session, User as SupabaseUser } from "@supabase/supabase-js"
+import type {
+    Session,
+    User as SupabaseUser,
+} from "@supabase/supabase-js"
 
 export async function signUp(
     email: string,
     password: string,
     fullname: string,
     nickname: string,
-    phoneNumber: string,
-    role: string
+    phoneNumber: string
 ) {
     const { data, error } = await supabase.auth.signUp({
         email,
@@ -17,7 +20,6 @@ export async function signUp(
                 fullname,
                 nickname,
                 phone: phoneNumber,
-                role,
             },
         },
     })
@@ -42,7 +44,10 @@ export async function signOut() {
     if (error) throw error
 }
 
-export async function signInWithEmailPassword(userEmail: string, userPassword: string) {
+export async function signInWithEmailPassword(
+    userEmail: string,
+    userPassword: string
+) {
     const { data, error } = await supabase.auth.signInWithPassword({
         email: userEmail,
         password: userPassword,
@@ -82,7 +87,10 @@ export async function getUser(): Promise<SupabaseUser | null> {
     return data.user
 }
 
-export async function resendOtp(userEmail: string, type: any = "signup") {
+export async function resendOtp(
+    userEmail: string,
+    type: "signup" | "email_change" = "signup"
+) {
     const { data, error } = await supabase.auth.resend({
         email: userEmail.trim(),
         type,
@@ -91,5 +99,3 @@ export async function resendOtp(userEmail: string, type: any = "signup") {
     if (error) throw error
     return data
 }
-
-export const currentUser = supabase.auth.getUser()

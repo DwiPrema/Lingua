@@ -1,85 +1,78 @@
 
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import { supabase } from '@/lib/supabase'
-import { organizationService } from '@/service/organization_service'
-import { Organization } from '@/types/organization_type'
+import { ref } from 'vue'
+
+import type { Organization } from '@/types/organization_type'
+import { organizationService, OrganizationSetupInput } from '@/service/organization_service'
 
 export const useOrganizationStore = defineStore('organization', () => {
-  // State
-  const organization = ref<Organization | null>(null)
-  const loading = ref(false)
-  const error = ref<string | null>(null)
+    const organization = ref<Organization | null>(null)
 
-  // Getters
-  const hasOrganization = computed(() => !!organization.value)
+    const isLoading = ref(false)
+    const error = ref<string | null>(null)
 
-  // Actions
-  async function fetchMyOrganization() {
-    loading.value = true
-    error.value = null
-
-    try {
-      const { data: { user }, error: authError } =
-        await supabase.auth.getUser()
-
-      if (authError) throw authError
-
-      if (!user) {
-        throw new Error('Sesi login tidak ditemukan.')
-      }
-
-      organization.value =
-        await organizationService.getByOwnerId(user.id)
-
-      return organization.value
-    } catch (err: any) {
-      error.value = err.message || 'Gagal mengambil data organization.'
-      throw err
-    } finally {
-      loading.value = false
+    function clearError() {
+        error.value = null
     }
-  }
 
-  async function saveOrganization(payload: Organization) {
-    loading.value = true
-    error.value = null
+    async function fetchByOwnerId(ownerId: string) {
+        isLoading.value = true
+        error.value = null
 
-    try {
-      const { data: { user }, error: authError } =
-        await supabase.auth.getUser()
+        try {
+            organization.value =
+                await organizationService.getByOwnerId(ownerId)
 
-      if (authError) throw authError
+            return organization.value
+        } catch (err) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : 'Gagal mengambil data organization.'
 
-      if (!user) {
-        throw new Error('Silakan login kembali.')
-      }
-
-      const savedOrganization = await organizationService.createOrganization(payload)
-
-      organization.value = savedOrganization
-
-      return savedOrganization
-    } catch (err: any) {
-      error.value = err.message || 'Gagal menyimpan organization.'
-      throw err
-    } finally {
-      loading.value = false
+            error.value = message
+            throw err
+        } finally {
+            isLoading.value = false
+        }
     }
-  }
 
-  function clearOrganization() {
-    organization.value = null
-    error.value = null
-  }
+    async function completeSetup(payload: OrganizationSetupInput) {
+        isLoading.value = true
+        error.value = null
 
-  return {
-    organization,
-    loading,
-    error,
-    hasOrganization,
-    fetchMyOrganization,
-    saveOrganization,
-    clearOrganization,
-  }
+        try {
+            const result = await organizationService.completeSetup(payload)
+
+            organization.value = result
+
+            return result
+        } catch (err) {
+            const message =
+                err instanceof Error
+                    ? err.message
+                    : 'Organization setup gagal.'
+
+            error.value = message
+            throw err
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    function resetOrganization() {
+        organization.value = null
+        error.value = null
+    }
+
+    return {
+        organization,
+        isLoading,
+        error,
+
+        clearError,
+        fetchByOwnerId,
+        completeSetup,
+        resetOrganization,
+    }
 })
