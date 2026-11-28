@@ -21,6 +21,9 @@ import { Course } from '@/types/course_type'
 import { Enrollment } from '@/types/enrollment_type'
 import { useUserDataStores } from '@/stores/user_data_stores'
 import { formatDate } from '@/composables/formatDate'
+import { useStudentAvatar } from '@/composables/useStudentAvatar'
+
+const { getStudentAvatarUrl } = useStudentAvatar()
 
 const route = useRoute()
 const router = useRouter()
@@ -120,10 +123,6 @@ function cancelReject() {
     rejectingEnrollmentId.value = null
     rejectionReason.value = ''
     actionError.value = null
-}
-
-function getStudentAvatarUrl(studentId: string): string | null {
-    return userStore.userDataById[studentId]?.avatar_url ?? null;
 }
 
 async function rejectEnrollment(enrollment: Enrollment) {
@@ -342,11 +341,6 @@ watch(courseId, (newId, oldId) => {
                         <div class="space-y-4 p-5">
                             <!-- Student heading -->
                             <div class="flex items-start gap-3">
-                                <!-- <div class="flex size-12 shrink-0 items-center
-                                           justify-center rounded-full bg-indigo-50
-                                           text-[14px] font-bold text-indigo-700">
-                                    {{ getInitials(enrollment.fullname) }}
-                                </div> -->
 
                                 <!-- Avatar -->
                                 <div class="flex size-12 shrink-0 items-center justify-center

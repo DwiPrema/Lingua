@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import * as enrollmentService from '@/service/enrollments_service'
 import { CreateEnrollmentPayload, Enrollment } from '@/types/enrollment_type'
+import { useAuthStore } from './auth_stores'
 
 export const useEnrollmentStores = defineStore('enrollment', () => {
     const enrollments = ref<Enrollment[]>([])
@@ -11,6 +12,8 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
     const submitting = ref<boolean>(false)
     const updatingStatus = ref<boolean>(false)
     const error = ref<string | null>(null)
+
+    const authStore = useAuthStore()
 
     const approvedStudents = ref<Enrollment[]>([])
     const loadingApprovedStudents = ref<boolean>(false)
@@ -265,6 +268,35 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
             processingEnrollmentId.value = null
         }
     }
+    
+    async function fetchPendingEnrollments() {
+            loading.value = true
+            error.value = null
+
+            try {
+                const userId = authStore.user?.id
+
+                if (!userId) {
+                    throw new Error('User belum terautentikasi.')
+                }
+
+                const data =
+                    await enrollmentService.fetchPendingEnrollmentsByOrganization(userId)
+
+                enrollments.value = data
+
+                return data
+            } catch (err) {
+                const e = err as { message?: string }
+
+                error.value =
+                    e.message ?? 'Gagal mengambil enrollment pending.'
+
+                throw err
+            } finally {
+                loading.value = false
+            }
+        }
 
     return {
         enrollments,
@@ -293,5 +325,6 @@ export const useEnrollmentStores = defineStore('enrollment', () => {
         fetchPendingEnrollmentsByCourseId,
         approveEnrollment,
         rejectEnrollment,
+        fetchPendingEnrollments,
     }
 })

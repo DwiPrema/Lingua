@@ -19,9 +19,12 @@ import { Enrollment } from '@/types/enrollment_type'
 import { useUserDataStores } from '@/stores/user_data_stores'
 import CustomButton from '@/components/CustomButton.vue'
 import { formatDate } from '@/composables/formatDate'
+import { useStudentAvatar } from '@/composables/useStudentAvatar'
 
 const route = useRoute()
 const router = useRouter()
+
+const { getStudentAvatarUrl } = useStudentAvatar()
 
 const courseStore = useCourseStores()
 const enrollmentStore = useEnrollmentStores()
@@ -41,10 +44,6 @@ const students = computed(() =>
         ['approved', 'active'].includes(enrollment.status),
     ),
 )
-
-function getStudentAvatarUrl(studentId: string): string | null {
-    return userStore.userDataById[studentId]?.avatar_url ?? null;
-}
 
 function statusClass(status: string) {
     return status === 'active'

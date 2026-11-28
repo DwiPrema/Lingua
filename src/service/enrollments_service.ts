@@ -166,6 +166,47 @@ export async function fetchPendingEnrollmentsByCourseId(courseId: string) {
     return data ?? []
 }
 
+export async function fetchPendingEnrollmentsByOrganization(
+    userId: string,
+) {
+    const { data: organization, error: organizationError } =
+        await supabase
+            .from('organizations')
+            .select('id')
+            .eq('owner_id', userId)
+            .single()
+
+    if (organizationError) throw organizationError
+
+    if (!organization) {
+        throw new Error('Organization tidak ditemukan.')
+    }
+
+    const { data: courses, error: courseError } =
+        await supabase
+            .from('courses')
+            .select('id')
+            .eq('organization_id', organization.id)
+
+    if (courseError) throw courseError
+
+    const courseIds = courses?.map(course => course.id) ?? []
+
+    if (courseIds.length === 0) return []
+
+    const { data: enrollments, error: enrollmentError } =
+        await supabase
+            .from('enrollments')
+            .select('*')
+            .in('course_id', courseIds)
+            .eq('status', 'pending')
+            .order('created_at', { ascending: false })
+
+    if (enrollmentError) throw enrollmentError
+
+    return enrollments ?? []
+}
+
 export async function approveEnrollment(enrollmentId: string) {
     if (!enrollmentId) {
         throw new Error('Enrollment ID is required.')

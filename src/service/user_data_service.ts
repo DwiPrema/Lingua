@@ -50,16 +50,6 @@ export async function fetchLandingStatistics(): Promise<LandingStatistics> {
     return data as LandingStatistics;
 }
 
-// export async function getStudents() {
-//   const { data, error } = await supabase.from(DatabaseTableName.usersCollection).select().eq('role', 'student')
-
-//   if (error) {
-//     throw error
-//   }
-
-//   return data
-// }
-
 export const avatarService = {
   async replaceAvatar(userId: string, file: File, oldAvatarUrl?: string | null) {
 

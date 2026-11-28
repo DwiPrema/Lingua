@@ -10,6 +10,7 @@ import { usePaymentStore } from "@/stores/payment_stores.js";
 import { Payment } from "@/types/payment_type.js";
 import PaymentOverviewSection from "../payment/PaymentOverviewSection.vue";
 import { formatDate } from "@/composables/formatDate.js";
+import { useStudentAvatar } from '@/composables/useStudentAvatar'
 
 // =====================================================
 // ROUTER & STORE
@@ -20,6 +21,7 @@ const enrollmentStore = useEnrollmentStores();
 const userStore = useUserDataStores();
 const invoiceStore = useInvoiceStore();
 const paymentStore = usePaymentStore();
+const { getStudentAvatarUrl } = useStudentAvatar()
 
 const {
     activeEnrollment,
@@ -147,10 +149,6 @@ const statusClass = computed(() => {
             return "bg-orange-100 text-orange-700";
     }
 });
-
-function getStudentAvatarUrl(studentId: string): string | null {
-    return userStore.userDataById[studentId]?.avatar_url ?? null;
-}
 
 const registrationDate = computed(() =>
     formatDate(enrollment.value?.created_at)

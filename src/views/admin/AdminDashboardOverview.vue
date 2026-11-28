@@ -13,6 +13,7 @@ import { useOrganizationStore } from "@/stores/organization_stores.js";
 import AdminDashboardCourseSection from "./AdminDashboardCourseSection.vue";
 import CustomButton from "@/components/CustomButton.vue";
 import { User } from "@lucide/vue";
+import EnrollmentsOverviewSection from "./EnrollmentsOverviewSection.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -133,6 +134,9 @@ async function refreshDashboard() {
                 </CustomButton>
             </div>
         </section>
+
+        <h1 class="text-[30px] font-black">Recent All Enrollments</h1>
+        <EnrollmentsOverviewSection />
 
         <AdminDashboardCourseSection v-if="route.name === 'dashboard'" />
 
