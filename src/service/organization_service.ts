@@ -72,4 +72,71 @@ export const organizationService = {
 
         return data as Organization
     },
+
+    async updateSettings(
+        payload: OrganizationSetupInput
+    ): Promise<Organization> {
+        const normalizedPayload = {
+            name: payload.name.trim(),
+            bank_name: payload.bank_name.trim(),
+            account_number: payload.account_number.trim(),
+            account_name: payload.account_name.trim(),
+            qris_url: payload.qris_url?.trim() || null,
+            payment_notes: payload.payment_notes?.trim() || null,
+        }
+
+        if (
+            !normalizedPayload.name ||
+            !normalizedPayload.bank_name ||
+            !normalizedPayload.account_number ||
+            !normalizedPayload.account_name
+        ) {
+            throw new Error('Lengkapi seluruh informasi organisasi.')
+        }
+
+        const { data, error } = await supabase.rpc(
+            'update_organization_settings',
+            {
+                p_name: normalizedPayload.name,
+                p_bank_name: normalizedPayload.bank_name,
+                p_account_number: normalizedPayload.account_number,
+                p_account_name: normalizedPayload.account_name,
+                p_qris_url: normalizedPayload.qris_url,
+                p_payment_notes: normalizedPayload.payment_notes,
+            }
+        )
+
+        if (error) throw error
+
+        if (!data) {
+            throw new Error('Gagal memperbarui organization settings.')
+        }
+
+        return data as Organization
+    },
+
+    async joinOrganization(
+        organizationId: string
+    ): Promise<Organization> {
+        const normalizedId = organizationId.trim()
+
+        if (!normalizedId) {
+            throw new Error('Organization ID wajib diisi.')
+        }
+
+        const { data, error } = await supabase.rpc(
+            'join_organization',
+            {
+                p_organization_id: normalizedId,
+            }
+        )
+
+        if (error) throw error
+
+        if (!data) {
+            throw new Error('Gagal bergabung dengan organisasi.')
+        }
+
+        return data as Organization
+    },
 }
